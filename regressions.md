@@ -20,3 +20,16 @@
 
 <!-- 新回归检查追加在此处 -->
 
+## R-2024-002 WindowSwitcher 上下箭头切换窗口置顶
+
+- 关联问题：P-2024-002
+- 类型：手工检查
+- 位置：`src/frontend/components/common/WindowSwitcher.vue`
+- 关键断言：
+  1. 打开多个 iterate 窗口并列显示
+  2. 按 Tab 键打开窗口选择器
+  3. 使用上下箭头切换选中行
+  4. 每次切换时，对应窗口应实时置顶显示
+- 运行方式：手工测试验证
+- 代码检查点：确保 `handleKeydown` 中 ArrowUp/ArrowDown 分支调用了 `activateWindowAtIndex(selectedIndex.value)`
+

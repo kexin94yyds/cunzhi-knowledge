@@ -35,6 +35,18 @@
 
 <!-- 新问题追加在此处 -->
 
+## P-2024-002 WindowSwitcher 上下箭头切换时窗口未置顶
+
+- 项目：iterate (cunzhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：2024-12-14 之前版本
+- 现象：多窗口并列时，按 Tab 打开窗口选择器，使用上下箭头切换选中行，第一行窗口会置顶，但第二、第三行选中时对应窗口不会置顶
+- 根因：`WindowSwitcher.vue` 中 `selectedIndex` 变化时未调用 `activate_window_instance` 置顶窗口
+- 修复：新增 `activateWindowAtIndex()` 函数，在上下箭头切换时实时调用置顶
+- 回归检查：R-2024-002
+- 状态：verified
+- 日期：2024-12-14
+
 ## P-2024-001 全局知识库流程验证
 
 - 项目：windsurf-project
