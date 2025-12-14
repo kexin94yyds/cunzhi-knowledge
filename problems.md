@@ -71,6 +71,24 @@
 - 状态：verified
 - 日期：2024-12-14
 
+## P-2024-005 Supabase RLS 策略只对 service_role 生效导致 API 查询失败
+
+- 项目：ContentDash
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：2024-12-14
+- 现象：密钥激活时返回"密钥不存在"错误（400 Bad Request），但数据库中密钥确实存在
+- 根因：Supabase RLS 策略只配置了 `service_role` 角色权限，而 Netlify Functions 使用的是 `anon` key（匿名密钥），导致匿名用户无法查询数据
+- 修复：在 Supabase 中添加 `anon` 角色的 SELECT 和 UPDATE 策略：
+  ```sql
+  CREATE POLICY "Allow anon read" ON contentdash_licenses
+      FOR SELECT TO anon USING (true);
+  CREATE POLICY "Allow anon update" ON contentdash_licenses
+      FOR UPDATE TO anon USING (true) WITH CHECK (true);
+  ```
+- 回归检查：手动验证激活功能正常
+- 状态：verified
+- 日期：2024-12-14
+
 ## P-2024-001 全局知识库流程验证
 
 - 项目：windsurf-project
