@@ -47,6 +47,30 @@
 - 状态：verified
 - 日期：2024-12-14
 
+## P-2024-004 窗口切换器点击第二行无法激活对应窗口
+
+- 项目：cunzhi
+- 仓库：/Users/apple/cunzhi
+- 发生版本：2024-12-14
+- 现象：按 Tab 打开窗口切换器，点击第二行或其他行时，总是激活第一行的窗口
+- 根因：macOS 多个同名应用进程时，AppleScript 激活行为不确定
+- 修复：待定
+- 回归检查：待创建
+- 状态：open
+- 日期：2024-12-14
+
+## P-2024-003 GUI 标题栏只显示项目名称，无法显示完整路径
+
+- 项目：cunzhi
+- 仓库：/Users/apple/cunzhi
+- 发生版本：2024-12-14
+- 现象：GUI 标题栏显示 `iterate / cunzhi`（只有项目名称），用户无法区分同名但不同路径的项目
+- 根因：`PopupHeader.vue` 中 `displayProjectName` 只取路径最后一部分，窗口标题是静态的
+- 修复：修改 `PopupHeader.vue` 使用完整路径，在 `useMcpHandler.ts` 动态设置窗口标题
+- 回归检查：R-2024-003
+- 状态：verified
+- 日期：2024-12-14
+
 ## P-2024-001 全局知识库流程验证
 
 - 项目：windsurf-project
