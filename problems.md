@@ -35,6 +35,19 @@
 
 <!-- 新问题追加在此处 -->
 
+## P-2024-006 Acemcp 无法获取 Augment API 凭证
+
+- 项目：acemcp
+- 仓库：https://github.com/qy527145/acemcp.git
+- 发生版本：2024-12-15
+- 现象：尝试通过 `auggie login` 获取 Augment API 凭证时，hCaptcha 验证失败，控制台显示 401/403 错误
+- 根因：Augment 认证服务的 hCaptcha 验证在当前网络环境下无法通过（可能需要科学上网或服务本身有问题）
+- 修复：暂无，需要解决网络问题或等待 Augment 服务修复
+- 回归检查：待创建
+- 状态：open
+- 日期：2024-12-15
+- 备注：acemcp 是基于 Augment Context Engine 的语义代码搜索 MCP 工具，必须连接 Augment 云服务才能使用。暂时用 grep_search 和 code_search 替代。
+
 ## P-2024-002 WindowSwitcher 上下箭头切换时窗口未置顶
 
 - 项目：iterate (cunzhi)
