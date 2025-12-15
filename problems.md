@@ -313,7 +313,51 @@
 
 ---
 
->>>>>>> 26d3c91 (feat: 添加 GitHub kexin94yyds 项目问题经验记录)
+## P-2024-039 Slash-Command-Prompter 提示词上移跨模式问题
+
+- 项目：Slash-Command-Prompter
+- 仓库：https://github.com/kexin94yyds/Slash-Command-Prompter
+- 发生版本：2.0 之前
+- 现象：提示词上移操作影响了其他模式的提示词顺序
+- 根因：上移逻辑未限制在当前模式内
+- 修复：修复提示词上移仅在当前模式内有效
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：多模式系统中的操作需要明确限定作用域
+
+---
+
+## P-2024-040 Slash-Command-Prompter 斜杠菜单误触发
+
+- 项目：Slash-Command-Prompter / Full-screen-prompt
+- 仓库：https://github.com/kexin94yyds/Slash-Command-Prompter
+- 发生版本：2.0 之前
+- 现象：斜杠菜单在不应触发时被触发
+- 根因：触发逻辑过于宽松
+- 修复：优化斜杠菜单触发逻辑，避免误触发
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：输入触发类功能需要精确的触发条件
+
+---
+
+## P-2024-041 Chrome 扩展删除模式丢失所有数据
+
+- 项目：words-RL (多模式单词记录器)
+- 仓库：https://github.com/kexin94yyds/words-RL
+- 发生版本：v2.1
+- 现象：用户删除模式后，该模式下所有单词丢失
+- 根因：删除模式时级联删除了所有关联数据
+- 修复：文档中明确说明"删除模式会同时删除该模式下的所有单词"
+- 回归检查：文档验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：破坏性操作需要在 UI 和文档中明确提示
+
+---
+
 ## P-2024-006 Acemcp 无法获取 Augment API 凭证
 
 - 项目：acemcp
