@@ -2041,3 +2041,74 @@
 - 日期：2024-12-16
 - 经验：重构需要充分的测试覆盖
 
+---
+
+## P-2024-151 ClipBook 拼写错误
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：界面文本拼写错误
+- 根因：拼写错误
+- 修复：修复拼写错误
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-152 ClipBook 缺少依赖
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：应用启动或编译失败
+- 根因：缺少必要的依赖
+- 修复：添加缺少的依赖
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-153 ClipBook 预览面板边框缺失
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：预览面板边框不显示
+- 根因：CSS 样式缺失
+- 修复：修复预览面板边框缺失问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-154 git-worktree-manager 国际化文本遗漏
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：部分界面文本未翻译
+- 根因：国际化文本配置遗漏
+- 修复：补充遗漏的国际化文本
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-155 iterate UnoCSS safelist 黑色变体问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：黑色相关的 CSS 类不生效
+- 根因：UnoCSS safelist 未包含黑色变体
+- 修复：修复 UnoCSS safelist 添加黑色变体
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：UnoCSS safelist 需要包含所有用到的动态类名
+
