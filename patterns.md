@@ -188,3 +188,28 @@
 - 确保知识库是最新的
 - `git status` 自动检测当前分支，不管是 main 还是其他分支
 
+
+---
+
+## PAT-2024-006 规则简化原则
+
+- 来源：cunzhi 项目实践
+- 日期：2024-12-15
+
+**核心原则：**
+- 重复的逻辑应该合并，保持简洁清晰
+- 用"两者都执行"代替复制粘贴相同的规则
+
+**示例：**
+```markdown
+# 差（重复）
+- .cunzhi-knowledge/ 执行 git fetch + git status
+  - 有更新 → 询问 pull
+- 本项目执行 git fetch + git status
+  - 有更新 → 询问 pull
+
+# 好（合并）
+- 两者都执行 git fetch + git status
+  - 有更新 → 询问 pull
+```
+
