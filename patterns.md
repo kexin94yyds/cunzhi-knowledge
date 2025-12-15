@@ -346,3 +346,49 @@ if [ ! -x "$SCRIPT_PATH" ]; then
 fi
 ```
 
+---
+
+## PAT-2024-016 全功能应用部署脚本模板
+
+- 来源：cunzhi/iterate 项目部署需求
+- 日期：2024-12-15
+
+**核心流程（5 步）：**
+1. **关闭进程** - `pkill -x "app_name"` + 关闭开发服务
+2. **备份旧版** - `mv /Applications/app.app /Applications/app.app.bak`
+3. **构建新版** - `npm run build` 或 `npm run tauri:build`
+4. **安装新版** - `cp -R build_output /Applications/`
+5. **启动应用** - `open /Applications/app.app`
+
+**脚本模板：**
+```bash
+#!/bin/bash
+set -e
+
+APP_NAME="your-app"
+APP_PATH="/Applications/${APP_NAME}.app"
+BACKUP_PATH="${APP_PATH}.bak"
+
+# 1. 关闭进程
+pkill -x "$APP_NAME" || true
+
+# 2. 备份
+[ -d "$BACKUP_PATH" ] && rm -rf "$BACKUP_PATH"
+[ -d "$APP_PATH" ] && mv "$APP_PATH" "$BACKUP_PATH"
+
+# 3. 构建
+npm run build
+
+# 4. 安装
+cp -R "build/output/${APP_NAME}.app" "$APP_PATH"
+
+# 5. 启动
+open "$APP_PATH"
+
+echo "✅ 部署完成！回滚：rm -rf $APP_PATH && mv $BACKUP_PATH $APP_PATH"
+```
+
+**适用场景：**
+- Tauri/Electron 桌面应用
+- 本地开发迭代部署
+
