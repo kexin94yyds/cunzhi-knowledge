@@ -1550,3 +1550,48 @@
 - 来源：git log (早期历史)
 - 经验：登录逻辑需要处理各种失败场景
 
+---
+
+## P-2024-117 git-worktree-manager 翻译问题
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：早期版本
+- 现象：界面翻译显示不正确
+- 根因：i18n 配置或翻译文件问题
+- 修复：修复翻译问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-118 git-worktree-manager worktree 事件监听
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：早期版本
+- 现象：worktree 变化时界面未更新
+- 根因：worktree 事件监听未正确设置
+- 修复：修复监听 worktree 事件
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-119 git-worktree-manager 移动 worktree 问题
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：早期版本
+- 现象：移动 worktree 时出错
+- 根因：移动逻辑有 bug
+- 修复：修复移动 worktree 功能
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
