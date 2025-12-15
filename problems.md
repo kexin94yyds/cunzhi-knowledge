@@ -35,6 +35,21 @@
 
 <!-- 新问题追加在此处 -->
 
+## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：2024-12-15 之前版本
+- 现象：在笔记窗口中，当文字内容超过一屏时，使用 Cmd+B 加粗选中文字会导致画面自动滚动到下方，用户需要手动翻回原位置
+- 根因：浏览器 `execCommand('bold')` 执行后会自动将光标位置滚动到可见区域，加上 MutationObserver 同时触发导致滚动位置被多次修改
+- 修复：
+  1. 添加 `isFormatting` 标志位和 `savedScrollTop` 变量
+  2. 在 keydown 事件中检测格式化快捷键时保存滚动位置，格式化后恢复
+  3. MutationObserver 回调中检查标志位，正在格式化时直接恢复到已保存位置
+- 回归检查：手动验证 Cmd+B 加粗时画面不再跳动
+- 状态：verified
+- 日期：2024-12-15
+
 ## P-2024-006 Acemcp 无法获取 Augment API 凭证
 
 - 项目：acemcp
