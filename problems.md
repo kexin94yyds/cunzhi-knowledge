@@ -1459,3 +1459,94 @@
 - 日期：2024-12-16
 - 经验：REST API 应该设计为幂等的
 
+---
+
+## P-2024-111 ClipBook 删除时 bug
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：删除剪贴板项目时出现错误
+- 根因：删除逻辑有 bug
+- 修复：修复删除时的 bug
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-112 ClipBook 初始状态 bug
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：应用启动时初始状态异常
+- 根因：初始化逻辑有 bug
+- 修复：修复初始状态 bug，同时使骨架可拖拽
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-113 ClipBook HTML 和代码被忽略
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：复制 HTML 和代码时内容被忽略
+- 根因：剪贴板类型判断逻辑有误
+- 修复：修复 HTML 和代码被忽略的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-114 twscrape OTP 验证码问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：早期版本
+- 现象：OTP 验证码处理异常
+- 根因：OTP 代码解析或提交逻辑有问题
+- 修复：修复 OTP 代码处理
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-115 twscrape 登录时无 ct0 cookie
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：Issue #143
+- 现象：登录时找不到 ct0 cookie 导致失败
+- 根因：Twitter 接口变化，ct0 获取时机变化
+- 修复：修复登录时无 ct0 找到的情况
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+
+---
+
+## P-2024-116 twscrape 登录无限循环
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：Issue #132, #165
+- 现象：使用不存在的账户登录时进入无限循环
+- 根因：登录失败处理未考虑账户不存在的情况
+- 修复：修复不存在账户登录时的无限循环
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-05-01
+- 来源：git log (早期历史)
+- 经验：登录逻辑需要处理各种失败场景
+
