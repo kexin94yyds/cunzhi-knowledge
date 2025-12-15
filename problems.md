@@ -1923,3 +1923,76 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-143 ClipBook 检查更新时死锁
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：检查更新时应用卡死
+- 根因：更新检查逻辑存在死锁
+- 修复：修复检查更新时的死锁问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：多线程更新检查需要避免主线程阻塞
+
+---
+
+## P-2024-144 kotadb 数据库 rate limit 更新问题
+
+- 项目：kotadb
+- 仓库：/Users/apple/agent/kotadb
+- 发生版本：Issue #463
+- 现象：数据库中已有的 rate limit 无法正确更新
+- 根因：更新逻辑未正确处理已存在的记录
+- 修复：更新数据库中已存在的 rate limit 记录
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-145 tobooks intro 按钮链接错误
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：intro 按钮点击后跳转到错误的 URL
+- 根因：链接地址配置错误
+- 修复：更新 intro 按钮链接到正确的 URL
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-146 tobooks OG/Twitter 图片域名问题
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：社交分享时预览图片无法显示
+- 根因：og:image 和 twitter:image 未使用实际的 Netlify 域名
+- 修复：更新 og:image 和 twitter:image 使用实际 Netlify 域名
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：社交分享图片需要使用完整的绝对 URL
+
+---
+
+## P-2024-147 zhuyili 详情页按钮完全点不动
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：计时器详情页面的按钮完全无法点击
+- 根因：事件绑定方式有问题
+- 修复：使用事件委托修复详情页按钮无法点击的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：动态生成的元素需要使用事件委托
+
