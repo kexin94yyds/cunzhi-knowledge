@@ -1283,3 +1283,18 @@
 - 日期：2024-12-16
 - 经验：代码编辑时注意输入法状态，避免中文标点
 
+---
+
+## P-2024-099 aliyun-deploy Supabase URL 配置错误
+
+- 项目：aliyun-deploy (nativePaySDK)
+- 仓库：/Users/apple/Downloads/nativePaySDK/aliyun-deploy
+- 发生版本：当前版本
+- 现象：部署到阿里云后 Supabase 连接失败
+- 根因：Supabase URL 配置不正确
+- 修复：修正 Supabase URL 配置
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：云部署时需要检查所有环境变量配置
+
