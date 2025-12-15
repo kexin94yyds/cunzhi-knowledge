@@ -358,6 +358,51 @@
 
 ---
 
+## P-2024-042 Node.js 应用部署到静态托管平台失败
+
+- 项目：kexin-podcast (个人播客网站)
+- 仓库：https://github.com/kexin94yyds/kexin-podcast
+- 发生版本：当前版本
+- 现象：应用部署到 Netlify 或 GitHub Pages 后无法运行
+- 根因：Netlify 和 GitHub Pages 只支持静态网站，不能运行 Node.js 服务器
+- 修复：部署到支持 Node.js 的平台（Render、Railway、Vercel、Heroku）
+- 回归检查：文档验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：选择部署平台前需确认技术栈兼容性；Node.js 应用需要后端托管服务
+
+---
+
+## P-2024-043 Web 应用震动功能在桌面端无效
+
+- 项目：relax (呼吸练习 Web 应用)
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：当前版本
+- 现象：震动提示在桌面浏览器上不工作
+- 根因：震动 API (Vibration API) 主要在移动设备上有效，桌面设备通常不支持
+- 修复：文档中说明"震动功能需要设备支持，主要在移动设备上有效"
+- 回归检查：文档验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：使用设备特定 API 时需要提供降级方案或文档说明
+
+---
+
+## P-2024-044 Web 应用音频提示需要用户授权
+
+- 项目：relax (呼吸练习 Web 应用)
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：当前版本
+- 现象：音频提示在首次使用时不播放
+- 根因：浏览器自动播放策略要求用户交互后才能播放音频
+- 修复：文档中说明"音频提示功能需要用户授权"
+- 回归检查：文档验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：涉及音频/视频自动播放的功能需要处理浏览器权限策略
+
+---
+
 ## P-2024-006 Acemcp 无法获取 Augment API 凭证
 
 - 项目：acemcp
