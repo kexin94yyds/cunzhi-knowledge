@@ -403,6 +403,79 @@
 
 ---
 
+## P-2024-045 macOS 终端通知权限未授予
+
+- 项目：rest (静音倒计时器)
+- 仓库：https://github.com/kexin94yyds/rest
+- 发生版本：当前版本
+- 现象：倒计时结束后通知不显示
+- 根因：终端应用缺少系统通知权限
+- 修复：系统偏好设置 → 通知与专注模式 → 确保终端有通知权限
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：依赖系统通知的脚本需要文档说明权限配置
+
+---
+
+## P-2024-046 macOS 语音功能未启用
+
+- 项目：rest (静音倒计时器)
+- 仓库：https://github.com/kexin94yyds/rest
+- 发生版本：当前版本
+- 现象：语音提示不工作
+- 根因：系统语音功能未启用
+- 修复：系统偏好设置 → 辅助功能 → 语音 → 确保语音功能已启用
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+
+---
+
+## P-2024-047 Shell 配置未重新加载
+
+- 项目：rest (静音倒计时器)
+- 仓库：https://github.com/kexin94yyds/rest
+- 发生版本：当前版本
+- 现象：安装后 "开始" 命令不可用
+- 根因：添加到 ~/.zshrc 后未重新加载配置
+- 修复：运行 `source ~/.zshrc` 或重启终端
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：修改 shell 配置后需提示用户重载或重启终端
+
+---
+
+## P-2024-048 12306 抢票脚本 ChromeDriver 版本问题
+
+- 项目：High-speed-rail-ticket-grabbing
+- 仓库：https://github.com/kexin94yyds/High-speed-rail-ticket-grabbing
+- 发生版本：v1.0
+- 现象：ChromeDriver 版本不匹配导致脚本无法运行
+- 根因：Chrome 浏览器版本与 ChromeDriver 版本不一致
+- 修复：脚本使用 webdriver-manager 自动管理 ChromeDriver，无需手动下载
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：Selenium 项目推荐使用 webdriver-manager 自动管理驱动版本
+
+---
+
+## P-2024-049 12306 抢票脚本登录后页面卡住
+
+- 项目：High-speed-rail-ticket-grabbing
+- 仓库：https://github.com/kexin94yyds/High-speed-rail-ticket-grabbing
+- 发生版本：v1.0
+- 现象：登录后页面卡住不动
+- 根因：网络问题或 12306 系统繁忙
+- 修复：检查网络连接或稍后重试
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+
+---
+
 ## P-2024-006 Acemcp 无法获取 Augment API 凭证
 
 - 项目：acemcp
