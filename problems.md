@@ -1996,3 +1996,48 @@
 - 日期：2024-12-16
 - 经验：动态生成的元素需要使用事件委托
 
+---
+
+## P-2024-148 kotadb v0.1.1 生产环境回滚
+
+- 项目：kotadb
+- 仓库：/Users/apple/agent/kotadb
+- 发生版本：v0.1.1
+- 现象：v0.1.1 版本在生产环境出现问题需要回滚
+- 根因：新版本存在未发现的问题
+- 修复：回滚到之前稳定版本
+- 回归检查：生产环境验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：生产环境发布需要更充分的测试
+
+---
+
+## P-2024-149 tobooks iOS 主屏独立模式扩展不可用
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：iOS 从主屏幕图标启动时浏览器扩展不可用
+- 根因：iOS standalone 模式下扩展无法工作
+- 修复：尝试添加"在 Safari 中打开"提示按钮（后被 revert）
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：iOS PWA standalone 模式与扩展不兼容是平台限制
+
+---
+
+## P-2024-150 git-worktree-manager worktree 列表处理重构问题
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：worktree 列表处理重构后出现问题
+- 根因：重构引入了新的 bug
+- 修复：回滚 worktree 列表处理重构
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：重构需要充分的测试覆盖
+
