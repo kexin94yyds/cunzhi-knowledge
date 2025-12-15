@@ -1386,3 +1386,76 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-106 kotadb MCP tool schema localPath 参数问题
+
+- 项目：kotadb
+- 仓库：/Users/apple/agent/kotadb
+- 发生版本：PR #412, #501
+- 现象：MCP 工具调用时出现参数错误
+- 根因：MCP tool schema 中包含了不应该存在的 localPath 参数
+- 修复：从 MCP tool schema 中移除 localPath 参数
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：MCP 工具定义需要精确匹配实际参数
+
+---
+
+## P-2024-107 Strong-Iterate HTML 语法错误
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/测试马上删除/Strong-Itreate
+- 发生版本：当前版本
+- 现象：页面渲染异常
+- 根因：HTML 语法错误
+- 修复：修复 HTML 语法错误，完善章节内容
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-108 tobooks text-to-epub 页面高度问题
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：text-to-epub.html 页面高度显示不正确
+- 根因：CSS 高度设置问题
+- 修复：修复页面高度问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-109 播客 fs 变量重复声明
+
+- 项目：My-podcast (播客)
+- 仓库：/Users/apple/播/My-podcast
+- 发生版本：当前版本
+- 现象：启动时报错变量重复声明
+- 根因：fs 模块被重复 require/import
+- 修复：修复 fs 变量重复声明错误
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：避免在同一文件中重复声明变量
+
+---
+
+## P-2024-110 kexin-podcast DELETE API 参数类型问题
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/podcast/kexin-podcast
+- 发生版本：当前版本
+- 现象：DELETE /api/podcasts/:id 返回 404
+- 根因：API 不接受数字类型 ID，且非幂等
+- 修复：修复 DELETE API 接受数字 ID，实现幂等性避免 404
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：REST API 应该设计为幂等的
+
