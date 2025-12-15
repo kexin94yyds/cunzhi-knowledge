@@ -1795,3 +1795,60 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-134 kexin-podcast JavaScript 变量重复声明
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/podcast/kexin-podcast
+- 发生版本：当前版本
+- 现象：启动时报错变量重复声明
+- 根因：JavaScript 变量被重复声明
+- 修复：修复 JavaScript 变量重复声明错误
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-135 Slash-Command-Prompter mode 下拉菜单对齐问题
+
+- 项目：Slash-Command-Prompter
+- 仓库：/Users/apple/prompt/Slash-Command-Prompter
+- 发生版本：当前版本
+- 现象：mode 下拉菜单与其他元素对齐不正确
+- 根因：CSS 布局问题
+- 修复：优化 UI 布局，修复 mode 下拉菜单对齐问题，统一按钮间距
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-136 tobooks 搜索栏和按钮重叠
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：顶部栏搜索栏和按钮出现重叠
+- 根因：CSS 布局问题
+- 修复：重构顶部栏，使用 CSS Grid 布局解决重叠问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：复杂布局使用 CSS Grid 比 Flexbox 更易控制
+
+---
+
+## P-2024-137 zhuyili Google 登录回调 URL 问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：Google 登录回调失败
+- 根因：回调 URL 配置错误
+- 修复：修复 Google 登录回调 URL
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
