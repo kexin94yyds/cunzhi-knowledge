@@ -1709,3 +1709,89 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-128 ClipBook 快捷键注册失败导致崩溃
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：尝试注销未成功注册的快捷键时应用崩溃
+- 根因：快捷键注册失败后未重置为空，后续注销操作导致崩溃
+- 修复：注册失败时将快捷键重置为空，避免后续注销崩溃
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：资源注册失败时需要正确清理状态
+
+---
+
+## P-2024-129 ClipBook 显示/隐藏详情时崩溃
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：点击显示/隐藏详情按钮时应用崩溃
+- 根因：UI 状态切换逻辑有 bug
+- 修复：修复显示/隐藏详情时的崩溃问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-130 ClipBook 启动时崩溃
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：早期版本
+- 现象：应用启动时崩溃
+- 根因：初始化逻辑有 bug
+- 修复：修复启动时崩溃问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-131 codex-watcher 本地 vendor 404/MIME 错误
+
+- 项目：codex-watcher
+- 仓库：/Users/apple/codexwatcher/codex-watcher
+- 发生版本：当前版本
+- 现象：加载本地 vendor 文件时出现 404 和 MIME 类型错误
+- 根因：本地 vendor 标签在文件不存在时导致错误
+- 修复：移除本地 vendor 标签，仅使用 CDN
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：静态资源加载需要考虑文件缺失的降级处理
+
+---
+
+## P-2024-132 git-worktree-manager getNameRev 错误处理
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：getNameRev 函数执行出错时未正确处理
+- 根因：错误处理逻辑不完善
+- 修复：在 getNameRev 函数中正确处理错误
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-133 git-worktree-manager worktree pruning 问题
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：Issue #23
+- 现象：worktree pruning 操作不正确
+- 根因：git worktree prune 相关操作逻辑有问题
+- 修复：改进 worktree pruning 和相关 git 操作
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
