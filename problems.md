@@ -1298,3 +1298,91 @@
 - 日期：2024-12-16
 - 经验：云部署时需要检查所有环境变量配置
 
+---
+
+## P-2024-100 RI 多桌面/全屏 Space 窗口跳动
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：在 macOS 多桌面或全屏 Space 环境下，窗口出现跳动
+- 根因：窗口位置计算未考虑多 Space 环境
+- 修复：修复多桌面/全屏 Space 窗口跳动问题，添加清理启动脚本解决开机后窗口跳动
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：macOS 桌面应用需要处理多 Space 环境
+
+---
+
+## P-2024-101 Note-taking-tool 标题被 CSS 污染
+
+- 项目：Note-taking-tool (笔记升级)
+- 仓库：/Users/apple/笔记升级/Note-taking-tool
+- 发生版本：当前版本
+- 现象：提取的标题包含 CSS 样式文本
+- 根因：提取标题时未跳过 style/script 标签，未过滤疑似 CSS 文本
+- 修复：提取标题时跳过 style/script 且过滤疑似 CSS 文本；粘贴清理时移除非内容标签
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：DOM 文本提取需要过滤样式和脚本内容
+
+---
+
+## P-2024-102 Note-taking-tool 沉浸式翻译插件按钮重叠
+
+- 项目：Note-taking-tool (笔记升级)
+- 仓库：/Users/apple/笔记升级/Note-taking-tool
+- 发生版本：当前版本
+- 现象：安装沉浸式翻译浏览器插件后，按钮出现重叠
+- 根因：插件注入的 DOM 元素与应用按钮冲突
+- 修复：修复沉浸式翻译插件导致的按钮重叠问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Web 应用需要考虑浏览器插件的 DOM 注入影响
+
+---
+
+## P-2024-103 wechat-spider 保存图片到 OSS 问题
+
+- 项目：wechat-spider
+- 仓库：/Users/apple/微信公众号/wechat-spider
+- 发生版本：当前版本
+- 现象：图片无法正确保存到 OSS
+- 根因：OSS 上传配置或控制逻辑有问题
+- 修复：修复控制保存图片到 OSS 的逻辑
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-104 Strong-Iterate navBackButton 未定义
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/产品更新/Strong-Itreate
+- 发生版本：当前版本
+- 现象：点击关闭按钮时报错 navBackButton 未定义
+- 根因：事件监听器中引用了未定义的变量
+- 修复：修复关闭按钮事件监听器中 navBackButton 变量未定义的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：事件处理器中引用的变量需要确保已定义
+
+---
+
+## P-2024-105 Strong-Iterate Web/Crawler 视图退出逻辑
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/产品更新/Strong-Itreate
+- 发生版本：当前版本
+- 现象：关闭按钮无法正确隐藏 Web 和 Crawler 视图
+- 根因：关闭按钮事件处理未包含这些视图的隐藏逻辑
+- 修复：添加关闭按钮对 web-projects-view 和 crawlers-view 的隐藏处理
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
