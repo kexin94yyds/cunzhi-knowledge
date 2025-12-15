@@ -476,6 +476,40 @@
 
 ---
 
+## P-2024-050 RI index.html 文件被意外清空
+
+- 项目：RI (Replace-Information)
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：开发阶段
+- 现象：打开应用发现主窗口无法显示，检查 index.html 发现文件只剩一行空白
+- 根因：文件被意外清空或覆盖（可能是编辑器误操作）；打包好的应用仍能运行是因为使用的是打包时的完整文件副本
+- 修复：从 git 历史恢复文件 `git show HEAD:index.html > index.html`
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-15
+- 经验：关键文件应有版本控制；定期提交代码可快速恢复
+
+---
+
+## P-2024-051 AI-Sidebar NotebookLM 标题捕获失败
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：早期版本
+- 现象：收藏 NotebookLM 页面时，扩展未能捕获实时项目标题，而是显示 "NotebookLM" 或 "Untitled"
+- 根因：NotebookLM 使用 Angular 动态渲染组件，项目标题存储在特定的 Angular Material 组件结构中（`.title-label-inner`），原实现只检查标准 h1/h2 和 OpenGraph meta 标签
+- 修复：
+  1. 增强 `resolveNotebookLMTitle()` 函数，使用多优先级选择器策略
+  2. 使用 `deepFind()` BFS 遍历 Angular 组件结构
+  3. 添加 MutationObserver 监听标题变化
+  4. 实现重试机制（500ms + 2000ms）应对 Angular 异步渲染
+- 回归检查：手动验证标题捕获
+- 状态：verified
+- 日期：2024-12-15
+- 经验：SPA 框架（Angular/React/Vue）集成需使用深度 DOM 遍历 + 重试机制 + MutationObserver
+
+---
+
 ## P-2024-006 Acemcp 无法获取 Augment API 凭证
 
 - 项目：acemcp
