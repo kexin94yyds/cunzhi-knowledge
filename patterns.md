@@ -22,6 +22,7 @@
 | PAT-2024-002 | Memory vs Knowledge 分层 | L1 缓存 + L2 持久化 |
 | PAT-2024-007 | 外部依赖降级 | 无 API key 时用内置替代 |
 | PAT-2024-020 | MCP Agent 规范格式 | 工具+约束+反模式 |
+| PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
@@ -55,6 +56,29 @@
 ## 详细记录
 
 <!-- 新模式追加在此处 -->
+
+## PAT-2024-021 ji 工具统一管理 memory 和 knowledge
+
+- 来源：cunzhi 项目实践
+- 日期：2024-12-15
+
+**核心原则**：
+- 单一入口原则：用户只需记住 `ji` 这一个工具
+- 通过 `action` 参数区分操作
+
+**操作类型**：
+| action | 读/写 | 目标 | category |
+|--------|-------|------|----------|
+| 回忆 | 读 | memory + knowledge | - |
+| 记忆 | 写 | .cunzhi-memory/ | rule/preference/note/context |
+| 沉淀 | 写 | .cunzhi-knowledge/ | patterns/problems |
+
+**设计决策**：
+- memory 的 `patterns.md` 改名为 `notes.md`，避免与 knowledge 混淆
+- `回忆` 返回合并内容，减少用户认知负担
+- `沉淀` 写入 knowledge 前建议调用寸止确认
+
+---
 
 ## PAT-2024-020 MCP Agent 规范格式
 
