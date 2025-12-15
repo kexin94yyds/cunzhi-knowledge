@@ -1111,3 +1111,175 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-087 codex-watcher 侧边栏重渲染后高亮丢失
+
+- 项目：codex-watcher
+- 仓库：/Users/apple/codexwatcher/codex-watcher
+- 发生版本：当前版本
+- 现象：侧边栏重新渲染后，活动会话高亮状态丢失
+- 根因：重渲染时未保存和恢复高亮状态
+- 修复：持久化并重新应用活动会话高亮，恢复每个来源的最后打开状态
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-088 codex-watcher DOMPurify 下展开/折叠失效
+
+- 项目：codex-watcher
+- 仓库：/Users/apple/codexwatcher/codex-watcher
+- 发生版本：当前版本
+- 现象：使用 DOMPurify 后展开/折叠按钮点击无效
+- 根因：DOMPurify 清理了 inline onclick 事件处理器
+- 修复：使用事件委托替代 inline onclick，改用 data-* 属性
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：使用 DOMPurify 时需要用事件委托替代内联事件
+
+---
+
+## P-2024-089 kexin-podcast Render 部署 SQLite3 构建失败
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/kexin-podacast/My-podcast
+- 发生版本：当前版本
+- 现象：部署到 Render 时 SQLite3 构建失败
+- 根因：Render 环境缺少 SQLite3 原生编译依赖
+- 修复：添加必要的构建依赖或改用纯 JS 实现
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：云平台部署原生模块需要检查构建环境
+
+---
+
+## P-2024-090 Full-screen-prompt 删除功能异常
+
+- 项目：Full-screen-prompt
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：当前版本
+- 现象：删除提示词时功能异常
+- 根因：删除确认对话框逻辑有问题
+- 修复：修复删除功能，添加自定义确认对话框
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-091 Full-screen-prompt 图标格式错误
+
+- 项目：Full-screen-prompt
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：当前版本
+- 现象：应用图标显示异常
+- 根因：图标格式不正确
+- 修复：修复图标格式，同时添加窗口边缘拖拽功能
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-092 twscrape 部署问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：当前版本
+- 现象：部署后爬虫无法正常运行
+- 根因：部署配置问题
+- 修复：修复部署问题并优化实时爬取
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-093 hack-airdrop Railway/Vercel 部署配置问题
+
+- 项目：hack-airdrop
+- 仓库：/Users/apple/twiter/hack-airdrop
+- 发生版本：当前版本
+- 现象：部署到 Railway 和 Vercel 失败
+- 根因：端口配置和部署配置不正确
+- 修复：修复 Railway 端口配置和 Vercel 部署配置
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：不同云平台的部署配置需要分别适配
+
+---
+
+## P-2024-094 Attention-Span 计时器暂停时间计算错误
+
+- 项目：Attention-Span (注意力追踪器)
+- 仓库：/Users/apple/注意力追踪器最终版/Attention-Span
+- 发生版本：当前版本
+- 现象：暂停计时器后恢复时，时间计算不正确
+- 根因：暂停时间未正确从总时间中扣除
+- 修复：修复计时器暂停时间计算 bug
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-095 Attention-Span 重复记录问题
+
+- 项目：Attention-Span (注意力追踪器)
+- 仓库：/Users/apple/注意力追踪器最终版/Attention-Span
+- 发生版本：当前版本
+- 现象：同一个计时记录被重复保存
+- 根因：保存逻辑触发多次
+- 修复：添加重复记录检测和防抖
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-096 DDK 跑步愿望图片路径错误
+
+- 项目：DDK
+- 仓库：/Users/apple/DDK
+- 发生版本：当前版本
+- 现象：跑步愿望图片无法显示
+- 根因：图片引用路径不正确
+- 修复：更新图片引用路径
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-097 DDK 文字重叠问题
+
+- 项目：DDK
+- 仓库：/Users/apple/DDK
+- 发生版本：当前版本
+- 现象：页面文字出现重叠
+- 根因：CSS 布局问题
+- 修复：修复文字重叠问题，优化图片命名
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-098 编程网站中文引号语法错误
+
+- 项目：编程网站
+- 仓库：/Users/apple/编程网站
+- 发生版本：当前版本
+- 现象：代码中使用了中文引号导致语法错误
+- 根因：输入法切换时误输入中文引号
+- 修复：将中文引号替换为英文引号
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：代码编辑时注意输入法状态，避免中文标点
+
