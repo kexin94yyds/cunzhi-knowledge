@@ -2112,3 +2112,32 @@
 - 日期：2024-12-16
 - 经验：UnoCSS safelist 需要包含所有用到的动态类名
 
+---
+
+## P-2024-156 insidebar-ai Share 按钮布局不一致
+
+- 项目：insidebar-ai
+- 仓库：/Users/apple/insidebar-ai
+- 发生版本：当前版本
+- 现象：/chats/ 和 /pages/ 页面的 Share 按钮布局不同导致功能异常
+- 根因：不同页面的按钮布局结构不一致
+- 修复：处理不同 Share 按钮布局
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：扩展需要适配多种页面布局
+
+---
+
+## P-2024-157 codex-watcher indexer_test vet 错误
+
+- 项目：codex-watcher
+- 仓库：/Users/apple/codexwatcher/codex-watcher
+- 发生版本：当前版本
+- 现象：运行 go vet 时 indexer_test 出错
+- 根因：测试代码不符合 vet 规范
+- 修复：修复 indexer_test 中的 vet 错误
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+
