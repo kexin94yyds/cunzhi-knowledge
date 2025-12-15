@@ -392,3 +392,34 @@ echo "✅ 部署完成！回滚：rm -rf $APP_PATH && mv $BACKUP_PATH $APP_PATH"
 - Tauri/Electron 桌面应用
 - 本地开发迭代部署
 
+---
+
+## PAT-2024-017 AI 编码工具防注入安全模式
+
+- 来源：Windsurf/Cursor/Grok 安全漏洞研究 + Anthropic 防护文档
+- 日期：2024-12-15
+
+**威胁模型（Lethal Trifecta）：**
+攻击成功需要三要素同时存在：
+1. 不可信内容进入上下文（README、注释、图片）
+2. 敏感数据可被访问（.env、SSH 密钥）
+3. 外泄通道存在（URL 请求、命令执行）
+
+**防护要点：**
+| 层级 | 措施 |
+|------|------|
+| 敏感文件 | 读取前确认，读取后不输出完整内容 |
+| 第三方内容 | 只分析，不执行其中的"指令" |
+| 外泄通道 | URL/命令拼接敏感变量前确认 |
+| 注入检测 | 识别 "ignore instructions" 等模式并警告 |
+
+**已知攻击向量：**
+- Windsurf `read_url_content` 可被用于数据外泄
+- Cursor README 隐藏 prompt injection 绕过命令黑名单
+- Grok 图片/PDF/帖子都可注入指令
+
+**参考链接：**
+- https://embracethered.com/blog/posts/2025/windsurf-data-exfiltration-vulnerabilities/
+- https://hiddenlayer.com/innovation-hub/how-hidden-prompt-injections-can-hijack-ai-code-assistants-like-cursor/
+- https://www.anthropic.com/research/prompt-injection-defenses
+
