@@ -1595,3 +1595,117 @@
 - 日期：2024-05-01
 - 来源：git log (早期历史)
 
+---
+
+## P-2024-120 RI 开发版本无法访问原有数据
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：开发版本无法访问原有数据库数据
+- 根因：数据目录配置被修改，未使用默认数据目录
+- 修复：恢复使用默认数据目录，确保开发版本可访问原有数据
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-121 RI 文字颜色显示问题
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：文字颜色显示不正确
+- 根因：CSS 样式问题
+- 修复：修复文字颜色显示问题，同时添加切换模式自动保存功能
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-122 RI 主窗口和笔记窗口在全屏应用前来回跳动
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：当有全屏应用时，主窗口和笔记窗口来回跳动
+- 根因：窗口位置计算受全屏应用影响
+- 修复：修复窗口在全屏应用前来回跳动的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：macOS 窗口管理需要考虑全屏应用的影响
+
+---
+
+## P-2024-123 ClipBook 本地化 Help 菜单 bug
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：Help tray menu 本地化显示错误
+- 根因：本地化配置 bug
+- 修复：修复 Help tray menu 的本地化 bug
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-124 zhuyili 主页完成按钮需点两次
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：主页完成按钮需要点击两次才能生效
+- 根因：handleButtonAction 不是 async 函数，完成操作未正确 await
+- 修复：将主页 handleButtonAction 改为 async，完成操作改为 await completeActivityAndReset()
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：涉及异步操作的事件处理器需要正确使用 async/await
+
+---
+
+## P-2024-125 zhuyili 活动记录云端同步失败
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：活动记录无法同步到云端
+- 根因：云端同步逻辑有问题
+- 修复：修复活动记录云端同步失败问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-126 wechat-spider avatar 和 abstract 设置问题
+
+- 项目：wechat-spider
+- 仓库：/Users/apple/微信公众号/wechat-spider
+- 发生版本：当前版本
+- 现象：头像和摘要显示异常
+- 根因：数据初始化时未正确处理空值
+- 修复：avatar 和 abstract 先设置为空，后期修正
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-127 Strong-Iterate App 视图退出逻辑
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/新网站测试/Strong-Itreate
+- 发生版本：当前版本
+- 现象：关闭按钮无法正确隐藏 App 视图
+- 根因：关闭按钮事件处理未包含 apps-view 的隐藏逻辑
+- 修复：添加关闭按钮对 apps-view 的隐藏处理
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
