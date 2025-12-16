@@ -2519,3 +2519,46 @@
 - 日期：2024-12-16
 - 经验：全局快捷键需要使用 capture 模式
 
+---
+
+## P-2024-184 iterate 增强快捷键默认值问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：增强快捷键功能不符合预期
+- 根因：默认值设置不正确
+- 修复：更新增强快捷键的默认值并优化日志输出
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-185 git-worktree-manager 更新保存仓库时缓存未刷新
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：更新保存的仓库后数据未更新
+- 根因：缓存未刷新
+- 修复：更新保存的仓库时刷新缓存
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：数据变更后需要刷新相关缓存
+
+---
+
+## P-2024-186 tobooks Cmd+Enter 保存笔记无效
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：按 Cmd+Enter 保存笔记不生效
+- 根因：保存逻辑有问题
+- 修复：修复 Cmd+Enter 保存笔记无效的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
