@@ -2243,3 +2243,61 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-165 iterate 自定义 Telegram API URL 问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：自定义 Telegram API URL 功能不完整
+- 根因：监听函数未支持自定义 API URL，前端存在硬编码 URL
+- 修复：改进自定义 Telegram API URL 实现，添加前端常量文件消除硬编码
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：API URL 应该统一通过常量管理，避免硬编码
+
+---
+
+## P-2024-166 tobooks /api/book-cutting 根路径访问问题
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：/api/book-cutting 根路径无法访问
+- 根因：路由逻辑未支持根路径
+- 修复：修复路由逻辑支持根路径访问，添加调试日志
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-167 zhuyili 二维码不显示
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：二维码无法显示
+- 根因：二维码生成或渲染逻辑有问题
+- 修复：修复二维码不显示问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-168 背单词网页 YouTube 字幕 API 问题
+
+- 项目：背单词的网页
+- 仓库：/Users/apple/背单词的网页
+- 发生版本：当前版本
+- 现象：YouTube 字幕获取失败
+- 根因：youtube-transcript 库不可用
+- 修复：改用 YouTube timedtext API 替代 youtube-transcript
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：第三方库不可用时需要寻找官方 API 替代方案
+
