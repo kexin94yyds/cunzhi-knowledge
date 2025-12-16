@@ -2688,3 +2688,60 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-196 iterate 重复 applyFontVariables 函数
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：代码中存在重复的函数定义
+- 根因：重构时未清理旧代码
+- 修复：移除重复的 applyFontVariables 函数
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-197 iterate Windows 路径编码问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：PR #24, #27
+- 现象：Windows 系统上 memory 功能路径编码错误
+- 根因：Windows 路径编码与 Unix 不同
+- 修复：修复 Windows 路径编码问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：跨平台应用需要处理不同系统的路径编码
+
+---
+
+## P-2024-198 zhuyili 计时页面图标显示问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：计时页面图标不显示
+- 根因：图标资源路径或加载逻辑有问题
+- 修复：修复计时页面图标显示问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-199 zhuyili 移动端标题被遮挡
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：移动端标题显示被其他元素遮挡
+- 根因：移动端 CSS 布局问题
+- 修复：优化移动端标题显示，解决被遮挡问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
