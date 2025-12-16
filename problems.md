@@ -3416,3 +3416,59 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-247 kotadb 域名错误
+
+- 项目：kotadb
+- 仓库：/Users/apple/agent/kotadb
+- 发生版本：当前版本
+- 现象：域名配置错误
+- 根因：使用了错误的域名 kotadb.com
+- 修复：将域名从 kotadb.com 修正为 kotadb.io
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-248 tobooks vercel.json 缺失 /upload-url 路由
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：/upload-url 路由无法访问
+- 根因：vercel.json 中缺少该路由的 rewrite 配置
+- 修复：添加缺失的 /upload-url rewrite 路由
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-249 zhuyili Enter 键跳转问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：Enter 键无法正确跳转到计时页面
+- 根因：跳转逻辑过于复杂
+- 修复：简化逻辑，直接跳转到计时页面
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-250 zhuyili Google 登录重定向问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：Google 登录后重定向失败
+- 根因：重定向 URL 配置有问题
+- 修复：修复 Google 登录重定向问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
