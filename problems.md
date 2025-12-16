@@ -2416,3 +2416,47 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-177 iterate 状态同步可能导致白屏
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：应用启动后可能出现白屏
+- 根因：状态同步逻辑过于复杂
+- 修复：简化状态同步逻辑，修复可能的白屏问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：状态同步逻辑应该保持简单，避免复杂依赖
+
+---
+
+## P-2024-178 kexin-podcast 本地 uploads 回退问题
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/podcast/kexin-podcast
+- 发生版本：当前版本
+- 现象：部署后文件 URL 仍然回退到本地 /uploads 路径
+- 根因：未统一使用 Cloudinary file_url
+- 修复：统一使用 Cloudinary file_url，移除本地 /uploads 回退
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：云部署后应该完全使用云存储 URL
+
+---
+
+## P-2024-179 tobooks 高亮功能导致内容消失
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：使用高亮功能后内容消失
+- 根因：高亮处理逻辑有 bug
+- 修复：修复高亮功能导致内容消失的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
