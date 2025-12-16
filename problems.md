@@ -2788,3 +2788,46 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-203 git-worktree-manager worktree 命令和刷新逻辑
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：worktree 命令执行和刷新逻辑有问题
+- 根因：命令执行和刷新逻辑不完善
+- 修复：更新 worktree 命令并优化刷新逻辑
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-204 tobooks multipart 解析和代码结构
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：multipart 请求解析有问题
+- 根因：解析逻辑不完善
+- 修复：使用 busboy 改进 multipart 解析并修复代码结构
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-205 tobooks Supabase 权限绕过
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：Supabase 权限问题导致功能无法使用
+- 根因：Supabase RLS 策略限制
+- 修复：添加硬编码白名单绕过 Supabase 权限问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Supabase RLS 问题可以通过白名单临时绕过
+
