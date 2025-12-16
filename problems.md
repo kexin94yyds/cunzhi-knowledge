@@ -3641,3 +3641,45 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-263 git-worktree-manager push/pull 未触发 git hook
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：push/pull 操作未触发 git hook
+- 根因：命令执行方式未正确调用 hook
+- 修复：修复 push/pull 时触发 git hook
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-264 RI 导入/清空后模式跳转问题
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：导入或清空数据后模式跳转不正确
+- 根因：状态更新后未正确处理模式切换
+- 修复：修复导入/清空后模式跳转的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-265 RI 通知图标路径问题
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：通知图标无法显示
+- 根因：图标文件已删除但路径未更新
+- 修复：使用 RI.png 替代已删除的信息置换.png
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
