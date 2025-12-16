@@ -3500,3 +3500,31 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-253 kexin-podcast DELETE 接口 ID 类型问题
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/kexin-podcast
+- 发生版本：当前版本
+- 现象：DELETE /api/podcasts/:id 无法接受数字 ID，返回 404
+- 根因：ID 参数类型处理不正确
+- 修复：DELETE 接口接受数字 ID，实现幂等性，避免 404
+- 回归检查：API 测试验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-254 播客 备份文件 Git 跟踪问题
+
+- 项目：My-podcast / 播客
+- 仓库：/Users/apple/播/My-podcast
+- 发生版本：当前版本
+- 现象：备份文件被 Git 跟踪
+- 根因：.gitignore 配置不正确
+- 修复：修复备份文件 Git 跟踪问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
