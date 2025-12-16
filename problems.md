@@ -2141,3 +2141,76 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-158 iterate 多开时配置不同步
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：PR #48
+- 现象：多开应用时配置不同步
+- 根因：多个实例同时操作配置文件导致冲突
+- 修复：采用单实例模式并监听窗口焦点，解决多开时配置不同步问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：桌面应用需要考虑单实例模式避免配置冲突
+
+---
+
+## P-2024-159 zhuyili 生产环境 OAuth 回调跳回本地
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：生产环境 OAuth 回调后出现 "Cannot GET /" 错误
+- 根因：OAuth 回调 URL 跳回到本地而不是 Netlify 正式域名
+- 修复：生产环境 OAuth 回调固定到 Netlify 正式域名
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：OAuth 回调 URL 需要根据环境正确配置
+
+---
+
+## P-2024-160 zhuyili 用户数据隔离和 JSON 导入同步
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：用户数据未正确隔离，JSON 导入后数据不同步
+- 根因：数据隔离和同步逻辑有问题
+- 修复：修复用户数据隔离和 JSON 导入同步问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-161 Strong-Iterate Netlify 部署 PNG/JPEG 扩展名问题
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/产品更新/Strong-Itreate
+- 发生版本：当前版本
+- 现象：Netlify 部署时图片资源 404
+- 根因：vite.config.js 未包含 PNG 和 JPEG 大写扩展名
+- 修复：在 vite.config.js 中添加 PNG 和 JPEG 大写扩展名支持
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Vite 配置需要考虑文件扩展名大小写
+
+---
+
+## P-2024-162 Strong-Iterate JS 文件 404 问题
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/产品更新/Strong-Itreate
+- 发生版本：当前版本
+- 现象：部署后 JS 文件 404
+- 根因：script 标签配置问题
+- 修复：更新 vite.config.js 并修复 script 标签
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
