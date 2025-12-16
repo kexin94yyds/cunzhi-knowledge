@@ -3781,3 +3781,742 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-273 flow-learning 下载书籍文件名问题
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：56d015f
+- 现象：下载书籍时文件名不是原始文件名
+- 根因：下载时未使用书籍的原始文件名
+- 修复：下载书籍时使用原始文件名
+- 回归检查：R-2024-273
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-274 flow-learning 批量上传未同步到 Supabase
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：aef3c59
+- 现象：批量上传书籍时未同步到 Supabase，fileUrl 未保存
+- 根因：批量上传逻辑未包含 Supabase 上传和 fileUrl 保存
+- 修复：批量上传也上传到 Supabase 并保存 fileUrl
+- 回归检查：R-2024-274
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-275 flow-learning Supabase InvalidKey 错误
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：750b191
+- 现象：上传文件到 Supabase 时报 InvalidKey 错误
+- 根因：文件名包含特殊字符导致 Supabase 存储 key 无效
+- 修复：使用简化文件名避免 Supabase InvalidKey 错误
+- 回归检查：R-2024-275
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-276 flow-learning 书籍点击使用本地链接
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：bd30e23
+- 现象：点击书籍时使用本地链接而非云端链接
+- 根因：书籍点击逻辑未优先使用 fileUrl 云端链接
+- 修复：书籍点击仅用云端链接，拖拽状态基于 fileUrl
+- 回归检查：R-2024-276
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-277 flow-learning 导入 App JSON 格式不兼容
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：b11d025
+- 现象：无法导入 App 导出的 JSON 文件
+- 根因：导入逻辑不支持 App 导出的纯数组 JSON 格式
+- 修复：支持 App 导出的纯数组 JSON 格式导入
+- 回归检查：R-2024-277
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-278 flow-learning 导入按钮不可见
+
+- 项目：flow-learning (信息过滤器)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：72c2ba4
+- 现象：导入按钮不显示
+- 根因：CSS 样式问题导致按钮不可见
+- 修复：添加明确的样式确保按钮可见
+- 回归检查：R-2024-278
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-279 Full-screen-prompt 多桌面/全屏Space窗口跳回
+
+- 项目：Full-screen-prompt
+- 仓库：https://github.com/kexin94yyds/Full-screen-prompt
+- 发生版本：ff708d9
+- 现象：在多桌面或全屏 Space 环境下，窗口跳回固定桌面
+- 根因：窗口创建时未正确处理 macOS 多桌面环境
+- 修复：修复多桌面/全屏 Space 下窗口跳回固定桌面的问题
+- 回归检查：R-2024-279
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-280 Full-screen-prompt 点击提示词无法复制
+
+- 项目：Full-screen-prompt
+- 仓库：https://github.com/kexin94yyds/Full-screen-prompt
+- 发生版本：73b0605
+- 现象：点击提示词无法复制到剪切板
+- 根因：复制到剪切板的逻辑有 bug
+- 修复：修复点击提示词复制到剪切板功能
+- 回归检查：R-2024-280
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-281 Full-screen-prompt Perplexity 编辑器插入问题
+
+- 项目：Full-screen-prompt
+- 仓库：https://github.com/kexin94yyds/Full-screen-prompt
+- 发生版本：61c36fb
+- 现象：在 Perplexity 的 Slate 编辑器中插入提示词不可靠
+- 根因：Slate 编辑器需要特殊处理：恢复选区、dispatch beforeinput+execCommand、触发 input 事件
+- 修复：实现可靠的 Slate 编辑器插入：恢复选区、事件分发、Enter 打开竞态处理、后备编辑器解析、通过防抖和 ensureVisible 守卫修复重复菜单
+- 回归检查：R-2024-281
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-282 if-compond 授权弹窗邮箱不自动预填充
+
+- 项目：if-compond (ContentDash)
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：07ecbac
+- 现象：打开授权弹窗时邮箱字段不自动预填充
+- 根因：弹窗打开时未读取已保存的邮箱地址
+- 修复：授权弹窗打开时自动预填充邮箱
+- 回归检查：R-2024-282
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-283 if-compond 缓存数量检查问题
+
+- 项目：if-compond (ContentDash)
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：9db3b02
+- 现象：缓存数量不足时仍然使用缓存
+- 根因：缓存数量检查逻辑有 bug
+- 修复：只有缓存数量足够时才使用缓存
+- 回归检查：R-2024-283
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-284 if-compond 在线密钥验证问题
+
+- 项目：if-compond (ContentDash)
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：3639519
+- 现象：可能存在伪造密钥绕过验证
+- 根因：未启用在线密钥验证
+- 修复：启用在线密钥验证，防止伪造密钥
+- 回归检查：R-2024-284
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-285 if-compond 生产环境 User-Agent 缺失
+
+- 项目：if-compond (ContentDash)
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：dba96ac
+- 现象：生产环境请求被拒绝
+- 根因：生产环境请求缺少 User-Agent header
+- 修复：为生产环境添加 User-Agent header
+- 回归检查：R-2024-285
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-286 if-compond 本地开发与生产 fetch 策略
+
+- 项目：if-compond (ContentDash)
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：50d83a1
+- 现象：本地开发和生产环境请求方式不一致导致问题
+- 根因：未区分本地开发和生产环境的 fetch 策略
+- 修复：生产环境使用直接 fetch，本地开发使用代理
+- 回归检查：R-2024-286
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-289 relax Netlify 构建错误
+
+- 项目：relax (呼吸练习 Web 应用)
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：4a3ba70
+- 现象：Netlify 构建失败
+- 根因：audioContext 未添加到 useEffect 依赖数组
+- 修复：添加 audioContext 到 useEffect 依赖数组
+- 回归检查：R-2024-273
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-290 relax ESLint 错误
+
+- 项目：relax (呼吸练习 Web 应用)
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：c2b2aa6
+- 现象：ESLint 报错
+- 根因：audioContext 未添加到 useEffect 依赖数组
+- 修复：添加 audioContext 到 useEffect 依赖数组修复 ESLint 错误
+- 回归检查：R-2024-274
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-291 relax 声音开关功能异常
+
+- 项目：relax (呼吸练习 Web 应用)
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：15ac7d6
+- 现象：声音开关功能不工作
+- 根因：soundEnabled 未添加到 useCallback 依赖数组
+- 修复：添加 soundEnabled 到 useCallback 依赖数组
+- 回归检查：R-2024-275
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-292 hack-airdrop Railway 端口配置错误
+
+- 项目：hack-airdrop
+- 仓库：https://github.com/kexin94yyds/hack-airdrop
+- 发生版本：fb60938
+- 现象：Railway 部署后应用无法访问
+- 根因：Railway 端口配置不正确
+- 修复：修复 Railway 端口配置
+- 回归检查：R-2024-276
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-293 hack-airdrop Railway 部署配置问题
+
+- 项目：hack-airdrop
+- 仓库：https://github.com/kexin94yyds/hack-airdrop
+- 发生版本：f1fdeac
+- 现象：Railway 部署失败
+- 根因：Railway 部署配置有误
+- 修复：修复 Railway 部署配置
+- 回归检查：R-2024-277
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-294 hack-airdrop Vercel 部署配置问题
+
+- 项目：hack-airdrop
+- 仓库：https://github.com/kexin94yyds/hack-airdrop
+- 发生版本：f8b04d6
+- 现象：Vercel 部署失败
+- 根因：Vercel 部署配置有误
+- 修复：修复 Vercel 部署配置 + 添加 Railway 支持
+- 回归检查：R-2024-278
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-295 hack-airdrop Vercel 部署配置问题 (第二次)
+
+- 项目：hack-airdrop
+- 仓库：https://github.com/kexin94yyds/hack-airdrop
+- 发生版本：4963778
+- 现象：Vercel 部署配置仍有问题
+- 根因：Vercel 部署配置未完全修正
+- 修复：修复 Vercel 部署配置
+- 回归检查：R-2024-279
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-296 program-lesson 中文引号语法错误
+
+- 项目：program-lesson (编程课程网站)
+- 仓库：https://github.com/kexin94yyds/program-lesson
+- 发生版本：0559a9e
+- 现象：代码中存在中文引号导致语法错误
+- 根因：错误使用了中文引号
+- 修复：修复中文引号语法错误
+- 回归检查：R-2024-280
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-297 PixelTunePhoto 移动端响应式布局问题
+
+- 项目：PixelTunePhoto
+- 仓库：https://github.com/kexin94yyds/PixelTunePhoto
+- 发生版本：7e34036
+- 现象：移动端布局显示异常
+- 根因：workspace 和 sidebar 未在移动端垂直堆叠
+- 修复：修复移动端响应式布局，垂直堆叠 workspace 和 sidebar
+- 回归检查：R-2024-281
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-298 memory-english YouTube 字幕获取失败
+
+- 项目：memory-english (背单词网页)
+- 仓库：https://github.com/kexin94yyds/memory-english
+- 发生版本：d692b20
+- 现象：无法获取 YouTube 字幕
+- 根因：需要使用 WebVTT 格式获取字幕
+- 修复：使用 YouTube timedtext API 获取 WebVTT 格式字幕
+- 回归检查：R-2024-282
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-299 memory-english YouTube Transcript API 失效
+
+- 项目：memory-english (背单词网页)
+- 仓库：https://github.com/kexin94yyds/memory-english
+- 发生版本：8e7fa0c
+- 现象：youtube-transcript 库无法获取字幕
+- 根因：youtube-transcript 库方式失效
+- 修复：改用 YouTube timedtext API 替代 youtube-transcript
+- 回归检查：R-2024-283
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-300 memory-english Netlify 部署路径问题
+
+- 项目：memory-english (背单词网页)
+- 仓库：https://github.com/kexin94yyds/memory-english
+- 发生版本：7e2e65f
+- 现象：Netlify 部署后页面白屏或资源加载失败
+- 根因：vite base path 配置导致资源路径错误
+- 修复：移除 vite base path 配置以适配 Netlify 根目录部署
+- 回归检查：R-2024-284
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-301 me-h (DDK) HTML 语法错误
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：6ac1893
+- 现象：HTML 语法错误导致页面显示异常
+- 根因：HTML 语法有误
+- 修复：修复 HTML 语法错误，完善章节内容
+- 回归检查：R-2024-285
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-302 me-h (DDK) 18 岁生日礼物 HTML 错误
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：13fd6d3
+- 现象：18 岁生日礼物页面 HTML 语法错误
+- 根因：HTML 语法有误
+- 修复：修复 HTML 语法错误，更新 18 岁生日礼物内容
+- 回归检查：R-2024-286
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-303 me-h (DDK) Netlify 部署 PNG/JPEG 扩展名问题
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：d6c2339
+- 现象：Netlify 部署后图片无法显示
+- 根因：vite.config.js 未配置 PNG 和 JPEG 大写扩展名支持
+- 修复：在 vite.config.js 中添加 PNG 和 JPEG 大写扩展名支持
+- 回归检查：R-2024-287
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-304 me-h (DDK) 图片引用路径错误
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：9d0bccc
+- 现象：图片无法加载显示
+- 根因：使用直接文件路径引用图片，打包后路径失效
+- 修复：使用 import 语句和变量引用替换直接文件路径
+- 回归检查：R-2024-288
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-319 me-h (DDK) JS 文件 404 问题
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：69365de
+- 现象：JS 文件加载 404
+- 根因：script 标签配置问题
+- 修复：更新 vite.config.js 并修复 script 标签
+- 回归检查：R-2024-289
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-320 me-h (DDK) Vite 打包 script 问题
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：23d3f19
+- 现象：Vite 打包后脚本不执行
+- 根因：script 标签缺少 type=module 属性
+- 修复：添加 type=module 属性解决 Vite 打包问题
+- 回归检查：R-2024-290
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-321 me-h (DDK) Netlify 部署白屏
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：09f7ebe
+- 现象：Netlify 部署后页面白屏
+- 根因：缺少 vite.config.js 配置文件
+- 修复：添加 vite.config.js 配置文件解决 Netlify 部署白屏问题
+- 回归检查：R-2024-291
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-322 me-h (DDK) 跑步愿望图片路径错误
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：27e3d27
+- 现象：跑步愿望图片无法显示
+- 根因：图片引用路径错误
+- 修复：更新跑步愿望图片的引用路径
+- 回归检查：R-2024-292
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-323 me-h (DDK) 文字重叠问题
+
+- 项目：me-h (DDK 个人网站)
+- 仓库：https://github.com/kexin94yyds/me-h
+- 发生版本：bcf245e
+- 现象：页面文字重叠显示
+- 根因：CSS 布局问题
+- 修复：修复文字重叠问题，优化图片命名
+- 回归检查：R-2024-293
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-324 Note-taking-tool 标题被 CSS 污染
+
+- 项目：Note-taking-tool (笔记工具)
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：35ae396
+- 现象：提取的标题包含 CSS 样式文本
+- 根因：提取标题时未跳过 style/script 标签
+- 修复：提取标题时跳过 style/script 标签
+- 回归检查：R-2024-294
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-325 Note-taking-tool 沉浸式翻译插件按钮重叠
+
+- 项目：Note-taking-tool (笔记工具)
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：948891a
+- 现象：安装沉浸式翻译浏览器插件后按钮重叠
+- 根因：CSS 布局与浏览器插件冲突
+- 修复：修复沉浸式翻译插件导致的按钮重叠问题
+- 回归检查：R-2024-295
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-326 Note-taking-tool 清理缓存按钮大小不一致
+
+- 项目：Note-taking-tool (笔记工具)
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：6a1bcc6
+- 现象：黄色清理缓存按钮大小与其他按钮不一致
+- 根因：按钮样式未统一
+- 修复：添加黄色清理缓存按钮并修复按钮大小一致性问题
+- 回归检查：R-2024-296
+- 状态：verified
+- 日期：2024-12-16
+
+
+---
+
+## P-2024-305 crawl-Twitter 代理端口和账户锁定问题
+
+- 项目：crawl-Twitter (Twitter 爬虫)
+- 仓库：https://github.com/kexin94yyds/crawl-Twitter
+- 发生版本：db7c460
+- 现象：代理端口配置错误，账户登录后被锁定
+- 根因：代理端口配置不正确，登录频率过高触发账户锁定
+- 修复：修复代理端口配置，优化账户登录策略
+- 回归检查：R-2024-275
+- 状态：verified
+- 日期：2024-12-16
+- 经验：爬虫项目需要正确配置代理，控制请求频率避免账户锁定
+
+---
+
+## P-2024-306 flow-learning EPUB 封面提取失败
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：a9461b3
+- 现象：部分 EPUB 书籍封面无法正确提取显示
+- 根因：不同 EPUB 格式封面存储位置不同，只实现了一种提取方式
+- 修复：为 capture.html 和 flow.js 添加完整的 3 种封面提取方法
+- 回归检查：R-2024-276
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-307 flow-learning localStorage 超限
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：5f1715d
+- 现象：保存大量书籍封面后，localStorage 超出限制导致数据丢失
+- 根因：封面图片 base64 编码后体积过大，localStorage 只有 5MB 限制
+- 修复：压缩封面图片防止 localStorage 超限
+- 回归检查：R-2024-277
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-308 flow-learning 下载书籍文件名问题
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：56d015f
+- 现象：下载书籍时文件名不正确
+- 根因：下载时未使用原始文件名
+- 修复：下载书籍时使用原始文件名
+- 回归检查：R-2024-278
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-309 flow-learning 批量上传未同步到 Supabase
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：aef3c59
+- 现象：批量上传书籍时数据未同步到 Supabase
+- 根因：批量上传逻辑缺少 Supabase 同步和 fileUrl 保存
+- 修复：批量上传也上传到 Supabase 并保存 fileUrl
+- 回归检查：R-2024-279
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-310 flow-learning Supabase InvalidKey 错误
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：750b191
+- 现象：上传文件到 Supabase 时报 InvalidKey 错误
+- 根因：文件名包含特殊字符导致 Supabase 无法处理
+- 修复：使用简化文件名避免 Supabase InvalidKey 错误
+- 回归检查：R-2024-280
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-311 flow-learning Supabase anon key 过期
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：2587b6f
+- 现象：Supabase 连接失败
+- 根因：Supabase anon key 已过期或更换
+- 修复：更新 Supabase anon key
+- 回归检查：R-2024-281
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-312 flow-learning 书籍点击链接问题
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：bd30e23
+- 现象：点击书籍时链接不正确，拖拽状态判断有问题
+- 根因：书籍点击未使用云端链接，拖拽状态判断逻辑有误
+- 修复：书籍点击仅用云端链接，拖拽状态基于 fileUrl 判断
+- 回归检查：R-2024-282
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-313 flow-learning 导入 JSON 格式兼容问题
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：b11d025
+- 现象：无法导入 App 导出的数据
+- 根因：App 导出的是纯数组 JSON 格式，Web 版不支持
+- 修复：支持 App 导出的纯数组 JSON 格式
+- 回归检查：R-2024-283
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-314 flow-learning 行内编辑和全屏窗口跳动
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：b89c037
+- 现象：行内编辑时有问题，全屏应用前窗口跳动
+- 根因：编辑和窗口位置逻辑有问题
+- 修复：修复行内编辑和全屏应用前窗口跳动问题
+- 回归检查：R-2024-284
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-315 flow-learning 导入按钮不显示
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：72c2ba4
+- 现象：导入按钮不可见
+- 根因：CSS 样式问题导致按钮不显示
+- 修复：添加明确的样式确保导入按钮可见
+- 回归检查：R-2024-285
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-316 flow-learning Web Dashboard JS 错误
+
+- 项目：flow-learning (信息过滤器 Web 版)
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：c31eb0a
+- 现象：Web Dashboard 有 JS 错误
+- 根因：JavaScript 代码有错误
+- 修复：修复 Web Dashboard JS 错误
+- 回归检查：R-2024-286
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-317 Full-screen-prompt 全屏应用前窗口跳动
+
+- 项目：Full-screen-prompt
+- 仓库：https://github.com/kexin94yyds/Full-screen-prompt
+- 发生版本：5d52bff
+- 现象：在全屏应用前窗口跳动
+- 根因：窗口位置计算未正确处理全屏应用场景
+- 修复：修复窗口在全屏应用前跳动的问题
+- 回归检查：R-2024-287
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-318 Book (epub.js) Node.js 版本兼容性和构建问题
+
+- 项目：Book (epub.js 阅读器)
+- 仓库：https://github.com/kexin94yyds/Book
+- 发生版本：259ecbe
+- 现象：部署时构建失败，Node.js 版本不兼容
+- 根因：
+  1. Node.js 版本过低
+  2. 缺少 OpenSSL legacy provider 配置
+  3. 缺少 crypto polyfills
+- 修复：
+  1. 更新 Node.js 版本到 18.16.0
+  2. 添加 OpenSSL legacy provider 配置
+  3. 添加 crypto polyfills
+  4. 更新 npm 版本到 9.5.1
+  5. 添加完整的部署配置
+- 回归检查：R-2024-288
+- 状态：verified
+- 日期：2024-12-16
+- 经验：epub.js 等旧项目部署时需要处理 Node.js 版本兼容性和 crypto API 变化
+
