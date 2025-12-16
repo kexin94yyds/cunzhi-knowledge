@@ -3103,3 +3103,31 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-225 ClipBook 启动时崩溃
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：应用启动时崩溃
+- 根因：启动初始化逻辑有问题
+- 修复：修复启动时崩溃问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-226 git-worktree-manager worktree 进程移除
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：worktree 进程处理有问题
+- 根因：进程移除逻辑不正确
+- 修复：修复 worktree 进程移除问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
