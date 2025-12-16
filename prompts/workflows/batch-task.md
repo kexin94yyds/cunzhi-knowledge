@@ -115,13 +115,14 @@
 - 根因：{从 commit message 提取}
 - 修复：{从 commit message 提取}
 - 回归检查：R-2024-NNN
-- 状态：verified
+- 状态：已验证
 - 日期：2024-12-16
 
 **R-ID 格式**：
 ## R-2024-NNN {仓库名} {问题简述}
 - 关联问题：P-2024-NNN
 - 类型：手工检查
+- 位置：
 - 关键断言：{根据问题描述}
 - 运行方式：手工验证
 
@@ -187,13 +188,14 @@ diff <(grep "^## P-" problems.md | wc -l) <(grep "^## R-" regressions.md | wc -l
 - 根因：{从 commit message 提取}
 - 修复：{从 commit message 提取}
 - 回归检查：R-2024-NNN
-- 状态：verified
+- 状态：已验证
 - 日期：{today}
 
 **R-ID 格式**：
 ## R-2024-NNN {仓库名} {问题简述}
 - 关联问题：P-2024-NNN
 - 类型：手工检查
+- 位置：
 - 关键断言：{根据问题描述}
 - 运行方式：手工验证
 
