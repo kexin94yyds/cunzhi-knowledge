@@ -3317,3 +3317,45 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-240 kotadb Docker 构建 shared types 问题
+
+- 项目：kotadb
+- 仓库：/Users/apple/agent/kotadb
+- 发生版本：Issue #428
+- 现象：Docker 构建时 shared types 无法正确解析
+- 根因：Docker 构建上下文配置不正确
+- 修复：解决 Docker 构建上下文中 shared types 的问题
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-241 视频侧边栏 视频与侧边栏实时联动
+
+- 项目：视频侧边栏
+- 仓库：/Users/apple/视频侧边栏
+- 发生版本：当前版本
+- 现象：视频与侧边栏未能实时联动
+- 根因：同步逻辑有问题
+- 修复：完美解决视频与侧边栏实时联动问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-242 insidebar-ai Google AI Mode 重复检测
+
+- 项目：insidebar-ai
+- 仓库：/Users/apple/insidebar-ai
+- 发生版本：当前版本
+- 现象：Google AI Mode 重复检测和消息提取有问题
+- 根因：检测逻辑不完善
+- 修复：修复 Google AI Mode 重复检测和消息提取
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
