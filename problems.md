@@ -2917,3 +2917,18 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-212 Full-screen-prompt 多桌面/全屏 Space 窗口跳动
+
+- 项目：Full-screen-prompt (全屏提示)
+- 仓库：/Users/apple/全屏/Full-screen-prompt
+- 发生版本：当前版本
+- 现象：在多桌面或全屏 Space 下窗口跳回固定桌面
+- 根因：窗口位置计算未考虑多 Space 环境
+- 修复：修复多桌面/全屏 Space 下窗口跳回固定桌面的问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：macOS 多 Space 应用需要正确处理窗口位置
+
