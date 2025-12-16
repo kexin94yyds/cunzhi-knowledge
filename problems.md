@@ -2562,3 +2562,59 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-187 ClipBook 路径问题
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：文件路径处理有问题
+- 根因：路径逻辑 bug
+- 修复：修复路径问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-188 git-worktree-manager git 路径解析
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：git 路径解析不正确
+- 根因：execBase 函数中 git 路径解析逻辑有问题
+- 修复：改进 execBase 函数中的 git 路径解析
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-189 twscrape 解析链接计数问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：Issue #56
+- 现象：解析的链接计数不正确
+- 根因：链接计数逻辑有 bug
+- 修复：修复解析链接计数
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-190 twscrape 用户资料中的 URL 问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：当前版本
+- 现象：用户资料中的 URL 解析不正确
+- 根因：URL 解析逻辑有问题
+- 修复：修复用户资料中的 URL 解析
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
