@@ -3046,3 +3046,60 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-221 git-worktree-manager URI 处理问题
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：worktree 路径 URI 处理不正确
+- 根因：应使用 Uri.parse 而非 Uri.file
+- 修复：使用 Uri.parse 替代 Uri.file 处理 worktree 路径
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：VS Code 扩展中 URI 处理需要根据来源选择正确方法
+
+---
+
+## P-2024-222 tobooks Vercel 部署 ES6 模块格式
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：Vercel 部署失败
+- 根因：book-cutting.js 模块格式与其他 API 文件不一致
+- 修复：将 book-cutting.js 改为 ES6 模块格式
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-223 tobooks Vercel serverless 函数导出和 CORS
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：Vercel serverless 函数不工作
+- 根因：导出格式和 CORS 设置不正确
+- 修复：修复 Vercel serverless 函数导出格式和 CORS 设置
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-224 zhuyili JSON 导入日期格式问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：JSON 导入时日期格式解析错误
+- 根因：日期格式解析逻辑有问题
+- 修复：修复 JSON 导入日期格式问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
