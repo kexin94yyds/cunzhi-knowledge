@@ -3683,3 +3683,59 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-266 ClipBook Actions 弹窗高度问题
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：Actions 弹窗高度不正确
+- 根因：高度样式设置有问题
+- 修复：修复 Actions 弹窗高度
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-267 ClipBook 滚动问题
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：列表滚动有问题
+- 根因：滚动逻辑有 bug
+- 修复：修复滚动问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-268 tobooks text-to-epub 页面高度问题
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：text-to-epub.html 页面高度不正确
+- 根因：页面高度样式设置有问题
+- 修复：修复 text-to-epub.html 页面高度问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-269 zen-flow 页面跳动问题
+
+- 项目：zen-flow
+- 仓库：/Users/apple/zen-flow
+- 发生版本：当前版本
+- 现象：调整 textarea 高度时页面跳动
+- 根因：未保持滚动位置
+- 修复：在调整 textarea 高度时保持滚动位置
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
