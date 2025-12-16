@@ -96,11 +96,9 @@ diff <(grep "^## P-" problems.md | wc -l) <(grep "^## R-" regressions.md | wc -l
 3. 追加到 regressions.md 末尾
 4. 完成后报告：已处理 X 条
 
-你是子代理现在帮我做：
-
----
-
 待子代理完成后，我将通过 git diff 验收。
+
+你是子代理现在帮我做：
 ```
 
 **验收完成输出**:
