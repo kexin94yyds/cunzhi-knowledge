@@ -2846,3 +2846,74 @@
 - 日期：2024-12-16
 - 经验：iOS PWA 通知需要特殊的权限处理
 
+---
+
+## P-2024-207 tobooks 支付 API 地址问题
+
+- 项目：tobooks
+- 仓库：/Users/apple/tobooks
+- 发生版本：当前版本
+- 现象：手机端支付功能无法使用
+- 根因：支付 API 地址配置不正确
+- 修复：更新支付 API 地址为阿里云 FC 公网地址
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-208 zhuyili 注意力跳动问题
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：注意力页面出现跳动
+- 根因：使用页面跳转导致闪烁
+- 修复：用视图切换替代页面跳转
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：SPA 应用应使用视图切换而非页面跳转
+
+---
+
+## P-2024-209 insidebar-ai DeepSeek Enter 键行为
+
+- 项目：insidebar-ai
+- 仓库：/Users/apple/insidebar-ai
+- 发生版本：当前版本
+- 现象：DeepSeek 中编辑旧消息时 Enter 键行为不正确
+- 根因：未正确处理 DeepSeek 的编辑模式
+- 修复：修复 DeepSeek 编辑旧消息时的 Enter 键行为
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-210 insidebar-ai Perplexity Enter 键行为
+
+- 项目：insidebar-ai
+- 仓库：/Users/apple/insidebar-ai
+- 发生版本：当前版本
+- 现象：Perplexity 中编辑旧消息时 Enter 键行为不正确
+- 根因：未正确处理 Perplexity 的编辑模式
+- 修复：修复 Perplexity 编辑旧消息时的 Enter 键行为
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-211 insidebar-ai Gemini Update 按钮检测
+
+- 项目：insidebar-ai
+- 仓库：/Users/apple/insidebar-ai
+- 发生版本：当前版本
+- 现象：Gemini 的 Update 按钮无法正确检测
+- 根因：按钮选择器未使用上下文感知搜索
+- 修复：使用上下文感知搜索修复 Gemini Update 按钮检测
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
