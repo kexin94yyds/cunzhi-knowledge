@@ -3359,3 +3359,32 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-243 播客 数据持久化问题
+
+- 项目：My-podcast / 播客
+- 仓库：/Users/apple/播/My-podcast
+- 发生版本：当前版本
+- 现象：数据未正确持久化
+- 根因：数据持久化逻辑有问题
+- 修复：修复数据持久化问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-244 Full-screen-prompt Perplexity Slate 编辑器插入
+
+- 项目：Full-screen-prompt (全屏提示)
+- 仓库：/Users/apple/全屏/Full-screen-prompt
+- 发生版本：当前版本
+- 现象：Perplexity Slate 编辑器中 Enter/点击插入不可靠，菜单重复
+- 根因：选区恢复、事件派发、竞态处理等多个问题
+- 修复：可靠插入，恢复选区，派发 beforeinput+execCommand，添加 Enter 竞态处理，通过防抖和守卫修复重复菜单
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Slate 编辑器需要特殊的事件处理
+
