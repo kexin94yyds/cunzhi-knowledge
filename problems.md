@@ -3542,3 +3542,31 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-256 iterate 重复 applyFontVariables 函数
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：代码中存在重复的 applyFontVariables 函数
+- 根因：函数定义重复
+- 修复：移除重复的 applyFontVariables 函数
+- 回归检查：编译验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-257 zhuyili 微信支付购买按钮事件绑定
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：购买按钮点击无响应
+- 根因：事件绑定和试用次数逻辑有问题
+- 修复：修复微信支付功能，购买按钮点击事件绑定和试用次数逻辑
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
