@@ -2214,3 +2214,32 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-163 iterate proc-macro 编译问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：proc-macro 编译失败
+- 根因：静态链接标志导致 proc-macro 编译问题
+- 修复：移除静态链接标志解决 proc-macro 编译问题
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Rust proc-macro 不兼容某些静态链接配置
+
+---
+
+## P-2024-164 twscrape 构建问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：当前版本
+- 现象：项目构建失败
+- 根因：构建配置问题
+- 修复：修复构建问题
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+
