@@ -4520,3 +4520,1823 @@
 - 日期：2024-12-16
 - 经验：epub.js 等旧项目部署时需要处理 Node.js 版本兼容性和 crypto API 变化
 
+---
+
+## P-2024-327 Note-taking-tool 标题被CSS污染
+
+- 项目：Note-taking-tool
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：35ae396
+- 现象：提取标题时包含CSS样式文本
+- 根因：标题提取逻辑未跳过 style/script 标签
+- 修复：修复标题提取逻辑，跳过样式标签
+- 回归检查：R-2024-327
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-328 Note-taking-tool 沉浸式翻译插件导致按钮重叠
+
+- 项目：Note-taking-tool
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：948891a
+- 现象：安装沉浸式翻译浏览器插件后，按钮出现重叠
+- 根因：插件注入的元素与原有按钮布局冲突
+- 修复：修复按钮布局，避免与插件冲突
+- 回归检查：R-2024-328
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-329 Note-taking-tool 按钮大小不一致
+
+- 项目：Note-taking-tool
+- 仓库：https://github.com/kexin94yyds/Note-taking-tool
+- 发生版本：6a1bcc6
+- 现象：清理缓存按钮与其他按钮大小不一致
+- 根因：CSS 样式未统一
+- 修复：添加黄色清理缓存按钮并修复按钮大小一致性问题
+- 回归检查：R-2024-329
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-330 PixelTunePhoto 移动端响应式布局问题
+
+- 项目：PixelTunePhoto
+- 仓库：https://github.com/kexin94yyds/PixelTunePhoto
+- 发生版本：7e34036
+- 现象：移动端工作区和侧边栏布局错乱
+- 根因：响应式布局未正确处理移动端
+- 修复：移动端响应式布局 - 工作区和侧边栏垂直堆叠
+- 回归检查：R-2024-330
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-331 program-lesson 中文引号语法错误
+
+- 项目：program-lesson
+- 仓库：https://github.com/kexin94yyds/program-lesson
+- 发生版本：0559a9e
+- 现象：代码中存在中文引号导致语法错误
+- 根因：编辑时误用中文引号
+- 修复：修复中文引号语法错误
+- 回归检查：R-2024-331
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-332 relax Netlify构建错误
+
+- 项目：relax
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：4a3ba70
+- 现象：Netlify 构建时 React hooks 依赖数组警告导致失败
+- 根因：audioContext 未添加到 useEffect 依赖数组
+- 修复：添加 audioContext 到 useEffect 依赖数组
+- 回归检查：R-2024-332
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-333 relax ESLint错误
+
+- 项目：relax
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：c2b2aa6
+- 现象：ESLint 报错缺少依赖
+- 根因：audioContext 未添加到 useEffect 依赖数组
+- 修复：添加 audioContext 到 useEffect 依赖数组
+- 回归检查：R-2024-333
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-334 relax 声音开关功能异常
+
+- 项目：relax
+- 仓库：https://github.com/kexin94yyds/relax
+- 发生版本：15ac7d6
+- 现象：声音开关功能不工作
+- 根因：soundEnabled 未添加到 useCallback 依赖数组
+- 修复：添加 soundEnabled 到 useCallback 依赖数组
+- 回归检查：R-2024-334
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-335 RI 笔记功能多个关键问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：5c9b299
+- 现象：笔记功能存在多个问题
+- 根因：多处逻辑错误
+- 修复：修复笔记功能的多个关键问题
+- 回归检查：R-2024-335
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-336 RI 列表项编辑后保存问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：a71758f
+- 现象：列表项编辑后未正确保存
+- 根因：保存函数调用错误
+- 修复：列表项编辑后正确保存（使用 updateWord）
+- 回归检查：R-2024-336
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-337 RI 笔记导出按钮保存后主页未刷新
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：753544e
+- 现象：笔记导出按钮保存后主页不自动刷新
+- 根因：缺少刷新逻辑
+- 修复：笔记导出按钮保存后主页自动刷新
+- 回归检查：R-2024-337
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-338 RI 笔记窗口置顶按钮状态不同步
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：4adb935
+- 现象：笔记窗口置顶按钮状态与实际状态不同步
+- 根因：状态同步逻辑缺失
+- 修复：笔记窗口置顶按钮状态同步
+- 回归检查：R-2024-338
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-339 RI 打包后应用 currentModeId 未迁移
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：4837e3a
+- 现象：打包后应用 currentModeId 未自动迁移
+- 根因：迁移逻辑缺失
+- 修复：打包后应用自动迁移 currentModeId
+- 回归检查：R-2024-339
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-340 RI 笔记窗口关闭后无法再次打开
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：9460ad4
+- 现象：笔记窗口关闭后无法再次打开
+- 根因：窗口状态管理问题
+- 修复：修复笔记窗口关闭后无法再次打开的问题
+- 回归检查：R-2024-340
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-341 RI 导入/清空后模式跳转问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：a24ce40
+- 现象：导入或清空数据后模式跳转异常
+- 根因：模式跳转逻辑错误
+- 修复：修复导入/清空后模式跳转的问题
+- 回归检查：R-2024-341
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-342 RI 访问已销毁的窗口对象
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：a84f8ea
+- 现象：访问已销毁的窗口对象导致错误
+- 根因：窗口销毁后未检查状态
+- 修复：防止访问已销毁的窗口对象
+- 回归检查：R-2024-342
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-343 RI 列表排序问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：ec140f3
+- 现象：最新保存的内容不显示在列表顶部
+- 根因：排序逻辑错误
+- 修复：修复排序，最新保存的内容现在显示在列表顶部
+- 回归检查：R-2024-343
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-344 RI note-window.js 笔记保存功能问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：f32ac77
+- 现象：note-window.js 笔记保存功能异常
+- 根因：存储方式问题
+- 修复：关键修复 - note-window.js 笔记保存功能迁移到 IndexedDB
+- 回归检查：R-2024-344
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-345 RI 全面保存功能问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：72e1799
+- 现象：多处保存功能异常
+- 根因：多处逻辑错误
+- 修复：全面修复所有保存功能
+- 回归检查：R-2024-345
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-346 RI 快速保存功能问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：b73808f
+- 现象：快速保存功能异常
+- 根因：存储方式问题
+- 修复：紧急修复 - 快速保存功能迁移到 IndexedDB
+- 回归检查：R-2024-346
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-347 RI IndexedDB 集成问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：29691ec
+- 现象：IndexedDB 集成存在多个问题
+- 根因：集成逻辑不完善
+- 修复：全面修复 IndexedDB 集成问题
+- 回归检查：R-2024-347
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-348 RI IndexedDB 数据加载问题
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：05a15fb
+- 现象：IndexedDB 数据加载失败
+- 根因：加载逻辑错误
+- 修复：修复 IndexedDB 数据加载问题
+- 回归检查：R-2024-348
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-349 RI deleteMode 函数重复声明
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：9cf6a43
+- 现象：deleteMode 函数重复声明导致错误
+- 根因：代码重复
+- 修复：修复 deleteMode 函数重复声明问题
+- 回归检查：R-2024-349
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-350 RI 笔记格式修改丢失
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：67f2b05
+- 现象：笔记格式修改后丢失
+- 根因：格式保存逻辑问题
+- 修复：修复笔记格式修改丢失的问题
+- 回归检查：R-2024-350
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-351 RI 笔记窗口关闭按钮不起作用
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：08c41c7
+- 现象：笔记窗口关闭按钮点击无效
+- 根因：事件绑定问题
+- 修复：修复笔记窗口关闭按钮不起作用的问题
+- 回归检查：R-2024-351
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-352 RI 打包配置 electron-store 模块找不到
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：e1a39a0
+- 现象：打包后 electron-store 模块找不到
+- 根因：打包配置未包含 node_modules
+- 修复：修复打包配置 - 包含 node_modules 以解决 electron-store 模块找不到的问题
+- 回归检查：R-2024-352
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-353 RI 通知图标路径错误
+
+- 项目：RI
+- 仓库：https://github.com/kexin94yyds/RI
+- 发生版本：2a49cb9
+- 现象：通知图标显示异常
+- 根因：图标路径引用了已删除的文件
+- 修复：修复通知图标路径，使用 RI.png 替代已删除的信息置换.png
+- 回归检查：R-2024-353
+- 状态：verified
+- 日期：2024-12-16
+
+
+---
+
+## P-2024-400 iterate pnpm版本冲突问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：45ffc97
+- 现象：pnpm 版本冲突导致依赖安装失败
+- 根因：pnpm 版本不兼容
+- 修复：修复 pnpm 版本冲突问题
+- 回归检查：R-2024-310
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-401 iterate GitHub Actions配置问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：8bf68ba
+- 现象：GitHub Actions 配置错误导致 CI 失败
+- 根因：CI 配置文件有误
+- 修复：修复 GitHub Actions 配置
+- 回归检查：R-2024-311
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-402 iterate Cargo.lock导致分支切换问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：305b77d
+- 现象：发布脚本中 Cargo.lock 导致分支切换失败
+- 根因：Cargo.lock 文件状态影响 git 分支切换
+- 修复：修复发布脚本中 Cargo.lock 导致的分支切换问题
+- 回归检查：R-2024-312
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-403 iterate 发布脚本分支合并逻辑缺失
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：fd97f1a
+- 现象：发布脚本缺少分支合并逻辑
+- 根因：发布流程不完整
+- 修复：发布脚本添加分支合并逻辑
+- 回归检查：R-2024-313
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-404 iterate 取消发布时退出逻辑问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：db2b8b0
+- 现象：取消发布时退出逻辑不正确
+- 根因：退出逻辑处理有误
+- 修复：修复取消发布时的退出逻辑
+- 回归检查：R-2024-314
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-405 iterate 版本选择函数输出重定向问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：8700839
+- 现象：版本选择函数输出重定向错误
+- 根因：输出重定向逻辑有误
+- 修复：修复版本选择函数输出重定向问题
+- 回归检查：R-2024-315
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-406 iterate 发布脚本菜单显示问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：cfc10e3
+- 现象：发布脚本菜单显示异常
+- 根因：菜单显示逻辑有误
+- 修复：修复发布脚本菜单显示问题
+- 回归检查：R-2024-316
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-407 iterate 错误信息输出问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：40d20ce
+- 现象：错误信息输出冗余，日志打印过多
+- 根因：日志打印逻辑过于复杂
+- 修复：修复错误信息输出，简化提示内容，移除多余的日志打印
+- 回归检查：R-2024-317
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-408 cunzhi-knowledge 验收流程子代理 commit 问题
+
+- 项目：cunzhi-knowledge
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 发生版本：05f3b60
+- 现象：验收流程中子代理单独 commit 导致冲突
+- 根因：验收流程设计不合理
+- 修复：调整验收流程，子代理不单独 commit
+- 回归检查：R-2024-318
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-409 cunzhi-knowledge 提示词格式问题
+
+- 项目：cunzhi-knowledge
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 发生版本：5247e58
+- 现象：提示词格式不规范，"你是子代理现在帮我做"位置错误
+- 根因：提示词模板设计问题
+- 修复：调整提示词格式，将该提示放到最后
+- 回归检查：R-2024-319
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-410 iterate 移动窗口中文输入候选栏移位
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：e4eec0d
+- 现象：移动窗口时中文输入法候选栏位置移位
+- 根因：窗口移动事件未正确更新输入法候选栏位置
+- 修复：修复移动窗口中文输入候选栏移位bug
+- 回归检查：R-2024-320
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-411 iterate 首次启动缺少 config.json 主题异常
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：bb7e3f4
+- 现象：首次启动缺少 config.json 时页面主题显示异常
+- 根因：初始化时未处理配置文件不存在的情况
+- 修复：使用默认深色主题，优化主题加载逻辑
+- 回归检查：R-2024-321
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-412 iterate 多开时配置不同步
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：3990cc0
+- 现象：多开 iterate 实例时配置不同步
+- 根因：未采用单实例模式，窗口焦点切换时未重新加载配置
+- 修复：采用单实例模式并监听窗口焦点，解决多开时配置不同步问题
+- 回归检查：R-2024-322
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-413 zhuyili 活动记录秒级时长显示问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：02495d7
+- 现象：活动记录未显示秒级时长
+- 根因：时长格式化逻辑不包含秒数
+- 修复：show second-level durations in activity records
+- 回归检查：R-2024-323
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-414 zhuyili 计时器时间归零问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：f66e200
+- 现象：计时器运行时 elapsedTime 存储为 0，同步后时间归零
+- 根因：saveData() 未实时计算运行中计时器的 elapsedTime
+- 修复：实时计算 elapsedTime，云端加载时保护正在运行的计时器
+- 回归检查：R-2024-324
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-415 zhuyili 实时活动刷新问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：28aa27f
+- 现象：活动记录不实时刷新
+- 根因：刷新逻辑未正确触发
+- 修复：fix realtime activity refresh
+- 回归检查：R-2024-325
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-416 zhuyili Supabase 客户端访问方式错误
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：9a97f1f
+- 现象：白名单检查无法访问 Supabase
+- 根因：使用 window.supabase 而非正确的接口
+- 修复：将 window.supabase 改为 window.supabaseClient?.getClient()
+- 回归检查：R-2024-326
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-417 zhuyili 微信支付购买按钮事件绑定问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：50c06ff
+- 现象：购买按钮点击事件未正确绑定，试用次数逻辑错误
+- 根因：事件绑定位置不正确，与试用按钮事件冲突
+- 修复：在 lockPremiumFeatures 中动态绑定购买按钮事件
+- 回归检查：R-2024-327
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-418 zhuyili 二维码不显示问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：8a1a472
+- 现象：点击立即购买按钮后无法显示二维码
+- 根因：API 返回字段名为 code_url 而非 codeUrl
+- 修复：修正 API 返回字段名
+- 回归检查：R-2024-328
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-419 zhuyili payment.js 缺失函数
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：5ae20e0
+- 现象：支付功能无法工作，报 ReferenceError
+- 根因：payment.js 缺少 addTrialClickListeners 等函数
+- 修复：添加缺失的函数定义
+- 回归检查：R-2024-329
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-420 zhuyili Google 登录回调 URL 错误
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：bb5cf07
+- 现象：登录后重定向到 localhost:3000
+- 根因：redirectUrl 配置为错误的域名
+- 修复：更新 redirectUrl 为正确的 Netlify 域名
+- 回归检查：R-2024-330
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-421 zhuyili 生产环境 OAuth 回调问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：a459f6c
+- 现象：生产环境 OAuth 回调跳回本地导致 Cannot GET /
+- 根因：OAuth 回调未固定到正式域名
+- 修复：生产环境 OAuth 回调固定到 Netlify 正式域名
+- 回归检查：R-2024-331
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-422 zhuyili OAuth 重定向 URL 适配问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：eeb5a17
+- 现象：Netlify 404 回跳问题
+- 根因：OAuth 重定向 URL 未自动适配当前域
+- 修复：OAuth 重定向 URL 自动适配当前域
+- 回归检查：R-2024-332
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-423 zhuyili 端口冲突问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：371e32a
+- 现象：服务器端口 8080 被占用导致启动失败
+- 根因：端口冲突
+- 修复：将服务器端口从 8080 改为 8888
+- 回归检查：R-2024-333
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-424 AI- AI Studio URL 路径错误
+
+- 项目：AI-
+- 仓库：https://github.com/kexin94yyds/AI-
+- 发生版本：4bcfedb
+- 现象：AI Studio URL 路径不正确
+- 根因：URL 路径配置错误
+- 修复：修正 AI Studio URL 为 /apps 路径
+- 回归检查：R-2024-334
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-425 AI- 图标路径错误
+
+- 项目：AI-
+- 仓库：https://github.com/kexin94yyds/AI-
+- 发生版本：e4ec716
+- 现象：图标无法显示
+- 根因：图标路径引用错误
+- 修复：copy icons to web directory and update references
+- 回归检查：R-2024-335
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-426 AI-Sidebar message 监听器 await 语法错误
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：29239bf
+- 现象：await is only valid in async functions 错误
+- 根因：message 事件监听器回调函数非 async
+- 修复：将 message 事件监听器回调函数改为 async
+- 回归检查：R-2024-336
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-427 AI-Sidebar Starred 按钮显示对号问题
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：0d23c83
+- 现象：Starred 按钮显示对号而不是星号
+- 根因：反馈文本恢复时保存了错误的文本状态
+- 修复：硬编码恢复文本为 '★ Starred'
+- 回归检查：R-2024-337
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-428 AI-Sidebar History Remove 点击处理问题
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：137142a
+- 现象：History 中 Remove 按钮点击无效
+- 根因：事件委托处理不正确
+- 修复：delegate Remove click handling to panel
+- 回归检查：R-2024-338
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-429 AI-Sidebar URL 包含 & 时 Remove 失效
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：9b9ad84
+- 现象：URL 包含 & 符号时 Remove 功能失效
+- 根因：属性值未正确解码
+- 修复：decoding attribute values，normalize URL
+- 回归检查：R-2024-339
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-430 AI-Sidebar ChatGPT/Gemini 嵌套框架 URL 同步问题
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：005d64e
+- 现象：嵌套 iframe 中内容脚本无法向扩展面板发送消息
+- 根因：使用 window.parent.postMessage 无法跨越嵌套框架
+- 修复：使用 window.top.postMessage 替代
+- 回归检查：R-2024-340
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-431 program-lesson 中文引号语法错误
+
+- 项目：program-lesson
+- 仓库：https://github.com/kexin94yyds/program-lesson
+- 发生版本：0559a9e
+- 现象：代码中存在中文引号导致语法错误
+- 根因：误输入中文引号
+- 修复：修复中文引号语法错误
+- 回归检查：R-2024-341
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-432 if-compond 授权弹窗邮箱不自动预填充
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：07ecbac
+- 现象：授权弹窗打开时邮箱不自动预填充
+- 根因：预填充逻辑未触发
+- 修复：修复授权弹窗打开时邮箱预填充问题
+- 回归检查：R-2024-342
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-433 if-compond 缓存数量检查问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：9db3b02
+- 现象：缓存数量不足时仍使用缓存
+- 根因：缓存数量检查逻辑不正确
+- 修复：只有缓存数量足够时才使用
+- 回归检查：R-2024-343
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-434 if-compond 置顶博主优先显示问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：78531f6
+- 现象：置顶博主未优先显示
+- 根因：排序逻辑问题
+- 修复：置顶博主优先显示 + Twitter 抓取 50 条 + 回复转推限 10 条
+- 回归检查：R-2024-344
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-435 if-compond Supabase URL 配置错误
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：33d2922
+- 现象：Supabase 连接失败
+- 根因：URL 配置少了字母 i
+- 修复：修正 Supabase URL 配置
+- 回归检查：R-2024-345
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-436 if-compond 在线密钥验证问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：3639519
+- 现象：可伪造密钥绕过验证
+- 根因：未启用在线密钥验证
+- 修复：启用在线密钥验证，防止伪造密钥
+- 回归检查：R-2024-346
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-437 if-compond 生产环境 User-Agent 问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：dba96ac
+- 现象：生产环境请求被拒绝
+- 根因：缺少 User-Agent header
+- 修复：add User-Agent header for production
+- 回归检查：R-2024-347
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-438 if-compond 本地开发 Netlify Blobs 缓存问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：cf1ba48
+- 现象：本地开发时 Netlify Blobs 缓存导致问题
+- 根因：本地开发不应使用 Netlify Blobs 缓存
+- 修复：skip Netlify Blobs cache in local dev
+- 回归检查：R-2024-348
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-439 if-compond 生产环境 fetch 代理问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：50d83a1
+- 现象：生产环境请求走代理导致问题
+- 根因：代理配置不区分环境
+- 修复：use direct fetch in production, proxy only for local dev
+- 回归检查：R-2024-349
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-440 flow-learning EPUB 封面提取问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：a9461b3
+- 现象：EPUB 封面无法正确提取
+- 根因：封面提取方法不完整
+- 修复：为 capture.html 和 flow.js 添加完整的 3 种封面提取方法
+- 回归检查：R-2024-350
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-441 flow-learning localStorage 超限问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：5f1715d
+- 现象：封面图片过大导致 localStorage 超限
+- 根因：未压缩封面图片
+- 修复：压缩封面图片防止 localStorage 超限
+- 回归检查：R-2024-351
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-442 flow-learning 下载书籍文件名问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：56d015f
+- 现象：下载书籍时文件名不正确
+- 根因：未使用原始文件名
+- 修复：下载书籍时使用原始文件名
+- 回归检查：R-2024-352
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-443 flow-learning 批量上传 Supabase 问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：aef3c59
+- 现象：批量上传未上传到 Supabase
+- 根因：批量上传逻辑未包含 Supabase 上传
+- 修复：批量上传也上传到 Supabase 并保存 fileUrl
+- 回归检查：R-2024-353
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-354 flow-learning Supabase InvalidKey 错误
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：750b191
+- 现象：上传时报 InvalidKey 错误
+- 根因：文件名包含特殊字符
+- 修复：使用简化文件名避免 Supabase InvalidKey 错误
+- 回归检查：R-2024-354
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-355 flow-learning Supabase anon key 问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：2587b6f
+- 现象：Supabase 连接失败
+- 根因：anon key 过期或错误
+- 修复：更新 Supabase anon key
+- 回归检查：R-2024-355
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-356 flow-learning 书籍点击云端链接问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：bd30e23
+- 现象：书籍点击未使用云端链接，拖拽状态判断错误
+- 根因：链接和状态逻辑不正确
+- 修复：书籍点击仅用云端链接，拖拽状态基于 fileUrl
+- 回归检查：R-2024-356
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-357 flow-learning 导入 JSON 格式问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：b11d025
+- 现象：无法导入 App 导出的纯数组 JSON 格式
+- 根因：导入逻辑不支持该格式
+- 修复：支持 App 导出的纯数组 JSON 格式
+- 回归检查：R-2024-357
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-358 flow-learning 行内编辑和全屏窗口跳动问题
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：b89c037
+- 现象：行内编辑使用模态框，全屏应用前窗口跳动
+- 根因：编辑方式和窗口可见性逻辑不当
+- 修复：实现行内编辑，移除 200ms 后还原工作区可见性逻辑
+- 回归检查：R-2024-358
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-451 if-compond 授权弹窗邮箱不自动预填充
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：07ecbac
+- 现象：授权弹窗打开时邮箱不自动预填充
+- 根因：邮箱预填充逻辑缺失或未正确触发
+- 修复：修复授权弹窗打开时邮箱不自动预填充的问题
+- 回归检查：R-2024-354
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-457 if-compond 缓存数量检查逻辑
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：9db3b02
+- 现象：缓存数量不足时仍尝试使用缓存
+- 根因：缓存数量检查逻辑不完善
+- 修复：缓存数量检查 - 只有缓存数量足够时才使用
+- 回归检查：R-2024-355
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-458 if-compond 置顶博主排序和Twitter抓取限制
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：78531f6
+- 现象：置顶博主未优先显示，Twitter抓取和回复转推数量未限制
+- 根因：排序逻辑和抓取参数未正确配置
+- 修复：置顶博主优先显示 + Twitter抓取50条 + 回复转推限10条
+- 回归检查：R-2024-356
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-459 if-compond Supabase URL配置错误
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：33d2922
+- 现象：Supabase 连接失败
+- 根因：Supabase URL 配置少了字母 i
+- 修复：修正 Supabase URL 配置（少了i）
+- 回归检查：R-2024-357
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-460 if-compond 密钥验证安全问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：3639519
+- 现象：可能存在伪造密钥绕过验证
+- 根因：密钥验证仅在本地进行，未启用在线验证
+- 修复：启用在线密钥验证，防止伪造密钥
+- 回归检查：R-2024-358
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-359 if-compond 生产环境User-Agent缺失
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：dba96ac
+- 现象：生产环境请求可能被拒绝
+- 根因：HTTP 请求缺少 User-Agent header
+- 修复：add User-Agent header for production
+- 回归检查：R-2024-359
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-360 if-compond 本地开发环境缓存问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：cf1ba48
+- 现象：本地开发时 Netlify Blobs 缓存导致问题
+- 根因：本地开发环境不应使用 Netlify Blobs 缓存
+- 修复：skip Netlify Blobs cache in local dev
+- 回归检查：R-2024-360
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-361 if-compond 生产环境请求代理问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：50d83a1
+- 现象：生产环境请求路由不正确
+- 根因：生产和本地开发环境的请求方式未区分
+- 修复：use direct fetch in production, proxy only for local dev
+- 回归检查：R-2024-361
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-444 iterate 移动窗口中文输入候选栏移位
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：e4eec0d
+- 现象：移动窗口时中文输入法候选栏位置错误
+- 根因：窗口移动事件未正确更新输入法候选栏位置
+- 修复：修复移动窗口时中文输入候选栏移位的问题
+- 回归检查：R-2024-354
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-445 iterate 首次启动缺少 config.json 导致主题异常
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：bb7e3f4
+- 现象：首次启动时页面主题显示异常
+- 根因：缺少 config.json 时未正确初始化默认主题
+- 修复：首次启动缺少 config.json 时正确初始化主题
+- 回归检查：R-2024-355
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-446 iterate 多开时配置不同步
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：3990cc0
+- 现象：多开应用时配置不同步
+- 根因：多实例间未共享配置状态
+- 修复：采用单实例模式并监听窗口焦点，解决多开时配置不同步的问题
+- 回归检查：R-2024-356
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-447 iterate 增强快捷键默认值问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：0654f85
+- 现象：增强快捷键默认值不正确
+- 根因：默认值配置错误
+- 修复：更新增强快捷键的默认值并优化日志输出
+- 回归检查：R-2024-357
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-448 iterate 状态同步逻辑导致白屏
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：d591382
+- 现象：可能出现白屏问题
+- 根因：状态同步逻辑过于复杂
+- 修复：简化状态同步逻辑，修复可能的白屏问题
+- 回归检查：R-2024-358
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-449 iterate proc-macro 编译问题
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：844283b
+- 现象：proc-macro 编译失败
+- 根因：static linking flag 导致编译问题
+- 修复：移除 static linking flag 解决 proc-macro 编译问题
+- 回归检查：R-2024-359
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-450 iterate applyFontVariables 函数重复
+
+- 项目：iterate
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：9044f5b
+- 现象：applyFontVariables 函数重复声明
+- 根因：代码重复
+- 修复：移除重复的 applyFontVariables 函数
+- 回归检查：R-2024-360
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-461 zhuyili 活动记录秒级时长不显示
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：02495d7
+- 现象：活动记录中秒级时长不显示
+- 根因：时长显示逻辑未包含秒级
+- 修复：显示活动记录中的秒级时长
+- 回归检查：R-2024-361
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-362 zhuyili 计时器时间归零
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：f66e200
+- 现象：计时器时间归零
+- 根因：计时器状态管理问题
+- 修复：修复计时器时间归零问题
+- 回归检查：R-2024-362
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-363 zhuyili 活动记录实时刷新问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：28aa27f
+- 现象：活动记录不实时刷新
+- 根因：刷新逻辑缺失
+- 修复：修复活动记录实时刷新
+- 回归检查：R-2024-363
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-364 zhuyili Supabase 客户端访问方式
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：9a97f1f
+- 现象：Supabase 客户端访问失败
+- 根因：客户端访问方式不正确
+- 修复：修复 Supabase 客户端访问方式
+- 回归检查：R-2024-364
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-365 zhuyili 微信支付功能
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：50c06ff
+- 现象：购买按钮点击无效，试用次数逻辑错误
+- 根因：事件绑定和逻辑错误
+- 修复：修复微信支付功能：购买按钮点击事件绑定和试用次数逻辑
+- 回归检查：R-2024-365
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-366 zhuyili 二维码不显示
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：8a1a472
+- 现象：二维码不显示
+- 根因：二维码生成或显示逻辑错误
+- 修复：修复二维码不显示问题
+- 回归检查：R-2024-366
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-367 zhuyili payment.js 缺失函数
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：5ae20e0
+- 现象：支付功能无法工作
+- 根因：payment.js 缺失关键函数
+- 修复：修复 payment.js 缺失函数导致支付功能无法工作
+- 回归检查：R-2024-367
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-368 zhuyili Google 登录回调 URL
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：bb5cf07
+- 现象：Google 登录回调失败
+- 根因：回调 URL 配置错误
+- 修复：修复 Google 登录回调 URL
+- 回归检查：R-2024-368
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-369 zhuyili OAuth 回调跳回本地
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：a459f6c
+- 现象：生产环境 OAuth 回调跳回本地导致 Cannot GET /
+- 根因：OAuth 回调 URL 未固定到正式域名
+- 修复：生产环境 OAuth 回调固定到 Netlify 正式域名
+- 回归检查：R-2024-369
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-370 zhuyili OAuth 重定向 Netlify 404
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：eeb5a17
+- 现象：OAuth 重定向导致 Netlify 404
+- 根因：重定向 URL 未自动适配当前域
+- 修复：OAuth 重定向 URL 自动适配当前域，修复 Netlify 404 回跳问题
+- 回归检查：R-2024-370
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-371 zhuyili 计时器继续/暂停占位符闪烁
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：ce777a0
+- 现象：计时器继续/暂停时占位符闪烁
+- 根因：状态切换时 UI 更新逻辑问题
+- 修复：修复计时器继续/暂停时占位符闪烁问题
+- 回归检查：R-2024-371
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-372 zhuyili 重复记录问题
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：23aea54
+- 现象：产生重复记录
+- 根因：记录去重逻辑缺失
+- 修复：修复重复记录问题
+- 回归检查：R-2024-372
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-373 zhuyili 计时器暂停时间计算
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：5ba8cc9
+- 现象：计时器暂停时间计算错误
+- 根因：暂停时间计算逻辑有误
+- 修复：修复计时器暂停时间计算 bug
+- 回归检查：R-2024-373
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-374 zhuyili 多计时器删除功能
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：9b03563
+- 现象：多计时器删除功能异常
+- 根因：删除逻辑错误
+- 修复：修复多计时器删除功能
+- 回归检查：R-2024-374
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-375 zhuyili JSON 导入日期格式
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：9dbf58c
+- 现象：JSON 导入时日期格式错误
+- 根因：日期解析逻辑不兼容
+- 修复：修复 JSON 导入日期格式问题
+- 回归检查：R-2024-375
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-376 zhuyili JSON 导入数据同步
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：ce667a3
+- 现象：JSON 导入后数据不同步
+- 根因：数据同步逻辑缺失
+- 修复：修复 JSON 导入数据同步问题
+- 回归检查：R-2024-376
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-377 zhuyili 用户数据隔离和导入同步
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：b23fcc2
+- 现象：用户数据隔离和 JSON 导入同步问题
+- 根因：用户数据隔离逻辑不完善
+- 修复：修复用户数据隔离和 JSON 导入同步问题
+- 回归检查：R-2024-377
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-378 zhuyili Google 登录重定向
+
+- 项目：zhuyili
+- 仓库：https://github.com/kexin94yyds/zhuyili
+- 发生版本：f71634f
+- 现象：Google 登录重定向问题
+- 根因：重定向逻辑错误
+- 修复：修复 Google 登录重定向问题
+- 回归检查：R-2024-378
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-379 AI- AI Studio URL 路径错误
+
+- 项目：AI-
+- 仓库：https://github.com/kexin94yyds/AI-
+- 发生版本：4bcfedb
+- 现象：AI Studio URL 路径不正确
+- 根因：URL 路径配置错误
+- 修复：修正 AI Studio URL 为 /apps 路径
+- 回归检查：R-2024-379
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-380 AI-Sidebar History 同步问题
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：6e9bfd5
+- 现象：History 同步失败
+- 根因：错误处理不完善，未等待 HistoryDB 初始化
+- 修复：增强错误处理和等待 HistoryDB 初始化
+- 回归检查：R-2024-380
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-381 AI-Sidebar Star 按钮状态不正确
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：65992ad
+- 现象：Star 按钮状态与实际收藏状态不符
+- 根因：URL 比较时未标准化
+- 修复：通过标准化 URL 修复 Star 按钮状态
+- 回归检查：R-2024-381
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-382 AI-Sidebar message 监听器语法错误
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：29239bf
+- 现象：message 监听器报错
+- 根因：await 语法错误
+- 修复：修复 message 监听器中的 await 语法错误
+- 回归检查：R-2024-382
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-383 AI-Sidebar Starred 按钮显示对号
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：0d23c83
+- 现象：Starred 按钮显示对号而不是星号
+- 根因：图标配置错误
+- 修复：修复 Starred 按钮显示对号而不是星号的问题
+- 回归检查：R-2024-383
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-384 AI-Sidebar History Remove 点击不工作
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：137142a
+- 现象：History 面板 Remove 点击不工作
+- 根因：点击事件委托和 URL 标准化问题
+- 修复：将 Remove 点击处理委托给面板并标准化 URL
+- 回归检查：R-2024-384
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-385 AI-Sidebar URL 含 & 时 Remove 失败
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：9b9ad84
+- 现象：URL 包含 & 字符时 Remove 功能失败
+- 根因：属性值未正确解码
+- 修复：解码属性值确保 URL 含 & 时 Remove 正常工作
+- 回归检查：R-2024-385
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-386 AI-Sidebar ChatGPT/Gemini 嵌套框架 URL 同步
+
+- 项目：AI-Sidebar
+- 仓库：https://github.com/kexin94yyds/AI-Sidebar
+- 发生版本：005d64e
+- 现象：ChatGPT/Gemini 嵌套框架 URL 不同步
+- 根因：嵌套 iframe URL 监听问题
+- 修复：修复 ChatGPT/Gemini 嵌套框架 URL 同步问题
+- 回归检查：R-2024-386
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-387 if-compond 授权弹窗邮箱不预填充
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：07ecbac
+- 现象：授权弹窗打开时邮箱不自动预填充
+- 根因：预填充逻辑缺失
+- 修复：修复授权弹窗打开时邮箱不自动预填充的问题
+- 回归检查：R-2024-387
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-388 if-compond 缓存数量检查
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：9db3b02
+- 现象：缓存数量不足时仍使用缓存
+- 根因：缓存数量检查逻辑缺失
+- 修复：缓存数量检查 - 只有缓存数量足够时才使用
+- 回归检查：R-2024-388
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-389 if-compond 置顶博主和抓取数量
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：78531f6
+- 现象：置顶博主不优先显示，Twitter 抓取数量不足
+- 根因：排序和数量逻辑问题
+- 修复：置顶博主优先显示 + Twitter 抓取 50 条 + 回复转推限 10 条
+- 回归检查：R-2024-389
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-390 if-compond Supabase URL 配置
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：33d2922
+- 现象：Supabase 连接失败
+- 根因：Supabase URL 配置少了一个字母 i
+- 修复：修正 Supabase URL 配置
+- 回归检查：R-2024-390
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-391 if-compond 在线密钥验证
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：3639519
+- 现象：可以使用伪造的密钥
+- 根因：密钥验证仅在本地进行
+- 修复：启用在线密钥验证，防止伪造密钥
+- 回归检查：R-2024-391
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-392 if-compond 生产环境 User-Agent
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：dba96ac
+- 现象：生产环境请求被拒绝
+- 根因：缺少 User-Agent header
+- 修复：添加 User-Agent header 用于生产环境
+- 回归检查：R-2024-392
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-393 if-compond 本地开发 Netlify Blobs 缓存
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：cf1ba48
+- 现象：本地开发时 Netlify Blobs 缓存导致问题
+- 根因：本地开发不应使用 Netlify Blobs 缓存
+- 修复：本地开发时跳过 Netlify Blobs 缓存
+- 回归检查：R-2024-393
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-394 if-compond 生产环境代理问题
+
+- 项目：if-compond
+- 仓库：https://github.com/kexin94yyds/if-compond
+- 发生版本：50d83a1
+- 现象：生产环境请求失败
+- 根因：生产环境错误使用了代理
+- 修复：生产环境使用直接 fetch，代理仅用于本地开发
+- 回归检查：R-2024-394
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-395 flow-learning EPUB 封面提取
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：a9461b3
+- 现象：EPUB 封面提取失败
+- 根因：封面提取方法不完整
+- 修复：为 capture.html 和 flow.js 添加完整的 3 种封面提取方法
+- 回归检查：R-2024-395
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-396 flow-learning localStorage 超限
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：5f1715d
+- 现象：localStorage 超限导致存储失败
+- 根因：封面图片太大
+- 修复：压缩封面图片防止 localStorage 超限
+- 回归检查：R-2024-396
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-397 flow-learning 下载书籍文件名
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：56d015f
+- 现象：下载书籍时文件名不正确
+- 根因：未使用原始文件名
+- 修复：下载书籍时使用原始文件名
+- 回归检查：R-2024-397
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-398 flow-learning 批量上传 Supabase
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：aef3c59
+- 现象：批量上传时未同步到 Supabase
+- 根因：批量上传逻辑缺少 Supabase 同步
+- 修复：批量上传也上传到 Supabase 并保存 fileUrl
+- 回归检查：R-2024-398
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-399 flow-learning Supabase InvalidKey 错误
+
+- 项目：flow-learning
+- 仓库：https://github.com/kexin94yyds/flow-learning
+- 发生版本：750b191
+- 现象：Supabase 报 InvalidKey 错误
+- 根因：文件名包含特殊字符
+- 修复：使用简化文件名避免 Supabase InvalidKey 错误
+- 回归检查：R-2024-399
+- 状态：verified
+- 日期：2024-12-16
