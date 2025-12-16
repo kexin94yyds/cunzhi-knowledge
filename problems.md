@@ -2345,3 +2345,74 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-172 ClipBook 历史为空时拖拽区域 bug
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：历史记录为空时拖拽区域功能异常
+- 根因：空状态下拖拽区域逻辑有 bug
+- 修复：修复历史为空时拖拽区域 bug
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-173 ClipBook 深色/浅色模式滚动条问题
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：深色/浅色模式切换时滚动条样式不正确
+- 根因：滚动条样式未适配主题
+- 修复：修复深色/浅色滚动条样式
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-174 codex-watcher DOMPurify 下展开/折叠失效
+
+- 项目：codex-watcher
+- 仓库：/Users/apple/codexwatcher/codex-watcher
+- 发生版本：当前版本
+- 现象：DOMPurify 处理后展开/折叠按钮点击无效
+- 根因：DOMPurify 移除了内联 onclick 事件
+- 修复：使用事件委托替代内联 onclick，使用 data-* 属性传递参数
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：DOMPurify 会移除内联事件，需要使用事件委托
+
+---
+
+## P-2024-175 git-worktree-manager treeView 点击打开终端和文件夹
+
+- 项目：git-worktree-manager
+- 仓库：/Users/apple/git-worktree-manage/git-worktree-manager
+- 发生版本：当前版本
+- 现象：点击 treeView 无法打开终端和文件夹
+- 根因：点击事件处理有问题
+- 修复：修复点击 treeView 打开终端和文件夹功能
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-176 zhuyili 微信支付按钮点击事件绑定
+
+- 项目：zhuyili (注意力追踪器)
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：微信支付购买按钮点击无反应
+- 根因：点击事件绑定和试用次数逻辑有问题
+- 修复：修复购买按钮点击事件绑定和试用次数逻辑
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
