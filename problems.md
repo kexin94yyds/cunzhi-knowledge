@@ -2932,3 +2932,31 @@
 - 日期：2024-12-16
 - 经验：macOS 多 Space 应用需要正确处理窗口位置
 
+---
+
+## P-2024-213 kexin-podcast 上传时 filename 为空
+
+- 项目：kexin-podcast
+- 仓库：/Users/apple/podcast/kexin-podcast
+- 发生版本：当前版本
+- 现象：上传文件时报数据库约束错误
+- 根因：filename 字段为空违反数据库约束
+- 修复：修复上传时 filename 为空的数据库约束错误
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-214 twscrape 媒体类型问题
+
+- 项目：twscrape (Twitter 爬虫)
+- 仓库：/Users/apple/twiter/twscrape
+- 发生版本：当前版本
+- 现象：媒体类型解析不正确
+- 根因：媒体类型判断逻辑有问题
+- 修复：修复媒体类型解析
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
