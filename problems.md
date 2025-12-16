@@ -3145,3 +3145,74 @@
 - 状态：verified
 - 日期：2024-12-16
 
+---
+
+## P-2024-228 ClipBook bundle 提取应用名崩溃
+
+- 项目：ClipBook
+- 仓库：/Users/apple/clipbook/ClipBook
+- 发生版本：当前版本
+- 现象：从 bundle 提取应用名时崩溃
+- 根因：提取逻辑未处理异常情况
+- 修复：修复从 bundle 提取应用名时的崩溃问题
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-229 iterate 只构建 CLI 避免打包问题
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：完整构建时出现打包问题
+- 根因：打包配置有问题
+- 修复：修改为只构建 CLI 二进制文件，避免打包问题
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-230 iterate Windows icon.ico 缺失
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/imhuso/cunzhi
+- 发生版本：当前版本
+- 现象：Windows 构建失败
+- 根因：缺少 Windows 需要的 icon.ico 文件
+- 修复：添加 Windows 需要的 icon.ico 文件
+- 回归检查：CI 验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-231 背单词网页 Vite base path 问题
+
+- 项目：背单词的网页
+- 仓库：/Users/apple/背单词的网页
+- 发生版本：当前版本
+- 现象：Netlify 根目录部署时资源路径错误
+- 根因：Vite base path 配置不正确
+- 修复：移除 Vite base path 以支持 Netlify 根目录部署
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2024-232 Strong-Iterate script 标签缺少 type=module
+
+- 项目：Strong-Iterate
+- 仓库：/Users/apple/产品更新/Strong-Itreate
+- 发生版本：当前版本
+- 现象：Vite 打包后 JS 无法执行
+- 根因：script 标签缺少 type=module 属性
+- 修复：添加 type=module 属性解决 Vite 打包问题
+- 回归检查：部署验证
+- 状态：verified
+- 日期：2024-12-16
+- 经验：Vite 打包的 ES 模块需要 type=module
+
