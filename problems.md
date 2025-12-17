@@ -6355,3 +6355,37 @@
 - 状态：fixed
 - 日期：2024-12-17
 - 关联模式：PAT-2024-022
+
+---
+
+## P-2024-401 cunzhi pai 工具无法在同一窗口打开新聊天标签页
+
+- 项目：cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi
+- 发生版本：当前开发版本
+- 现象：pai 工具希望在 Windsurf 同一窗口中打开新聊天标签页并发送提示词，但 AppleScript 方式不稳定（焦点问题导致内容发送到编辑器），Windsurf CLI `-r` 选项会复用窗口但不会打开新标签页，`-n` 选项会打开新窗口而非新标签页
+- 根因：Windsurf CLI 目前不支持"在同一窗口打开新聊天标签页"的功能，AppleScript 模拟键盘操作不可靠
+- 修复：待定
+- 回归检查：待定
+- 状态：open
+- 日期：2024-12-17
+
+## P-2024-402 cunzhi 弹窗中 Escape/反引号/CapsLock 等按键无法触发最小化
+
+- 项目：cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi
+- 发生版本：当前开发版本
+- 现象：在 MCP 弹窗中，Tab 键可以正常触发最小化窗口，但 Escape 键、反引号键（`）、CapsLock（中英切换）等按键都无法触发任何功能。尝试了多种方案均无效。
+- 根因：未确定。可能原因包括：
+  1. Naive UI 的 n-input 组件内部拦截了 Escape 键事件
+  2. macOS 系统级别对某些按键有特殊处理
+  3. Tauri/Webview 层面可能有额外的事件拦截
+- 尝试过的方案：
+  1. keyup 事件 + escapeAlone 标志位检测 → 无效
+  2. addEventListener 使用 capture 阶段（第三参数 true）→ 无效
+  3. 在 keydown 阶段直接触发（与 Tab 键相同方式）→ 无效
+  4. 换用反引号键 → 同样无效
+- 修复：放弃该功能，保留 Tab 键最小化
+- 回归检查：无（功能未实现）
+- 状态：open（待后续排查）
+- 日期：2024-12-17
