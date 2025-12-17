@@ -38,6 +38,11 @@
 | PAT-2024-010 | IPC 事件语义分离 | 同步 ≠ 切换 |
 | PAT-2024-011 | IndexedDB 锁定诊断 | lsof + pkill |
 
+### 📱 iOS 移动开发
+| ID | 名称 | 核心要点 |
+|----|------|----------|
+| PAT-2024-022 | iOS 后台持续运行 | 静音音频播放绕过系统限制 |
+
 ### 🚀 部署与运维
 | ID | 名称 | 核心要点 |
 |----|------|----------|
@@ -644,4 +649,79 @@ echo "✅ 部署完成！回滚：rm -rf $APP_PATH && mv $BACKUP_PATH $APP_PATH"
 - https://embracethered.com/blog/posts/2025/windsurf-data-exfiltration-vulnerabilities/
 - https://hiddenlayer.com/innovation-hub/how-hidden-prompt-injections-can-hijack-ai-code-assistants-like-cursor/
 - https://www.anthropic.com/research/prompt-injection-defenses
+
+---
+
+## PAT-2024-022 iOS 后台持续运行 - 静音音频播放
+
+- 来源：Monoshot 截图监听 App 开发
+- 日期：2024-12-17
+
+**问题场景：**
+iOS App 需要在后台持续运行（如监听相册变化），但 iOS 默认会在约30秒后挂起 App。
+
+**解决方案：**
+利用 iOS 允许音频播放类 App 后台运行的特性，播放静音音频保持 App 活跃。
+
+**实现步骤：**
+
+1. Info.plist 添加音频后台模式：
+```xml
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+</array>
+```
+
+2. 创建 BackgroundAudioService：
+```swift
+import AVFoundation
+
+class BackgroundAudioService {
+    static let shared = BackgroundAudioService()
+    private var audioPlayer: AVAudioPlayer?
+    
+    private init() {
+        try? AVAudioSession.sharedInstance().setCategory(
+            .playback,
+            mode: .default,
+            options: [.mixWithOthers]  // 关键：不打断其他音频
+        )
+        try? AVAudioSession.sharedInstance().setActive(true)
+    }
+    
+    func startBackgroundAudio() {
+        // 生成静音 WAV 数据并循环播放
+        audioPlayer?.numberOfLoops = -1  // 无限循环
+        audioPlayer?.volume = 0.0  // 完全静音
+        audioPlayer?.play()
+    }
+    
+    func stopBackgroundAudio() {
+        audioPlayer?.stop()
+    }
+}
+```
+
+3. 在 App 生命周期中调用：
+- `didEnterBackground` → `startBackgroundAudio()`
+- `willEnterForeground` → `stopBackgroundAudio()`
+
+**验证方法：**
+- 控制中心音乐控件显示 App 名称
+- Xcode Console 打印 "Background audio started"
+- 灵动岛/状态栏显示音频指示器
+
+**注意事项：**
+| 类型 | 说明 |
+|------|------|
+| ⚠️ App Store | 无法上架，Apple 会拒绝 |
+| ⚠️ 电池 | 略微增加消耗 |
+| ✅ 本地使用 | 仅限个人/开发使用 |
+| ✅ 音频兼容 | `mixWithOthers` 不打断用户音乐 |
+
+**适用场景：**
+- 截图监听 App
+- 剪贴板监听
+- 任何需要后台持续监听系统事件的 App
 

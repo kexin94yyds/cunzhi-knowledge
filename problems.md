@@ -6340,3 +6340,18 @@
 - 回归检查：R-2024-399
 - 状态：verified
 - 日期：2024-12-16
+
+---
+
+## P-2024-400 iOS App 退出 Xcode 后后台截屏检测失效
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：2024-12-17
+- 现象：通过 Xcode 调试运行时后台截屏检测正常，但退出 Xcode 独立运行时，App 切到后台后截屏无法触发通知
+- 根因：Xcode 调试时会阻止 iOS 挂起 App，独立运行时 iOS 会在约30秒后挂起 App，导致 PHPhotoLibraryChangeObserver 监听失效
+- 修复：使用静音音频播放（BackgroundAudioService）绕过 iOS 后台限制，利用音频类 App 允许持续后台运行的特性
+- 回归检查：退出 Xcode 独立运行，切到后台后截屏能收到通知
+- 状态：fixed
+- 日期：2024-12-17
+- 关联模式：PAT-2024-022
