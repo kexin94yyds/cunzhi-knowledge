@@ -72,6 +72,7 @@
 | 回忆 | 读 | memory + knowledge | - |
 | 记忆 | 写 | .cunzhi-memory/ | rule/preference/note/context |
 | 沉淀 | 写 | .cunzhi-knowledge/ | patterns/problems |
+| 摘要 | 写 | .cunzhi-memory/ | session（L3 会话摘要，自动保留15条） |
 
 **设计决策**：
 - memory 的 `patterns.md` 改名为 `notes.md`，避免与 knowledge 混淆
