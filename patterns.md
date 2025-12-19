@@ -724,3 +724,38 @@ class BackgroundAudioService {
 - 截图监听 App
 - 剪贴板监听
 - 任何需要后台持续监听系统事件的 App
+
+## PAT-2024-021: Electron 中实现类似 Chrome 的浮动搜索栏
+
+### 问题
+在 Electron 应用中实现 Cmd+F 搜索功能，需要让搜索栏浮在 BrowserView 上方，类似 Chrome 的效果。
+
+### 挑战
+- BrowserView 总是渲染在 HTML 元素之上，无法用普通 CSS overlay
+- `webContents.blur()` 方法不存在，不能用于转移焦点
+
+### 解决方案
+使用 **BrowserWindow 子窗口** 作为搜索栏：
+
+1. 创建独立的 `search-bar.html` 作为子窗口内容
+2. 在 `electron-main.js` 中创建无边框、透明的子窗口：
+   ```javascript
+   searchBarWindow = new BrowserWindow({
+     frame: false,
+     transparent: true,
+     parent: mainWindow,
+     alwaysOnTop: true
+   });
+   ```
+3. 监听主窗口 move/resize 事件，动态更新搜索栏位置
+4. 使用 `webContents.findInPage()` API 执行搜索
+5. 监听 `found-in-page` 事件获取搜索结果
+
+### 关键代码位置
+- `search-bar.html` - 搜索栏 UI
+- `electron-main.js` showSearchBar/hideSearchBar/toggleSearchBar 函数
+- BrowserView 的 `before-input-event` 中拦截 Cmd+F
+
+### 注意事项
+- 子窗口需要设置 `nodeIntegration: true, contextIsolation: false` 才能使用 ipcRenderer
+- 搜索栏位置需要考虑 sidebar 宽度和顶部 inset
