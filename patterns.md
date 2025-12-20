@@ -42,6 +42,7 @@
 | ID | 名称 | 核心要点 |
 |----|------|----------|
 | PAT-2024-022 | iOS 后台持续运行 | 静音音频播放绕过系统限制 |
+| PAT-2024-023 | AI/LLM 品牌图标获取 | lobehub/lobe-icons CDN |
 
 ### 🚀 部署与运维
 | ID | 名称 | 核心要点 |
@@ -759,3 +760,81 @@ class BackgroundAudioService {
 ### 注意事项
 - 子窗口需要设置 `nodeIntegration: true, contextIsolation: false` 才能使用 ipcRenderer
 - 搜索栏位置需要考虑 sidebar 宽度和顶部 inset
+
+---
+
+## PAT-2024-023: AI/LLM 品牌图标获取方法
+
+- 来源：iOS AI 全家桶应用开发
+- 日期：2024-12-20
+
+**场景**: 需要获取 AI 服务（ChatGPT、Claude、Gemini 等）的高质量品牌图标
+
+**推荐资源**: [lobehub/lobe-icons](https://github.com/lobehub/lobe-icons)
+
+**许可证**: MIT（免费商用）
+
+### CDN 使用方法
+
+**PNG 格式（推荐用于 iOS/移动端）**
+```bash
+# 下载单个图标
+curl -L -o [图标名].png "https://unpkg.com/@lobehub/icons-static-png@latest/light/[图标名].png"
+
+# 示例：下载 OpenAI 图标
+curl -L -o openai.png "https://unpkg.com/@lobehub/icons-static-png@latest/light/openai.png"
+```
+
+**SVG 格式（推荐用于 Web）**
+```bash
+curl -L -o [图标名].svg "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/[图标名].svg"
+```
+
+### 可用的 AI 图标列表（部分）
+
+| 图标名 | 服务 |
+|--------|------|
+| openai | ChatGPT/OpenAI |
+| claude | Claude/Anthropic |
+| gemini | Google Gemini |
+| perplexity | Perplexity AI |
+| deepseek | DeepSeek |
+| grok | xAI Grok |
+| mistral | Mistral AI |
+| cohere | Cohere |
+| huggingface | HuggingFace |
+| metaai | Meta AI |
+| githubcopilot | GitHub Copilot |
+| doubao | 豆包 |
+| qwen | 通义千问 |
+| kimi | Kimi/Moonshot |
+| zhipu | 智谱清言 |
+| minimax | 海螺AI/MiniMax |
+| notebooklm | Google NotebookLM |
+
+### 批量下载脚本
+
+```bash
+cd /path/to/your/icons/folder
+
+icons=("openai" "claude" "gemini" "perplexity" "deepseek" "grok" "mistral" "cohere" "huggingface" "metaai" "githubcopilot" "doubao" "qwen" "kimi" "zhipu" "minimax" "notebooklm")
+
+for icon in "${icons[@]}"; do
+    curl -L -o "${icon}.png" "https://unpkg.com/@lobehub/icons-static-png@latest/light/${icon}.png"
+done
+```
+
+### 查看所有可用图标
+
+- 在线浏览: https://lobehub.com/icons
+- CDN 目录:
+```bash
+curl -sL "https://unpkg.com/@lobehub/icons-static-png@latest/light/" | grep -oE '"https://[^"]*\.png"'
+```
+
+### 注意事项
+
+1. 图标分辨率为 1024x1024，适合各种场景
+2. 提供 light/dark 两种主题版本
+3. 定期更新，包含最新的 AI 服务品牌
+4. 使用时注意遵守各品牌的商标使用规范
