@@ -6439,3 +6439,26 @@ let lines: Vec<&str> = summary.lines()
 
 ### 待修复
 修改 `read_knowledge()` 返回更多 patterns 内容，或在 global_rules.md 中添加手动读取步骤。
+
+## P-2024-445 global_rules.md 与 ji 工具实际行为不一致
+
+- 状态：open
+- 日期：2024-12-21
+- 来源：cunzhi 规则审查
+
+### 现象
+global_rules.md 写着"调用 `寸止` 询问用户是否需要帮助执行 `git add / commit / push`"，但 `ji(action=确认沉淀)` 实际上会**自动推送到 GitHub**，不询问用户。
+
+### 不一致点
+| 规则描述 | 实际行为 |
+|----------|----------|
+| "调用 `寸止` 询问用户是否需要 push" | 直接自动 push，无询问 |
+| "用户确认 push 完成前，不得标记 Bug 为 verified" | ji 自动 push 后直接返回成功 |
+
+### 根因
+`ji` 工具的 `settle_to_knowledge()` 函数实现了自动 push，但 global_rules.md 没有同步更新。
+
+### 待修复
+二选一：
+1. 修改 global_rules.md，删除"询问是否 push"的描述
+2. 修改 ji 工具，改为询问后再 push
