@@ -6406,10 +6406,12 @@
 - 项目：cunzhi
 - 发生版本：v0.5.0+
 - 现象：MCP 工具调用时频繁出现 "transport error: failed to write request: write |1: broken pipe"
-- 可能原因：
-  1. MCP 服务器同步阻塞等待弹窗，期间无法响应 Windsurf 心跳
-  2. 多个寸止进程实例同时运行（观察到 6 个进程）
-  3. Windsurf 超时主动断开连接
-- 已添加日志：server.rs 和 popup.rs 添加 PID 和耗时追踪
-- 状态：open
-- 日期：2024-12-20
+- 根因：Windsurf ↔ 寸止 之间的 stdio 管道断裂后，MCP 服务器进程处于僵死状态，Windsurf 不会自动重启
+- 临时修复：
+  1. 手动 kill 掉僵死的寸止进程
+  2. 在 Windsurf 中 Reload Window（Cmd+Shift+P → Developer: Reload Window）
+  3. 或禁用/启用 cunzhi MCP 服务器
+- 长期修复：待定（需要 MCP 服务器添加心跳检测和自动重连机制）
+- 回归检查：R-2024-443（待创建）
+- 状态：fixed
+- 日期：2024-12-21
