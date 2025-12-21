@@ -6415,3 +6415,27 @@
 - 回归检查：R-2024-443（待创建）
 - 状态：fixed
 - 日期：2024-12-21
+
+## P-2024-444 ji(action=回忆) 不返回 patterns.md 完整内容
+
+- 状态：open
+- 日期：2024-12-21
+- 来源：cunzhi MCP 工具
+
+### 现象
+调用 `ji(action=回忆)` 时，返回的 patterns.md 内容只有索引表前 5 条，丢失了详细内容。
+
+### 根因
+`read_knowledge()` 函数中 `.take(5)` 限制了返回数量：
+```rust
+let lines: Vec<&str> = summary.lines()
+    .filter(|l| l.starts_with("| PAT-"))
+    .take(5)  // 问题在这里
+    .collect();
+```
+
+### 临时解决方案
+会话启动时手动调用 `read_file patterns.md` 获取完整内容。
+
+### 待修复
+修改 `read_knowledge()` 返回更多 patterns 内容，或在 global_rules.md 中添加手动读取步骤。
