@@ -6462,3 +6462,26 @@ global_rules.md 写着"调用 `寸止` 询问用户是否需要帮助执行 `git
 二选一：
 1. 修改 global_rules.md，删除"询问是否 push"的描述
 2. 修改 ji 工具，改为询问后再 push
+
+## P-2024-446 ji 工具自动 push 逻辑待优化
+
+- 状态：open
+- 日期：2024-12-21
+- 来源：cunzhi MCP 工具代码审查
+- 关联：P-2024-445
+
+### 代码位置
+`cunzhi/src/rust/mcp/tools/memory/manager.rs:361-366`
+
+```rust
+// 写入文件
+fs::write(&file_path, file_content)?;
+
+// 自动 git add/commit/push
+let git_result = self.git_push_knowledge(&knowledge_dir, filename, content);
+```
+
+### 待改进
+1. 自动 push 前应调用 `寸止` 询问用户确认
+2. 或者修改 global_rules.md 说明"自动 push"行为
+3. 保持规则与代码行为一致
