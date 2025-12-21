@@ -838,3 +838,81 @@ curl -sL "https://unpkg.com/@lobehub/icons-static-png@latest/light/" | grep -oE 
 2. 提供 light/dark 两种主题版本
 3. 定期更新，包含最新的 AI 服务品牌
 4. 使用时注意遵守各品牌的商标使用规范
+
+## PAT-2024-021 应用项目一键更新脚本规范
+
+- 来源：CunZhi 项目实践
+- 日期：2024-12-22
+
+**核心原则：**
+- 每个桌面/移动应用项目都必须配置一个全面、系统、清晰的一键更新脚本
+- 脚本应能指导具体行为，消除手动编译、签名等繁琐操作
+
+---
+
+### macOS 应用（Tauri/Electron/Swift）
+
+**必备步骤：**
+1. **编译** - `cargo build --release` 或 `npm run build`
+2. **构建** - `npm run tauri build` 或 `xcodebuild`
+3. **同步** - 复制最新组件到 .app 内（避免缓存）
+4. **签名** - `codesign --force --deep --sign - /Applications/xxx.app`
+5. **清理** - `xattr -cr /Applications/xxx.app`
+6. **安装** - 复制到 `/Applications/`
+
+**关键命令：**
+```bash
+codesign --force --deep --sign - "$APP_PATH"  # ad-hoc 签名
+xattr -cr "$APP_PATH"  # 移除扩展属性
+```
+
+---
+
+### iOS 应用（Swift/Flutter/React Native）
+
+**必备步骤：**
+1. **依赖** - `pod install` 或 `flutter pub get`
+2. **编译** - `xcodebuild -scheme xxx -configuration Release`
+3. **签名** - 配置 Provisioning Profile 和证书
+4. **打包** - `xcodebuild -exportArchive`
+5. **安装** - 通过 TestFlight 或 `ios-deploy`
+
+**关键命令：**
+```bash
+xcodebuild -workspace xxx.xcworkspace -scheme xxx -configuration Release archive
+xcodebuild -exportArchive -archivePath xxx.xcarchive -exportPath ./build
+```
+
+---
+
+### Android 应用（Kotlin/Flutter/React Native）
+
+**必备步骤：**
+1. **依赖** - `./gradlew dependencies` 或 `flutter pub get`
+2. **编译** - `./gradlew assembleRelease`
+3. **签名** - 配置 keystore 和 signingConfigs
+4. **对齐** - `zipalign -v 4 app.apk app-aligned.apk`
+5. **安装** - `adb install -r app.apk`
+
+**关键命令：**
+```bash
+./gradlew assembleRelease
+./gradlew bundleRelease  # AAB 格式
+adb install -r app/build/outputs/apk/release/app-release.apk
+```
+
+---
+
+### 通用反模式
+
+- ❌ 每次手动执行多个命令
+- ❌ 忘记同步内部组件导致版本不一致
+- ❌ 忘记签名导致应用无法运行
+- ❌ 依赖构建工具缓存而不验证
+
+### 通用最佳实践
+
+- ✅ 脚本开头添加 `set -e` 遇错即停
+- ✅ 关闭正在运行的应用后再更新
+- ✅ 使用 MD5/SHA 验证二进制文件一致性
+- ✅ 脚本输出清晰的步骤提示
