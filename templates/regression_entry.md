@@ -1,9 +1,9 @@
-## R-YYYY-NNN [Title]
+## R-YYYY-NNN [回归检查标题]
 
-- problem: P-YYYY-NNN
-- type: unit / e2e / integration / manual / script / ci / deploy / process / api / build / code-review / network
-- location: N/A (for manual) or test file path
-- assertion: 
-- method: manual / ci / deploy
+- 关联问题：P-YYYY-NNN
+- 类型：unit / e2e / integration / 手工检查 / 脚本检查 / CI 验证 / 部署验证 / 流程验证
+- 位置：N/A（手工检查类）或实际测试文件路径
+- 关键断言：
+- 运行方式：手工验证 / CI 验证 / 部署验证
 
 ---
