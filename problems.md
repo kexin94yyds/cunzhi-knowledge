@@ -6527,5 +6527,5 @@ sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_N
   3. 添加降级处理：寸止窗口不可用时回退到文本输出
 - 修改文件：`cunzhi/src/rust/mcp/tools/dispatch/mcp.rs`
 - 回归检查：R-2024-462
-- 状态：fixed
+- 状态：verified
 - 日期：2024-12-22
