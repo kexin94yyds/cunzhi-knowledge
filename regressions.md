@@ -4585,3 +4585,16 @@
 - 状态：verified
 
 ---
+
+## R-2024-463 zhi 工具对话记录同步
+
+- 关联问题：P-2024-463
+- 类型：手工检查
+- 位置：cunzhi/src/rust/mcp/tools/interaction/mcp.rs
+- 关键断言：
+  1. 调用 `zhi` 后，对话记录写入 `.cunzhi-knowledge/conversations/YYYY-MM-DD.md`
+  2. 其他项目 `git pull` 后能获取最新对话记录
+- 运行方式：手工验证
+- 状态：open
+
+---
