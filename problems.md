@@ -6539,8 +6539,8 @@ sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_N
 - 发生版本：v0.5.0
 - 现象：`zhi` 工具调用后会将对话记录写入 `.cunzhi-knowledge/conversations/YYYY-MM-DD.md`，但不会自动 `git add/commit/push`，导致其他项目拉取时没有最新的对话记录
 - 根因：`log_conversation` 函数只写入文件，没有触发 git 同步
-- 修复：待定（可选方案：1. 手动同步 2. 定时同步 3. 每次写入后自动同步）
-- 修改文件：`cunzhi/src/rust/mcp/tools/interaction/mcp.rs`
+- 修复：实现 5 分钟防抖同步（每次写入后启动定时器，5分钟内无新写入则自动 git push）
+- 修改文件：`cunzhi/src/rust/mcp/tools/interaction/logger.rs`
 - 回归检查：R-2024-463
-- 状态：open
+- 状态：fixed
 - 日期：2024-12-22
