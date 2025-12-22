@@ -6544,3 +6544,39 @@ sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_N
 - 回归检查：R-2024-463
 - 状态：verified
 - 日期：2024-12-22
+
+---
+
+## P-2024-464 update.sh 运行时需要切回终端输入 sudo 密码
+
+- 项目：cunzhi
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：从 IDE 终端运行 `./update.sh` 时，脚本在步骤 3 需要 sudo 权限，此时需要用户切回终端窗口手动输入密码，打断工作流
+- 根因：标准 sudo 命令等待终端 stdin 输入密码，无法弹出 GUI 对话框
+- 修复：在脚本开头使用 osascript 弹出 macOS 密码对话框预先获取权限
+- 修改文件：`cunzhi/update.sh`
+- 回归检查：R-2024-464
+- 状态：verified
+- 日期：2024-12-22
+
+## P-2024-465: ji 工具缺少交互式选择模式
+
+### 现象
+- 用户输入 "ji" 时，AI 需要自己判断执行哪个 action
+- 用户希望能选择：1=memory, 2=pattern, 3=problem 等
+
+### 期望行为
+- 用户输入 "ji" → 弹出选项让用户选择
+- 选择后执行对应操作
+
+### 方案待定
+- **方案 A**：改规则文档，AI 先用 zhi 询问
+- **方案 B**：改代码，ji 工具本身返回选项
+
+### 状态
+open
+
+### 相关文件
+- `cunzhi/src/rust/mcp/tools/memory/mcp.rs`
+- `~/.codeium/windsurf/rules/02-tools.md`
