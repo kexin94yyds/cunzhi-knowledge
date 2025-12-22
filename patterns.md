@@ -983,3 +983,59 @@ grep -c -e '- 类型：' regressions.md
 - 搜索含中文标点的 Markdown 文件
 - 统计中文字段数量
 - 任何 grep 搜索中文内容
+
+---
+
+## PAT-2024-026 Shell 脚本 sudo 密码 GUI 弹窗
+
+- 来源：cunzhi update.sh 优化
+- 日期：2024-12-22
+
+**问题现象**：
+运行需要 sudo 权限的脚本时，必须切回终端窗口输入密码，打断工作流。
+
+**解决方案**：
+使用 osascript 在脚本开头弹出 macOS 密码对话框：
+```bash
+acquire_sudo() {
+    # 检查是否已有 sudo 权限
+    if sudo -n true 2>/dev/null; then
+        return 0
+    fi
+    # 弹出 GUI 密码对话框
+    osascript -e 'do shell script "echo" with administrator privileges' 2>/dev/null
+    if [ $? -ne 0 ]; then
+        echo "❌ 未获取管理员权限"
+        exit 1
+    fi
+}
+
+# 在脚本开头调用
+acquire_sudo
+```
+
+**适用场景**：
+- macOS 上需要 sudo 的自动化脚本
+- 从 IDE 终端运行的构建/部署脚本
+- 任何希望减少终端交互的场景
+
+## PAT-2024-027: 软链接 vs 硬链接
+
+### 软链接（Symbolic Link）
+- **类似**：Windows 快捷方式
+- **命令**：`ln -s 目标 链接名`
+- **特点**：
+  - 删除原文件 → 链接失效
+  - 可跨文件系统、可链接目录
+  - `ls -l` 显示 `->` 指向
+
+### 硬链接（Hard Link）
+- **类似**：同一文件的多个名字
+- **命令**：`ln 目标 链接名`
+- **特点**：
+  - 删除原文件 → 链接仍有效
+  - 不能跨文件系统、不能链接目录
+
+### 使用场景
+- **软链接**：配置共享、目录链接
+- **硬链接**：备份、节省空间
