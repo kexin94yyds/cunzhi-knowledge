@@ -6485,3 +6485,27 @@ let git_result = self.git_push_knowledge(&knowledge_dir, filename, content);
 1. 自动 push 前应调用 `寸止` 询问用户确认
 2. 或者修改 global_rules.md 说明"自动 push"行为
 3. 保持规则与代码行为一致
+
+## P-2024-022 iterate.app 更新后工具不显示
+
+- 来源：CunZhi 项目
+- 日期：2024-12-22
+- 状态：verified
+
+**问题描述：**
+新增 xi 工具后，Windsurf MCP 配置显示 5 个工具，但 iterate.app 只显示 4 个工具。
+
+**根因分析：**
+1. Tauri 构建使用缓存，主程序 `iterate` 没有重新编译
+2. update.sh 只同步了 MCP 服务器（寸止），没有同步主程序（iterate）
+3. `get_mcp_tools_config` 命令在主程序中，必须同步主程序才能生效
+
+**修复方案：**
+1. 在 `commands.rs` 中添加 xi 工具配置
+2. 更新 `update.sh`，同步主程序和 MCP 服务器：
+```bash
+sudo rm "$APP_PATH/Contents/MacOS/$APP_NAME"
+sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_NAME"
+```
+
+**回归检查：R-2024-022**
