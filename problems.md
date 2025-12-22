@@ -6509,3 +6509,23 @@ sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_N
 ```
 
 **回归检查：R-2024-022**
+
+---
+
+## P-2024-462 pai 工具输出到 Cascade Output 而非寸止窗口
+
+- 项目：cunzhi
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：
+  1. `pai` 生成的子代理提示词显示在 Cascade Output 区域，用户需要手动复制
+  2. 子代理完成任务后没有调用 `zhi` 汇报工作结果
+- 根因：`pai` 直接返回 `CallToolResult::success(vec![Content::text(result)])`，而非通过 `create_tauri_popup` 显示
+- 修复：
+  1. `pai` 调用 `create_tauri_popup` 将提示词显示在寸止窗口
+  2. 子代理提示词模板添加"完成后必须调用 `zhi` 汇报"指令
+  3. 添加降级处理：寸止窗口不可用时回退到文本输出
+- 修改文件：`cunzhi/src/rust/mcp/tools/dispatch/mcp.rs`
+- 回归检查：R-2024-462
+- 状态：fixed
+- 日期：2024-12-22
