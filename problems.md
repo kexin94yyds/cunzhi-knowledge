@@ -6542,5 +6542,5 @@ sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_N
 - 修复：实现 5 分钟防抖同步（每次写入后启动定时器，5分钟内无新写入则自动 git push）
 - 修改文件：`cunzhi/src/rust/mcp/tools/interaction/logger.rs`
 - 回归检查：R-2024-463
-- 状态：fixed
+- 状态：verified
 - 日期：2024-12-22
