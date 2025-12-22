@@ -917,3 +917,34 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 - ✅ 关闭正在运行的应用后再更新
 - ✅ 使用 MD5/SHA 验证二进制文件一致性
 - ✅ 脚本输出清晰的步骤提示
+
+## PAT-2024-024 Tauri 应用更新必须同步主程序
+
+- 来源：P-2024-022 iterate.app 更新后工具不显示
+- 日期：2024-12-22
+
+**核心经验：**
+Tauri 应用的更新脚本必须同时同步**主程序**和**子进程**，否则 Tauri 构建缓存会导致组件版本不一致。
+
+**具体做法：**
+```bash
+# 1. 同步主程序（Tauri 前端+后端命令）
+sudo rm "$APP_PATH/Contents/MacOS/$APP_NAME"
+sudo cp "$PROJECT_DIR/target/release/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_NAME"
+
+# 2. 同步子进程（MCP 服务器等）
+sudo rm "$APP_PATH/Contents/MacOS/$MCP_BIN_NAME"
+sudo cp "$PROJECT_DIR/target/release/$MCP_BIN_NAME" "$APP_PATH/Contents/MacOS/$MCP_BIN_NAME"
+
+# 3. 重新签名
+sudo codesign --force --deep --sign - "$APP_PATH"
+```
+
+**适用场景：**
+- Tauri 应用新增/修改 Tauri 命令
+- Tauri 应用新增/修改前端组件
+- 子进程（如 MCP 服务器）功能变更
+
+**反模式：**
+- ❌ 只同步子进程，不同步主程序
+- ❌ 依赖 Tauri 构建缓存
