@@ -1039,3 +1039,25 @@ acquire_sudo
 ### 使用场景
 - **软链接**：配置共享、目录链接
 - **硬链接**：备份、节省空间
+
+## PAT-2024-028: Windsurf AI 强制调用 zhi 工具的规则配置
+
+**场景**：让 Windsurf AI 在每次回复结束时必须调用 MCP 工具 `zhi` 进行确认，防止 AI 自动结束对话
+
+**解决方案**：纯规则约束（无需代码拦截）
+
+**关键规则文件**：
+1. `~/.codeium/windsurf/rules/01-core.md` - 核心原则，要求"任何对话都要调用 MCP 工具 zhi"
+2. `~/.codeium/windsurf/rules/05-output-style.md` - 输出规范，明确"MUST call MCP tool zhi"并"FORBIDDEN output literal string without tool call"
+3. `~/.codeium/windsurf/memories/global_rules.md` - 索引文件，指向所有规则
+
+**关键措辞**：
+- "必须调用 MCP 工具 zhi（寸止）" 而不是 "调用寸止"
+- "禁止仅输出文字 zhi 代替工具调用"
+- 英文版更清晰："you MUST call the MCP tool" + "FORBIDDEN: Do NOT output literal string"
+
+**失败的方案**：
+- MITM 代理：Windsurf 使用证书钉扎，不信任系统证书
+- 探测本地 API：50973/59538 是 Gemini A2A 端口，不是聊天 API
+
+**关联**：P-2024-465
