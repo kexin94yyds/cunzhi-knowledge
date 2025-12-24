@@ -14,6 +14,7 @@
 | R-2024-022 | P-2024-022 | iterate.app 更新后工具同步 | 脚本检查 |
 | R-2024-052 | P-2024-052 | Shift+Tab 恢复窗口置顶顺序 | 手工检查 |
 | R-2024-053 | P-2024-053 | 中文输入候选栏位置 | 手工检查 |
+| R-2024-464 | P-2024-464 | update.sh osascript 密码对话框 | 手工检查 |
 
 ### 🔧 知识库与流程
 | ID | 关联问题 | 名称 | 类型 |
@@ -4599,3 +4600,32 @@
 - 状态：verified
 
 ---
+
+## R-2024-464 update.sh osascript 密码对话框
+
+- 关联问题：P-2024-464
+- 类型：手工检查
+- 位置：cunzhi/update.sh
+- 关键断言：
+  1. 运行 `./update.sh` 时，脚本开头弹出 macOS 密码对话框
+  2. 输入密码后，整个更新流程无需再次输入密码
+  3. 取消密码对话框时，脚本正确退出
+- 运行方式：手工验证
+- 状态：verified
+
+---
+
+## R-2024-465: MCP 被禁用问题回归检查
+
+**关联**：P-2024-465
+
+**检查项**：
+1. 若 MCP 显示 "disabled by your admin"，执行 `grep -E "http.proxy" ~/Library/Application\ Support/Windsurf/User/settings.json`
+2. 若有代理设置，确认代理服务是否已启动
+3. 若代理未启动，删除代理设置后重启 Windsurf
+
+**验证命令**：
+```bash
+# 检查是否有代理设置
+grep -E "http.proxy" ~/Library/Application\ Support/Windsurf/User/settings.json || echo "无代理设置"
+```
