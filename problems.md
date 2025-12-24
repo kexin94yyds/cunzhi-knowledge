@@ -6580,3 +6580,13 @@ open
 ### 相关文件
 - `cunzhi/src/rust/mcp/tools/memory/mcp.rs`
 - `~/.codeium/windsurf/rules/02-tools.md`
+
+## P-2024-465: Windsurf MCP 显示 "MCPs disabled by your admin"
+
+**现象**：Cascade 面板显示 "MCPs disabled by your admin"，所有 MCP 工具无法调用
+
+**根因**：`~/Library/Application Support/Windsurf/User/settings.json` 中设置了 `http.proxy` 指向未运行的本地代理（如 `127.0.0.1:8899`），导致 Windsurf 无法连接 Codeium 服务器
+
+**修复**：删除 settings.json 中的 `http.proxy`、`http.noProxy`、`http.proxyStrictSSL` 设置，重启 Windsurf
+
+**教训**：在 Windsurf 里配置代理前，必须确保代理服务已启动；否则会导致 MCP 功能完全不可用
