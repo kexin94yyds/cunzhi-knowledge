@@ -6590,3 +6590,9 @@ open
 **修复**：删除 settings.json 中的 `http.proxy`、`http.noProxy`、`http.proxyStrictSSL` 设置，重启 Windsurf
 
 **教训**：在 Windsurf 里配置代理前，必须确保代理服务已启动；否则会导致 MCP 功能完全不可用
+
+P-2025-001
+现象：前端按钮样式过于扁平，缺乏交互反馈感，用户希望实现类似 tobooks 项目中的 3D 凹陷（sunken）效果。
+根因：默认的 Naive UI 按钮样式及自定义样式仅使用了简单的颜色变化，没有利用阴影和位移来模拟物理深度感。
+方案：在全局 CSS 中定义了基于 `inset` 阴影和 `translateY(1px)` 的按下状态样式，并将选中状态（.is-active）统一映射到该物理反馈样式。同时将蓝色调改为更中性的灰色/白色凹陷风格。
+关联：R-2025-001, PAT-2025-001
