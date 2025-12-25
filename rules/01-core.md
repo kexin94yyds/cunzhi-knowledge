@@ -19,24 +19,24 @@
 - 不明白的地方必须先通过 `寸止` 反问用户
 
 ## 会话启动检查
-- 项目相关会话开始时：先检查 `.cunzhi-knowledge/` 目录和**本项目** git 状态
+- 项目相关会话开始时：先检查 [../](../) 目录和**本项目** git 状态
 - 若不存在：调用 `寸止` 询问用户是否从 https://github.com/kexin94yyds/cunzhi-knowledge.git 拉取
 - 若存在，两者都执行 `git fetch` + `git status` 检查当前分支是否有远程更新
   - 有更新 → 调用 `寸止` 询问是否 `git pull` 拉取最新
   - 无更新 → 继续
-- 快速浏览 `problems.md` 和 `patterns.md`，避免重复解决已记录的问题
+- 快速浏览 [problems.md](../problems.md) 和 [patterns.md](../patterns.md)，避免重复解决已记录的问题
 - 完成检查前，禁止进入项目级讨论
 
 ## 任务分配权
 - **任务量大时（>20 条重复操作或预估 >5000 行输出）**，主动调用 `寸止` 询问是否分配给子代理
-- 用户确认分配 → 读取 `.cunzhi-knowledge/prompts/workflows/batch-task.md` 执行
+- 用户确认分配 → 读取 [../prompts/workflows/batch-task.md](../prompts/workflows/batch-task.md) 执行
 - 用户拒绝分配 → 直接执行任务
 
 ## 问题解决沉淀三件套（强制流程）
 解决问题后，**必须按顺序**完成以下三步，缺一不可：
-1. **沉淀问题** → 记录遇到的问题（根因、现象、修复方案） → P-YYYY-NNN 写入 problems.md
-2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 patterns.md
-3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 regressions.md
+1. **沉淀问题** → 记录遇到的问题（根因、现象、修复方案） → P-YYYY-NNN 写入 [problems.md](../problems.md)
+2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 [patterns.md](../patterns.md)
+3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 [regressions.md](../regressions.md)
 
 **约束：**
 - 三者 ID 后缀必须关联（如 P-2024-022 → PAT-2024-024 → R-2024-022）
@@ -52,8 +52,8 @@
 
 ## Memory vs Knowledge 分工
 - `.cunzhi-memory/` = 项目级临时记忆（context/preferences/notes/rules）
-- `.cunzhi-knowledge/` = 全局持久化知识库（problems/regressions/patterns）
-- **禁止在 memory 存放 problems.md**
+- [../](../) = 全局持久化知识库 ([problems.md](../problems.md)/[regressions.md](../regressions.md)/[patterns.md](../patterns.md))
+- **禁止在 memory 存放 [problems.md](../problems.md)**
 
 ## CunZhi Memory 约束
 - cunzhi-memory 启用前，先检测 git 根目录
@@ -61,7 +61,7 @@
 - 所有 memory 必须绑定 git 根目录作为唯一 `project_path`
 
 ## 提示词库
-- `.cunzhi-knowledge/prompts/` 是技能库
+- [../prompts/](../prompts/) 是技能库
 - 用户输入目录名（如 ci、git、testing）→ 调用 `ci` MCP 工具搜索并应用模板
 
 ## 搜索规则（sou）
