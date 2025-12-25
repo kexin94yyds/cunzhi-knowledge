@@ -19,9 +19,12 @@
 - 不明白的地方必须先通过 `寸止` 反问用户
 
 ## 会话启动检查
-- 项目相关会话开始时：先检查 [../](../) 目录和**本项目** git 状态
-- 若不存在：调用 `寸止` 询问用户是否从 https://github.com/kexin94yyds/cunzhi-knowledge.git 拉取
-- 若存在，两者都执行 `git fetch` + `git status` 检查当前分支是否有远程更新
+- 项目相关会话开始时：先检查 `.cunzhi-knowledge/` 目录和**本项目** git 状态
+- **若不存在**：调用 `寸止` 询问用户是否执行：
+  ```bash
+  git clone https://github.com/kexin94yyds/cunzhi-knowledge.git .cunzhi-knowledge
+  ```
+- **若存在**：进入 `.cunzhi-knowledge/` 目录，执行 `git fetch` + `git status` 检查是否有远程更新
   - 有更新 → 调用 `寸止` 询问是否 `git pull` 拉取最新
   - 无更新 → 继续
 - 快速浏览 [problems.md](../problems.md) 和 [patterns.md](../patterns.md)，避免重复解决已记录的问题
