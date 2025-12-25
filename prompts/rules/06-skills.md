@@ -1,4 +1,7 @@
-# Claude Skills 触发规则
+---
+trigger: always_on
+---
+# [06] Claude Skills 触发规则
 
 **位置**：`.cunzhi-knowledge/prompts/skills/`
 
