@@ -6614,3 +6614,10 @@ P-2024-003
 根因：复合按键序列 Cmd+L -> Cmd+T 在已聚焦输入框时会触发面板切换。
 方案：简化为直接发送 Cmd+T。
 状态：fixed。
+
+P-2024-004
+现象：用户点击“打开终端”时启动了独立的系统终端应用，而非在当前 IDE（Windsurf）内部开启。
+根因：原 `open_terminal` 逻辑硬编码为打开系统 `Terminal.app`。
+影响范围：所有触发“打开终端”的功能点。
+方案：重构 `open_terminal` 逻辑，在 macOS 上通过 AppleScript 激活 Windsurf 并发送 `Ctrl+` ` 快捷键以切换 IDE 内部终端面板。
+状态：fixed。
