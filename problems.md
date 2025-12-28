@@ -6603,3 +6603,8 @@ P-2024-001
 影响范围：前端路径点击跳转、Rust 端 IDE 启动逻辑。
 方案：重命名 tauri 命令为 open_in_ide，调整 Rust 端优先级使 Windsurf 为首选，更新 Vue 组件调用。
 状态：fixed。
+
+P-2024-002 (Update)
+现象：AppleScript 实现的 “+” 按钮新聊天窗口功能在 Windsurf 中不够稳定。
+方案：放弃 AppleScript 模拟按键，改用 Windsurf 原生命令行工具 `windsurf chat --reuse-window` 实现。该方案更稳定、响应更快，且支持直接发送内容。
+状态：fixed。
