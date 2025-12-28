@@ -6628,3 +6628,8 @@ P-2024-005
 影响范围：应用交互体验，终端使用便捷性。
 方案：引入 `xterm.js` (前端) 和 `portable-pty` (后端)，实现完整的 PTY 模拟。在 `AppContent.vue` 中集成嵌入式终端面板，并提供切换开关。
 状态：fixed。
+
+P-2024-005 (Update)
+现象：嵌入式终端颜色对比度低，ANSI 颜色显示不清晰。
+方案：在 `TerminalView.vue` 中配置了高对比度的深色主题（基于 Tokyo Night），明确定义了所有基础 ANSI 颜色及背景/前景文字颜色。
+状态：fixed。
