@@ -4638,3 +4638,13 @@ grep -E "http.proxy" ~/Library/Application\ Support/Windsurf/User/settings.json 
   2. 验证 `PopupContent.vue` 中的切换按钮在选中时是否带有 `is-active` 类。
   3. 手工验证：点击按钮时，观察是否有 1px 的向下位移和内部阴影出现。
 - **状态**: Verified
+
+R-2024-001
+类型：手工检查
+步骤：
+1. 运行应用，在弹出窗口中 Cmd+点击项目路径。
+2. 验证是否优先启动 Windsurf。
+3. 验证在没有 Windsurf 的情况下是否尝试启动 Cursor。
+4. 验证 Rust 编译无警告。
+期望：Windsurf 正确启动，逻辑符合预期。
+关联：P-2024-001。
