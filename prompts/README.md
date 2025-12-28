@@ -32,25 +32,8 @@ prompts/
 ├── experts/       # 专家角色系统
 ├── release/       # 发布流程
 ├── app/           # 开发环境
-├── modes/         # 场景模式提示词（原始导出 .txt）
-└── skills/        # Anthropic Claude Skills（官方技能库）
+└── modes/         # 场景模式提示词（原始导出 .txt）
 ```
-
-## Anthropic Claude Skills
-
-`skills/` 目录包含 [Anthropic 官方 Skills](https://github.com/anthropics/skills) 的副本，提供专业领域的指导：
-
-| 技能 | 用途 |
-|------|------|
-| `mcp-builder` | 创建 MCP 服务器的完整指南 |
-| `skill-creator` | 创建自定义 Skills 的方法论 |
-| `webapp-testing` | Playwright Web 应用测试 |
-| `frontend-design` | 前端 UI/UX 设计指南 |
-| `docx` / `pdf` / `pptx` / `xlsx` | 文档处理技能 |
-| `web-artifacts-builder` | Web 组件构建 |
-| `theme-factory` | 主题/样式系统创建 |
-
-**调用方式**：直接引用 `.cunzhi-knowledge/prompts/skills/<skill-name>/SKILL.md`
 
 ## 模板分类
 

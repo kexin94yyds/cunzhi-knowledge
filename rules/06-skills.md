@@ -3,7 +3,7 @@ trigger: always_on
 ---
 # [06] Claude Skills 触发规则
 
-**位置**：[../prompts/skills/](../prompts/skills/)
+**位置**：`.cunzhi-knowledge/prompts/skills/`
 
 **使用流程**：意图识别 → 加载 SKILL.md → 按需加载 reference/ 或 scripts/ → 执行 → `zhi` 确认
 

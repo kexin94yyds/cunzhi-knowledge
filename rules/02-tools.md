@@ -55,8 +55,8 @@
 
 ## 提示词库
 
-存储位置：[.cunzhi-knowledge/prompts/](../prompts/)
+存储位置：`.cunzhi-knowledge/prompts/`
 
 **定位**：AI 协作技能库，开发全流程的模板、工作流和最佳实践参考
 
-**调用方式**：按需搜索对应目录，参考 [prompts/README.md](../prompts/README.md)
+**调用方式**：按需搜索对应目录，参考 `prompts/README.md`
