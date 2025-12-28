@@ -6608,3 +6608,9 @@ P-2024-002 (Update)
 现象：AppleScript 实现的 “+” 按钮新聊天窗口功能在 Windsurf 中不够稳定。
 方案：放弃 AppleScript 模拟按键，改用 Windsurf 原生命令行工具 `windsurf chat --reuse-window` 实现。该方案更稳定、响应更快，且支持直接发送内容。
 状态：fixed。
+
+P-2024-003
+现象：Windsurf 聊天面板已打开时，点击 “+” 按钮逻辑可能导致面板关闭或失效。
+根因：复合按键序列 Cmd+L -> Cmd+T 在已聚焦输入框时会触发面板切换。
+方案：简化为直接发送 Cmd+T。
+状态：fixed。
