@@ -63,7 +63,15 @@
 
 ## 详细记录
 
-<!-- 新模式追加在此处 -->
+## PAT-2025-001 macOS 应用精准焦点唤回模式
+
+- 场景：在 macOS 开发全局快捷键唤起的工具类应用（如粘贴板、提示词库）时，需要精准将焦点切换回之前的应用。
+- 模式：使用 Unix PID 识别而非应用名称。
+- 实现关键点：
+  1. 呼出窗口前捕获 PID：`tell application "System Events" to get unix id of first application process whose frontmost is true`
+  2. 插入/返回前强制激活 PID：`tell application "System Events" to set frontmost of first application process whose unix id is {pid} to true`
+  3. 留出激活延迟：在激活指令后设置 100-200ms 的延时，再发送按键事件。
+- 关联问题：P-2025-001
 
 ## PAT-2024-021 ji 工具统一管理 memory 和 knowledge
 

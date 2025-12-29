@@ -44,7 +44,17 @@
 
 ## 详细记录
 
-<!-- 新回归检查追加在此处 -->
+## R-2025-001 Windsurf 插入功能回归检查
+
+- ID: R-2025-001
+- 关联问题: P-2025-001
+- 类型: 手工检查
+- 位置: /Users/apple/提示词最新的/Full-screen-prompt/main.js
+- 关键断言: 检查 `lastFrontAppPid` 是否成功捕获非 0 的 PID，且 `activateAppByPid` 执行无报错。
+- 运行方式: 
+  1. 打开 Windsurf
+  2. Shift+Cmd+P 呼出 Prompt
+  3. 选择插入，检查 Windsurf 是否被激活并完成粘贴。
 
 ## R-2024-022 iterate.app 更新后工具同步
 

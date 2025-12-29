@@ -33,7 +33,17 @@
 
 ## 问题清单
 
-<!-- 新问题追加在此处 -->
+## P-2025-001 Windsurf/Cursor 编辑器插入失败
+
+- 项目：Full-screen-prompt (Electron)
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：2.0.0
+- 现象：在 Windsurf 或 Cursor 等编辑器中，选择提示词后无法自动粘贴到光标位置，而在备忘录等应用中正常。
+- 根因：原方案使用 `activateAppByName` 激活应用，但在 Windsurf 这类基于 VS Code 的编辑器中，进程名称（如 `Windsurf` vs `Windsurf Helper`）或窗口层级较为复杂，导致 AppleScript 无法精准切回编辑器焦点。
+- 修复：将激活逻辑从“按名称”改为“按 PID（进程 ID）”。在呼出窗口时记录当前前台 PID，插入时通过 PID 强制激活。同时增加了 150ms 的激活缓冲时间。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-30
 
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
