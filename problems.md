@@ -6668,3 +6668,13 @@ P-2024-005 (Layout & Color Update)
 **修复方案**：
 1. 执行 SQL `UPDATE mysql.user SET host='%' WHERE user='root'; FLUSH PRIVILEGES;` 开启远程权限。
 2. 运行 `compile.sh` 重新编译并重启 Tomcat 服务。
+
+P-2025-001: 语音记录App开发与iOS适配
+现象: 用户需要一个能自动命名、实时转写且具有极简黑魂UI的录音App，并要求适配iOS。
+根因: 初始UI不符合审美，本地模型加载慢导致0%显示。
+解决方案: 
+1. 采用用户提供的极简黑魂UI模板(zip内容)。
+2. 接入hiapi.online云端API (Gemini 2.5 Flash + Whisper) 替代本地模型，实现秒开。
+3. 集成 Capacitor 并配置 iOS 麦克风/语音识别权限。
+4. 加入 Web Speech API 实现录音时实时出字预览。
+状态: fixed
