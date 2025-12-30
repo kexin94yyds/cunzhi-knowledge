@@ -6657,3 +6657,14 @@ P-2024-005 (Layout & Color Update)
 1. 颜色：将背景设置为纯黑（#000000），文字设置为纯白（#ffffff），并优化 ANSI 颜色。
 2. 布局：重构为绝对定位全屏覆盖（inset-x-0 bottom-0 top-[52px]），不影响主内容骨架，并添加了滑入滑出动画和关闭按钮。
 状态：fixed。
+
+### P-2025-001: 数据库连接失败与后端服务不可用
+**现象**：老师反馈数据库连不上，访问网页无法加载图书列表。
+**根因**：
+1. MySQL `root` 用户仅允许 `localhost` 登录，未开启远程访问权限。
+2. Tomcat 服务（8080 端口）未启动，导致 API 接口不可用。
+**影响范围**：外部数据库客户端无法连接；前端网页无法获取数据（502/Connection refused）。
+**状态**：fixed
+**修复方案**：
+1. 执行 SQL `UPDATE mysql.user SET host='%' WHERE user='root'; FLUSH PRIVILEGES;` 开启远程权限。
+2. 运行 `compile.sh` 重新编译并重启 Tomcat 服务。
