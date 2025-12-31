@@ -45,6 +45,21 @@
 - 状态：verified
 - 日期：2025-12-30
 
+## P-2025-001 磁盘空间不足导致最新数据丢失
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：2.1.1
+- 现象：用户退出应用后再次打开，发现最新数据全部丢失。
+- 根因：系统磁盘空间完全耗尽（ENOSPC），导致 ElectronStore 在保存 `config.json` 时写入失败，且 IndexedDB 事务无法提交。
+- 修复：
+  1. 实现自动备份机制：应用启动时及运行期间每 30 分钟备份一次 `config.json` 和 `IndexedDB` 目录。
+  2. 限制备份数量：保留最近 10 次备份以平衡安全与空间占用。
+  3. 暴露备份 API：允许通过 `window.electronAPI.backup` 进行手动备份、查看列表及恢复。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-31
+
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)

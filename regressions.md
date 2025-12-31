@@ -84,6 +84,21 @@
 
 ---
 
+## R-2025-001 自动备份功能验证
+
+- 关联问题：P-2025-001
+- 类型：手工检查
+- 位置：`~/Library/Application Support/replace-information/backups/`
+- 关键断言：
+  1. 应用启动 3 秒后，备份目录应出现新的 `backup_YYYY-MM-DD...` 子目录。
+  2. 备份目录内应包含完整的 `config.json` 和 `IndexedDB` 文件夹。
+  3. 修改数据后，等待 30 分钟或调用 `backup.now()`，应产生新的备份点。
+  4. 手动删除 `config.json` 后，通过 `backup.restore(name)` 应能成功恢复数据。
+- 运行方式：
+  1. 打开应用，检查日志确认 `✅ 自动备份完成`。
+  2. 进入 Finder 查看备份文件完整性。
+  3. 执行 `window.electronAPI.backup.list()` 验证列表输出。
+
 ## R-2024-002 WindowSwitcher 上下箭头切换窗口置顶
 
 - 关联问题：P-2024-002
