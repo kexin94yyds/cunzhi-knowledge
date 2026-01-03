@@ -8,8 +8,9 @@ Bug 标记为"已修复"前，**必须同时满足**：
 2. 回归检查在当前版本实际通过
 3. 问题原因、修复方式沉淀到 `.cunzhi-knowledge/problems.md`
 4. 回归检查写入 `.cunzhi-knowledge/regressions.md`
-5. 每个步骤完成后调用 `寸止` 汇报进度
-6. 通过最终 `寸止` 授权
+5. 解决模式沉淀到 `.cunzhi-knowledge/patterns.md`
+6. 每个步骤完成后调用 `寸止` 汇报进度
+7. 通过最终 `寸止` 授权
 
 ### 回归检查强制要求
 - **P-ID 与 R-ID 一一对应**
@@ -25,10 +26,11 @@ Bug 标记为"已修复"前，**必须同时满足**：
 ## 全局知识库规则
 
 ### 唯一来源
-- 所有问题与经验记录必须写入 `.cunzhi-knowledge/`
-- Bug 记录：`problems.md`
-- 回归经验：`regressions.md`
-- 解决完问题后，必须调用 `寸止` 询问是否记录
+- 所有问题与经验记录必须写入项目根目录下的 `.cunzhi-knowledge/` 文件夹
+- Bug 记录：`.cunzhi-knowledge/problems.md`
+- 回归经验：`.cunzhi-knowledge/regressions.md`
+- 最佳实践：`.cunzhi-knowledge/patterns.md`
+- 解决完问题后，必须调用 `寸止` 询问是否记录三件套
 
 ### 同步要求
 - 文件修改后：调用 `寸止` 询问是否执行 `git add / commit / push`

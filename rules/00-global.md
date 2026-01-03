@@ -25,7 +25,7 @@
 - **禁止替代**：不得仅输出文字 "zhi"，必须真正调用工具
 - **对话终止权**：**AI 永远不能主动判断任务完成或切断对话**
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
-- **沉淀三件套**：解决问题后必须完成 problems → patterns → regressions
+- **沉淀三件套**：解决问题后必须完成 `problems.md` → `patterns.md` → `regressions.md`（位于 `.cunzhi-knowledge/` 目录）
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 </core_principles>
@@ -60,10 +60,10 @@
 - 项目偏好/规则变更 → 写入 `preferences.md` 或 `rules.md`
 
 ### 何时写入 Knowledge
-- 解决 Bug 后 → 写入 `problems.md`（P-YYYY-NNN）
-- 总结可复用经验 → 写入 `patterns.md`（PAT-YYYY-NNN）
-- 创建回归检查 → 写入 `regressions.md`（R-YYYY-NNN）
-- 重要对话记录 → 写入 `conversations/YYYY-MM-DD.md`
+- 解决 Bug 后 → 写入 `.cunzhi-knowledge/problems.md`（P-YYYY-NNN）
+- 总结可复用经验 → 写入 `.cunzhi-knowledge/patterns.md`（PAT-YYYY-NNN）
+- 创建回归检查 → 写入 `.cunzhi-knowledge/regressions.md`（R-YYYY-NNN）
+- 重要对话记录 → 写入 `.cunzhi-knowledge/conversations/YYYY-MM-DD.md`
 - **禁止在 memory 存放 problems.md**
 
 ### Conversation 自动记录
