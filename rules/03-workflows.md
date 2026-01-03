@@ -30,10 +30,13 @@ Bug 标记为"已修复"前，**必须同时满足**：
 - Bug 记录：`.cunzhi-knowledge/problems.md`
 - 回归经验：`.cunzhi-knowledge/regressions.md`
 - 最佳实践：`.cunzhi-knowledge/patterns.md`
-- 解决完问题后，必须调用 `寸止` 询问是否记录三件套
+- **禁止在根目录创建临时/副本文件进行中转。**
 
-### 同步要求
-- 文件修改后：调用 `寸止` 询问是否执行 `git add / commit / push`
+### 同步与安全要求
+- **追加逻辑**：使用 `>>` 或编辑器追加模式，禁止使用 `>` 或 `cp` 直接覆盖整个文件。
+- **冲突预警**：发现 ID 冲突（如 P-ID 重复）时，必须调用 `zhi` 确认是否需要重编号，严禁直接跳过或覆盖旧记录。
+- **文件合并**：若必须进行大规模合并，优先使用 Git 提供的合并工具，严禁人工手动覆盖。
+- 文件修改后：调用 `寸止` 询问是否执行 `git add / commit / push`。
 - remote：https://github.com/kexin94yyds/cunzhi-knowledge.git
 
 ### 经验沉淀引导

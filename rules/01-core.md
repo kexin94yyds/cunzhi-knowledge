@@ -43,6 +43,12 @@
 2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 `.cunzhi-knowledge/patterns.md`
 3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 `.cunzhi-knowledge/regressions.md`
 
+### 🛡️ 沉淀安全守则（PREVENT OVERWRITE）
+- **追加协议（Append-Only）**：知识库文件为增量式事实库。**严禁整体覆盖**，必须使用追加（append）或合并（merge）逻辑。
+- **禁止根目录暂存**：严禁在项目根目录创建同名 `problems.md` 等文件。所有沉淀必须**直接且仅**在 `.cunzhi-knowledge/` 内操作。
+- **写入前置校验**：手动写入前必须检查当前文件状态。如果写入后的文件行数或字节数明显少于写入前，必须立即停止并调用 `zhi` 报警。
+- **同步原子性**：写入前执行 `git pull --rebase`，写入后立即执行 `git add / commit / push`，确保云端一致性。
+
 **约束：**
 - 三者 ID 后缀必须关联（如 P-2024-022 → PAT-2024-024 → R-2024-022）
 - 未完成三件套前，禁止视为"问题已解决"
