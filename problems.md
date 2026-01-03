@@ -35,6 +35,64 @@
 
 <!-- 新问题追加在此处 -->
 
+## P-2025-005 全局快捷键开关失效及系统快捷键冲突
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：
+  1. 点击快捷键开关图标，状态虽变但快捷键在窗口聚焦时仍生效。
+  2. `Tab`/`Shift+Tab` 拦截了系统级组合键（如 `Cmd+Tab`），导致无法切换应用。
+  3. 修改代码后由于缺失 `@tauri-apps/api/event` 中的 `listen` 导入，导致前端无法接收状态变更。
+- 根因：
+  1. 仅注销了全局插件快捷键，未禁用前端 `document` 级别的本地监听器。
+  2. 键盘事件处理器缺乏对修饰键（Cmd/Alt/Ctrl）的排除逻辑。
+  3. `AppContent.vue` 中未导入 `listen` 函数，导致异步状态同步失败。
+- 修复：
+  1. 在 `AppContent.vue` 的 `handleGlobalKeydown` 中增加 `globalShortcutEnabled` 校验。
+  2. 优化 `Tab`/`Shift+Tab` 拦截逻辑，明确排除带修饰键的情况。
+  3. 补齐 `listen` 导入，确保 `global-shortcut-state-changed` 事件能被正确处理。
+  4. 移除 `PopupHeader.vue` 中冗余的“已禁”文本，优化 UI。
+- 回归检查：R-2025-005
+- 状态：verified
+- 日期：2025-12-30
+
+---
+
+## P-2025-004 全局快捷键无法临时禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：用户希望在某些场景下临时关闭全局快捷键（如 `Shift+Tab`），避免冲突，但目前只能通过系统设置或修改配置文件实现，操作不便。
+- 根因：缺乏快捷键状态的运行时管理机制和 UI 快速切换入口。
+- 修复：
+  1. 后端：在 `ShortcutConfig` 和 `AppState` 中增加 `global_enabled` 状态。
+  2. 逻辑：重构前端快捷键注册逻辑，支持动态监听状态变化并执行 `register/unregister`。
+  3. UI：在弹窗头部（`PopupHeader`）增加闪电图标按钮，支持一键切换。
+- 回归检查：R-2025-004
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+
+## P-2025-003 上下文追加项无法按需禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：弹窗中的“上下文追加”项（如“是否生成总结性Markdown文档”）总是会追加内容到输入框，用户无法在弹窗中临时选择不追加某一项。
+- 根因：数据结构 `CustomPrompt` 缺少启用状态标志（`is_active`），且前端 UI 只提供了模板状态切换（Switch），没有提供项级别的开启/关闭控制。
+- 修复：
+  1. 后端：在 `CustomPrompt` 结构体中添加 `is_active` 字段，并新增 `update_conditional_prompt_active` 命令。
+  2. 前端：在弹窗 UI 的上下文追加区域，为每项添加 Checkbox 勾选框；只有 `is_active` 为 true 的项才会参与内容追加。
+  3. 设置：在自定义 Prompt 设置页面增加“是否启用”开关。
+- 回归检查：R-2025-003
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)

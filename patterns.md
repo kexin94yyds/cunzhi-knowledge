@@ -63,7 +63,51 @@
 
 ## 详细记录
 
-<!-- 新模式追加在此处 -->
+## PAT-2025-003 Tauri 应用中的动态快捷键状态同步模式
+
+- **场景**：需要在 Tauri 应用中动态启用/禁用全局快捷键（Plugin Global Shortcut）以及本地键盘监听器（document event listener）。
+- **模式描述**：
+  1. **后端持久化**：在 Rust 后端 `AppState` 中使用 `AtomicBool` 维护启用状态，并同步到配置文件。
+  2. **事件驱动同步**：通过 `app.emit` 发送自定义事件（如 `global-shortcut-state-changed`）通知所有窗口前端。
+  3. **前端分层处理**：
+     - **插件层**：接收事件后调用 `register`/`unregister` 操作系统的全局快捷键。
+     - **监听层**：在本地 `keydown`/`keyup` 处理器中增加对响应式状态位（如 `globalShortcutEnabled`）的校验。
+  4. **精确拦截**：在本地处理器中，拦截 `Tab` 等常用键时，必须明确排除 `metaKey`/`ctrlKey`/`altKey` 等修饰键，防止干扰系统原生快捷键（如 `Cmd+Tab`）。
+- **关联问题**：P-2025-004, P-2025-005
+- **日期**：2025-12-30
+
+## PAT-2025-002 全局快捷键的运行时热切换
+
+- 来源：CunZhi 快捷键管理优化
+- 日期：2025-12-29
+
+**核心原则**：
+- **状态同步链**：配置文件 (Disk) -> AppConfig (Memory) -> AppState Atomic (Runtime) -> 前端事件 (UI)。
+- **动态注册**：全局快捷键不应仅在应用启动时注册一次，而应封装为可重复调用的 `register/unregister` 逻辑。
+- **视觉一致性**：UI 上的切换按钮应通过监听后端推送的事件（如 `global-shortcut-state-changed`）来同步状态，确保多窗口下的表现一致。
+
+**实现模式**：
+- **原子变量保护**：在 `AppState` 中使用 `AtomicBool` 记录状态，确保在 Rust 层级也能进行低开销的状态检查。
+- **生命周期管理**：在前端组件 `onUnmounted` 时必须执行注销，并在 `onMounted` 时根据后端状态决定是否注册。
+
+---
+
+## PAT-2025-001 上下文追加项的精细化控制
+
+- 来源：CunZhi 弹窗系统优化
+- 日期：2025-12-29
+
+**核心原则**：
+- **两级控制**：区分“内容切换（Switch）”与“是否生效（Checkbox）”。
+- **UI 状态联动**：当某项被禁用（Unchecked）时，其操作控件（Switch）应同步禁用，并提供视觉反馈（如降低不透明度）。
+- **默认安全原则**：新创建或预设的项默认应处于激活状态（`is_active: true`），由用户按需关闭。
+
+**实现模式**：
+- **数据层**：在条件性 Prompt 结构中引入 `is_active` 状态位。
+- **逻辑层**：生成最终 Prompt 时，先过滤掉 `is_active === false` 的项，再根据 `current_state` 选择对应的模板内容。
+- **持久化**：独立的 RPC 命令 `update_conditional_prompt_active` 用于快速同步单个项的激活状态。
+
+---
 
 ## PAT-2024-021 ji 工具统一管理 memory 和 knowledge
 
