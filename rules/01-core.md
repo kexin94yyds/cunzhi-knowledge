@@ -39,9 +39,9 @@
 
 ## 问题解决沉淀三件套（强制流程）
 解决问题后，**必须按顺序**完成以下三步，缺一不可：
-1. **沉淀问题** → 记录遇到的问题（根因、现象、修复方案） → P-YYYY-NNN 写入 problems.md
-2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 patterns.md
-3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 regressions.md
+1. **沉淀问题** → 记录遇到的问题（根因、现象、修复方案） → P-YYYY-NNN 写入 `.cunzhi-knowledge/problems.md`
+2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 `.cunzhi-knowledge/patterns.md`
+3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 `.cunzhi-knowledge/regressions.md`
 
 **约束：**
 - 三者 ID 后缀必须关联（如 P-2024-022 → PAT-2024-024 → R-2024-022）
