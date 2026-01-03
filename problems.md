@@ -33,7 +33,32 @@
 
 ## 问题清单
 
-<!-- 新问题追加在此处 -->
+## P-2025-001 Windsurf/Cursor 编辑器插入失败
+
+- 项目：Full-screen-prompt (Electron)
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：2.0.0
+- 现象：在 Windsurf 或 Cursor 等编辑器中，选择提示词后无法自动粘贴到光标位置，而在备忘录等应用中正常。
+- 根因：原方案使用 `activateAppByName` 激活应用，但在 Windsurf 这类基于 VS Code 的编辑器中，进程名称（如 `Windsurf` vs `Windsurf Helper`）或窗口层级较为复杂，导致 AppleScript 无法精准切回编辑器焦点。
+- 修复：将激活逻辑从“按名称”改为“按 PID（进程 ID）”。在呼出窗口时记录当前前台 PID，插入时通过 PID 强制激活。同时增加了 150ms 的激活缓冲时间。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-30
+
+## P-2025-001 磁盘空间不足导致最新数据丢失
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：2.1.1
+- 现象：用户退出应用后再次打开，发现最新数据全部丢失。
+- 根因：系统磁盘空间完全耗尽（ENOSPC），导致 ElectronStore 在保存 `config.json` 时写入失败，且 IndexedDB 事务无法提交。
+- 修复：
+  1. 实现自动备份机制：应用启动时及运行期间每 30 分钟备份一次 `config.json` 和 `IndexedDB` 目录。
+  2. 限制备份数量：保留最近 10 次备份以平衡安全与空间占用。
+  3. 暴露备份 API：允许通过 `window.electronAPI.backup` 进行手动备份、查看列表及恢复。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-31
 
 ## P-2025-005 全局快捷键开关失效及系统快捷键冲突
 
@@ -6705,3 +6730,24 @@ P-2024-005 (Layout & Color Update)
 1. 颜色：将背景设置为纯黑（#000000），文字设置为纯白（#ffffff），并优化 ANSI 颜色。
 2. 布局：重构为绝对定位全屏覆盖（inset-x-0 bottom-0 top-[52px]），不影响主内容骨架，并添加了滑入滑出动画和关闭按钮。
 状态：fixed。
+
+### P-2025-001: 数据库连接失败与后端服务不可用
+**现象**：老师反馈数据库连不上，访问网页无法加载图书列表。
+**根因**：
+1. MySQL `root` 用户仅允许 `localhost` 登录，未开启远程访问权限。
+2. Tomcat 服务（8080 端口）未启动，导致 API 接口不可用。
+**影响范围**：外部数据库客户端无法连接；前端网页无法获取数据（502/Connection refused）。
+**状态**：fixed
+**修复方案**：
+1. 执行 SQL `UPDATE mysql.user SET host='%' WHERE user='root'; FLUSH PRIVILEGES;` 开启远程权限。
+2. 运行 `compile.sh` 重新编译并重启 Tomcat 服务。
+
+P-2025-001: 语音记录App开发与iOS适配
+现象: 用户需要一个能自动命名、实时转写且具有极简黑魂UI的录音App，并要求适配iOS。
+根因: 初始UI不符合审美，本地模型加载慢导致0%显示。
+解决方案: 
+1. 采用用户提供的极简黑魂UI模板(zip内容)。
+2. 接入hiapi.online云端API (Gemini 2.5 Flash + Whisper) 替代本地模型，实现秒开。
+3. 集成 Capacitor 并配置 iOS 麦克风/语音识别权限。
+4. 加入 Web Speech API 实现录音时实时出字预览。
+状态: fixed
