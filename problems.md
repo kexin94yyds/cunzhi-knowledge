@@ -31,8 +31,22 @@
 
 ---
 
-## 问题清单
+## P-2026-001 .gitignore 通配符导致 .cunzhi-knowledge 文件被忽略
 
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：问题解决后，相关的 .md 文件没有在 .cunzhi-knowledge/ 中正确显示或被 IDE 识别。发现项目根目录的 .gitignore 包含 *.md 规则，导致知识库内的文件被忽略。
+- 根因：项目级的 .gitignore 通配符规则（如 *.md）会递归影响子目录，包括作为 submodule 或独立仓库存在的 .cunzhi-knowledge/，导致 IDE（如 Windsurf）隐藏这些文件，且 git 操作受限。
+- 修复：
+  1. 在 .gitignore 中添加 `!.cunzhi-knowledge/` 和 `!.cunzhi-memory/` 例外保护。
+  2. 在 .cunzhi-knowledge 中提供标准化保护模板。
+  3. 增强 `ji(回忆)` 工具，使其能自动检测此类配置风险并提供一键修复建议。
+- 回归检查：R-2026-001
+- 状态：verified
+- 日期：2026-01-03
+
+---
 ## P-2025-001 Windsurf/Cursor 编辑器插入失败
 
 - 项目：Full-screen-prompt (Electron)
