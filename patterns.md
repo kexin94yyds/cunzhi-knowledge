@@ -43,6 +43,7 @@
 | PAT-2025-001 | macOS 应用精准焦点唤回模式 | 使用 PID 识别切换焦点 |
 | PAT-2025-002 | 全局快捷键的运行时热切换 | 状态同步链与动态注册 |
 | PAT-2025-003 | Tauri 应用动态快捷键同步 | 后端持久化与前端分层处理 |
+| PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -1252,3 +1253,27 @@ macOS 应用图标可以通过简单的复制粘贴方式设置：
 - **适用场景**: 需要快速提升产品功能完整性，参考成熟竞品。
 - **核心模式**: 克隆分析、结构化对比、取舍原则、分阶段实施。
 - **关联 P-ID**: P-2026-004
+
+---
+
+## PAT-2026-006: macOS Swift 全局热键监听
+
+- **适用场景**: macOS 原生 Swift 应用需要实现系统级全局快捷键（无论应用是否在前台）
+- **核心模式**:
+  1. **NSMenuItem.keyEquivalent 的局限**: 只是菜单快捷键，需要应用前台且菜单激活才响应
+  2. **全局监听**: 使用 `NSEvent.addGlobalMonitorForEvents(matching: .keyDown)` 监听系统级按键
+  3. **keyCode 映射**: Q=12, W=13, E=14... 使用 keyCode 而非字符判断
+  4. **权限要求**: 必须在 System Preferences → Security & Privacy → Accessibility 中授权
+  5. **签名重建**: 修改可执行文件后需 `codesign --force --deep --sign -` 重新签名，否则权限失效
+
+```swift
+// 在 applicationDidFinishLaunching 中添加
+NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+    // Option + Q (keyCode 12)
+    if event.modifierFlags.contains(.option) && event.keyCode == 12 {
+        self?.controller.toggleVisibility()
+    }
+}
+```
+
+- **关联 P-ID**: P-2026-005

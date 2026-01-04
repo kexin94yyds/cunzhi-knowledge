@@ -6830,3 +6830,28 @@ P-2026-002: macOS 辅助工具交互优化
 根因：默认的菜单栏交互在特定硬件下体验不佳，且标准 UI 过于繁琐。
 方案：实现屏幕左上角悬浮球，支持单击（通过 controller 切换状态）和双击（直接 terminate 应用）的混合交互模式。
 状态：verified
+
+---
+
+## P-2026-005: macOS 应用 Option+Q 快捷键无法全局触发
+
+- **项目**: PathHelper
+- **仓库**: /Users/apple/URL copy
+- **发生版本**: 2026-01-04
+- **现象**: Option+Q 快捷键只在菜单激活时生效，悬浮球隐藏后无法全局触发显示/隐藏
+- **根因**: 使用 `NSMenuItem.keyEquivalent` 只是菜单快捷键，不是系统全局热键。菜单快捷键需要应用处于前台且菜单激活状态才能响应
+- **修复**: 添加 `NSEvent.addGlobalMonitorForEvents(matching: .keyDown)` 实现真正的全局热键监听
+  ```swift
+  NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
+      if event.modifierFlags.contains(.option) && event.keyCode == 12 {
+          self.controller.toggleVisibility()
+      }
+  }
+  ```
+- **注意事项**:
+  1. 全局监听需要辅助功能权限（System Preferences → Security & Privacy → Accessibility）
+  2. 修改可执行文件后需要重新签名：`codesign --force --deep --sign -`
+  3. 签名变更后需要重新授权辅助功能权限
+- **回归检查**: R-2026-005
+- **状态**: verified
+- **日期**: 2026-01-04
