@@ -12,7 +12,7 @@ Bug 标记为"已修复"前，**必须同时满足**：
 6. 每个步骤完成后调用 `寸止` 汇报进度
 7. 通过最终 `寸止` 
 8. **跨 IDE 审计闭环（可选）**：在完成“三件套”沉淀后，AI 应询问用户是否需要 Codex 审计。若需要，则生成审计 Prompt 供用户复制。
-9. **闭环审计自动化**：在 Codex 审计返回 `LGTM` 且包含针对 `.cunzhi-knowledge/problems.md` 的 Diff 时，AI 助手应当自动应用该改动并执行 Git 同步（add/commit/push），将状态推进至 `verified`。
+9. **闭环审计自动化**：在 Codex 审计返回 `LGTM` 且包含针对 `.cunzhi-knowledge/problems.md` 的 Diff 时，AI 助手应当先通过 `zhi` 请求用户确认；确认后再自动应用该改动并执行 Git 同步（add/commit/push），将状态推进至 `audited (Codex已审计)`。
 
 ### 回归检查强制要求
 - **P-ID 与 R-ID 一一对应**
@@ -21,8 +21,9 @@ Bug 标记为"已修复"前，**必须同时满足**：
 - 禁止只写 problems.md 而跳过 regressions.md
 
 ### 状态枚举
-- **open** → **fixed** → **verified**
+- **open** → **fixed** → **audited** → **verified**
 - - **verified**：回归检查已通过。
+- - **audited**：已通过 Codex 审计（不等于回归验证）；必须执行并通过回归检查后才可标记为 `verified`。
 - - **fixed**：代码已修复，三件套已沉淀。
 - 禁止跳过 `fixed` 直接到 `verified`
 
@@ -36,8 +37,8 @@ Bug 标记为"已修复"前，**必须同时满足**：
 - **禁止在根目录创建临时/副本文件进行中转。**
 
 ### 写入方式（CRITICAL）
-- **禁止**使用 `edit` 工具直接编辑 `.cunzhi-knowledge/*.md` 文件
-- **必须**通过 `ji(沉淀)` 工具写入，它会自动执行 git add → commit → push
+- 默认写入方式：**必须**通过 `ji(沉淀)` 工具写入，它会自动执行 git add → commit → push
+- **例外（闭环审计）**：当 Codex 返回针对 `.cunzhi-knowledge/problems.md` 的 unified diff 时，AI 助手可在 `zhi` 明确确认后，使用编辑工具应用该 diff，并确保完成 git add → commit → push
 - **追加逻辑**：使用 `>>` 或编辑器追加模式，禁止使用 `>` 或 `cp` 直接覆盖整个文件。
 - 原因：直接编辑不会触发自动同步，导致内容只在本地
 

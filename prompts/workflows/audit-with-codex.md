@@ -22,6 +22,6 @@ ${CUNZHI_SUMMARY}
 ### 3. 闭环行为执行
 - 如果你认为改动完美，请按以下顺序回复：
   1. 输出 "**LGTM**"。
-  2. **强制行为**：紧接着直接输出一段针对 `.cunzhi-knowledge/problems.md` 的 unified diff，用于将对应 Problem 的状态从 `fixed` 变更为 `verified (Codex已审计)`。
-  3. AI 助手在接收到你的 diff 后，将**自动调用**工具执行应用并完成 Git 同步。
+  2. **强制行为**：紧接着直接输出一段针对 `.cunzhi-knowledge/problems.md` 的 unified diff，用于将对应 Problem 的状态从 `fixed` 变更为 `audited (Codex已审计)`。
+  3. AI 助手在接收到你的 diff 后，将先通过 `zhi` 请求用户确认；确认后再执行应用并完成 Git 同步。
 - 如果发现隐患，请给出具体的修复建议。
