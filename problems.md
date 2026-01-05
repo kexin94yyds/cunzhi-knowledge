@@ -6855,3 +6855,27 @@ P-2026-002: macOS 辅助工具交互优化
 - **回归检查**: R-2026-005
 - **状态**: verified
 - **日期**: 2026-01-04
+
+## P-2026-001: ji 工具沉淀分类单复数兼容性修复
+
+### 问题
+调用 `ji(action="沉淀")` 时，若 `category` 传入 `pattern/problem/regression`（单数）会报错 `invalid params: 沉淀仅支持 patterns/problems/regressions 分类`。这导致 AI 在自动调用工具时经常因为单复数转换失败。
+
+### 关键技术点
+1. **参数校验逻辑**：Rust 后端在 `mcp.rs` 中使用 `match` 对 `category` 进行了硬编码校验。
+2. **容错性增强**：在校验层支持单数形式并自动映射为对应的复数形式存储。
+
+### 修复方案
+在 `@/Users/apple/cunzhi/src/rust/mcp/tools/memory/mcp.rs:65-75` 中修改 `match` 逻辑，增加单数映射：
+```rust
+let category = match request.category.as_str() {
+    "patterns" | "problems" | "regressions" => request.category.as_str(),
+    "pattern" => "patterns",
+    "problem" => "problems",
+    "regression" => "regressions",
+    _ => return Err(...)
+};
+```
+
+### 验证结果
+已重启 Windsurf 并通过 `category: "problem"` 测试，确认修复生效。
