@@ -26,7 +26,6 @@
 - **对话终止权**：**AI 永远不能主动判断任务完成或切断对话**
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
 - **沉淀三件套**：解决问题后必须完成 `problems.md` → `patterns.md` → `regressions.md`（位于 `.cunzhi-knowledge/` 目录）
-- **收尾审计（可选）**：完成三件套沉淀后，询问用户是否需要 Codex 审计。若需要，则提供 Prompt 供用户复制。
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 </core_principles>
@@ -42,9 +41,10 @@
 | "ji" | `zhi` → `ji` | 先弹窗让用户选择：a=沉淀(knowledge) / b=记忆(memory) |
 | "sou" | `mcp0_sou` / `search_web` | 自动判断：代码相关→语义搜索；外部知识→网络搜索 |
 | "xi" | `mcp0_xi` | 搜索 `.cunzhi-knowledge/` 历史经验和已解决问题 |
-| prompts 目录名 | `mcp0_ci` | 如 "ci" → 调用 ci 工具搜索 `prompts/<目录>/` 找相关模板并应用 |
+| prompts 目录名 | `mcp0_ci` | **核心逻辑**：识别到用户输入“目录名”（如 git、ci、testing）时，AI 必须立即调用 `mcp0_ci` 搜索并加载 `.cunzhi-knowledge/prompts/<目录>/` 下的模板，严禁凭经验盲目生成。 |
 | 解决问题后 | `ji(沉淀)` | **必须完成** problems → patterns → regressions 三件套 |
 | 对话结束 | `ji(摘要)` | 写入 `.cunzhi-memory/sessions.md` 记录会话要点 |
+
 </shortcuts>
 
 <memory_knowledge>
