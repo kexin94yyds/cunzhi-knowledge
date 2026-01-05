@@ -47,6 +47,25 @@
 - 日期：2026-01-03
 
 ---
+## P-2026-002 AI Sidebar 导出/保存路径导致重复写入与来源校验缺失
+
+- 项目：AI-Sidebar
+- 仓库：/Users/apple/AI-sidebar 更新/AI-Sidebar
+- 发生版本：51299728c58bc9bd6b5116eb98fbb7f7269b89d5
+- 现象：
+  1. 使用 Cmd/Option+S 保存对话时，历史库可能出现重复记录。
+  2. 嵌入页面可发送伪造的 `AI_SIDEBAR_*` 消息触发下载或写库。
+- 根因：
+  1. 内容脚本同时走 `postMessage` 与 `chrome.runtime.sendMessage`，侧边栏即时保存 + 后台队列再次保存，导致重复。
+  2. 侧边栏 `message` 监听未校验 `event.source`/`event.origin`。
+- 修复：
+  1. 保存路径二选一：仅保留 `postMessage` 或仅保留 runtime 队列；必要时在保存前去重。
+  2. 严格校验消息来源（限定 `event.source` 为当前 iframe、`origin` 在白名单）。
+- 回归检查：待补充
+- 状态：open
+- 日期：2026-01-05
+
+---
 ## P-2025-001 Windsurf/Cursor 编辑器插入失败
 
 - 项目：Full-screen-prompt (Electron)
