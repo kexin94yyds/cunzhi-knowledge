@@ -29,7 +29,8 @@
 - **闭环行为执行（可选）**：完成三件套沉淀后，询问用户是否需要 Codex 审计。若需要，则提供针对性的 Prompt。若 Codex 审计通过并提供 Diff，AI 助手必须**自动调用工具**应用该 Diff 并完成 Git 同步，实现状态自动翻转。
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
 - **初心守护 (Intent Guardian)**：在触发对话压缩（Compaction/Summarization）时，AI 必须生成一份结构化摘要，强制包含：**原始需求 (As-Is)**、**最终愿景 (Final Goal)**、**地雷禁区 (MUST NOT Do)**。这确保了长对话中原始目标不偏移。
--### 🛡️ 反模式 (Anti-Patterns - AI 禁令)
+
+### 🛡️ 反模式 (Anti-Patterns - AI 禁令)
 为了保证 `寸止` 体系的严谨性，AI 必须绝对避免以下行为：
 - **逻辑跳过**：在未完成回归检查的情况下将 `problems.md` 标记为 `fixed`。
 - **元评论泄漏**：在 commit 或摘要中包含 "Based on the changes..." 等废话。
@@ -53,6 +54,7 @@
 | "ji" | `zhi` → `ji` | 先弹窗让用户选择：a=沉淀(knowledge) / b=记忆(memory) |
 | "sou" | `mcp0_sou` / `search_web` | 自动判断：代码相关→语义搜索；外部知识→网络搜索 |
 | "xi" | `mcp0_xi` | 搜索 `.cunzhi-knowledge/` 历史经验和已解决问题 |
+| "codex" / "audit" | `zhi` | 弹窗输出 `prompts/workflows/audit-with-codex.md` 对应的可复制审计 Prompt（含闭环要求：LGTM → unified diff），用于发送给 Codex |
 | prompts 目录名 | `mcp0_ci` | **核心逻辑**：识别到用户输入“目录名”（如 git、ci、testing）时，AI 必须立即调用 `mcp0_ci` 搜索并加载 `.cunzhi-knowledge/prompts/<目录>/` 下的模板，严禁凭经验盲目生成。 |
 | 解决问题后 | `ji(沉淀)` | **必须完成** problems → patterns → regressions 三件套 |
 | 对话结束 | `ji(摘要)` | 写入 `.cunzhi-memory/sessions.md` 记录会话要点 |
