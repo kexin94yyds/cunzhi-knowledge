@@ -66,6 +66,21 @@
 - 日期：2026-01-05
 
 ---
+## P-2026-003 AI 协作工作流缺乏跨 IDE 审计闭环
+
+- 项目：CodexMCP / CunZhi
+- 仓库：/Users/apple/codex/codexmcp
+- 发生版本：n/a
+- 现象：在使用 AI 助手（如 Windsurf/Claude Code）进行开发时，虽然遵循了“寸止”三件套规则，但缺乏另一高效模型 (Codex) 的交叉审计。手动整理改动信息发送给 Codex 费时费力。
+- 根因：IDE 之间的上下文隔离，且缺乏自动化的“改动摘要 + 审计 Prompt”生成机制。
+- 修复：
+  1. 在 `.cunzhi-knowledge/prompts/workflows/` 下创建 `audit-with-codex.md` 模板。
+  2. 规定在任务收尾调用 `zhi` 时，AI 必须基于当前改动和“三件套”自动生成一段可供用户复制到 Codex 的审计 Prompt。
+- 回归检查：待补充 (R-2026-003)
+- 状态：fixed
+- 日期：2026-01-05
+
+---
 ## P-2025-001 Windsurf/Cursor 编辑器插入失败
 
 - 项目：Full-screen-prompt (Electron)
