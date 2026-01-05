@@ -66,6 +66,21 @@
 - 日期：2026-01-05
 
 ---
+## P-2026-004 跨 IDE 审计闭环缺乏自动执行行为
+
+- 项目：CodexMCP / CunZhi
+- 仓库：/Users/apple/codex/codexmcp
+- 发生版本：n/a
+- 现象：虽然建立了审计 Prompt 模板，但 Codex 审计通过后，用户仍需手动复制 Diff 并贴回 `problems.md` 进行状态翻转，操作不连贯。
+- 根因：缺乏“AI 助手感知 Codex 输出并自动执行”的行为闭环逻辑。
+- 修复：
+  1. 借鉴 `oh-my-opencode` 的行为闭环逻辑，在 `audit-with-codex.md` 中强制要求 Codex 输出 unified diff。
+  2. 在 `rules/` 中明确 AI 助手在收到该 Diff 后自动调用 `ji(沉淀)` 或 `edit` 工具应用并同步。
+- 回归检查：R-2026-004
+- 状态：fixed
+- 日期：2026-01-05
+
+---
 ## P-2026-003 AI 协作工作流缺乏跨 IDE 审计闭环
 
 - 项目：CodexMCP / CunZhi
