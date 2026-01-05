@@ -1277,3 +1277,27 @@ NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
 ```
 
 - **关联 P-ID**: P-2026-005
+
+## PAT-2025-001: AI Sidebar 聊天导出功能集成
+
+### 问题
+集成聊天导出功能到 AI-Sidebar 扩展，支持：
+1. Cmd+S 快捷键呼出导出面板
+2. 导出 Markdown/JSON
+3. 保存到本地库（可搜索关键词）
+4. History 面板 Link/Content 切换
+
+### 关键技术点
+1. **跨域 IndexedDB 隔离**：content script 保存的数据无法在 sidebar 访问
+   - 解决：通过 background script 队列转发，sidebar 定期处理队列
+2. **SVG className 类型**：`el.className` 对 SVG 返回 `SVGAnimatedString`，需要判断类型
+3. **存储键一致性**：读写使用相同的 storage key（tabsCollapsed vs sidebarCollapsed）
+4. **UTF-8 编码**：blob URL 打开 Markdown 需要 HTML 包装器设置 charset
+
+### 文件修改
+- `manifest.json` - 注册 aisb-export-chat 命令
+- `js/plugins/exporter-logic.js` - 导出逻辑 + Cmd+S 面板
+- `js/plugins/storage-manager.js` - IndexedDB CRUD
+- `js/popup.js` - History Link/Content 切换、搜索功能
+- `js/background.js` - 消息队列转发
+- `css/panel.css` - 样式
