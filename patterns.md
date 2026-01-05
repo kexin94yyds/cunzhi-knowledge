@@ -33,10 +33,13 @@
 ### 📱 桌面应用 (Electron/Tauri)
 | ID | 名称 | 核心要点 |
 |----|------|----------|
+| PAT-2025-004 | macOS 打包应用权限授权模式 | entitlements + NSAppleEventsUsageDescription + 自动化授权 |
+| PAT-2025-003 | Electron 无边框窗口拖拽记忆 | -webkit-app-region: drag + electron-store 持久化 |
 | PAT-2024-008 | macOS 拖拽替代 | 自定义鼠标拖拽 |
 | PAT-2024-009 | 防抖保存安全 | 关键操作前强制保存 |
 | PAT-2024-010 | IPC 事件语义分离 | 同步 ≠ 切换 |
 | PAT-2024-011 | IndexedDB 锁定诊断 | lsof + pkill |
+| PAT-2025-002 | macOS 全屏插件框架选型 | 全屏覆盖选 Electron，高性能选 Tauri |
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -62,6 +65,42 @@
 ---
 
 ## 详细记录
+
+## PAT-2025-004 macOS 打包应用权限授权模式
+
+- 场景：在 macOS 上分发打包后的 Electron 应用，且应用需要通过 AppleScript 控制其他应用（如模拟粘贴、激活窗口）。
+- 实现关键点：
+  1. **Hardened Runtime & Entitlements**：
+     - 在 `package.json` 的 `mac` 构建配置中开启 `hardenedRuntime: true`。
+     - 必须包含 `entitlements.mac.plist`，并声明 `com.apple.security.automation.apple-events` 为 `true`。
+  2. **Info.plist 描述**：
+     - 在 `Info.plist` 中添加 `NSAppleEventsUsageDescription` 描述文字，否则系统不会弹出授权框。
+  3. **用户引导**：
+     - 若报错 `-1743`，引导用户前往“系统设置 -> 隐私与安全性 -> 自动化”检查权限。
+     - 若 Bundle ID 变更，引导用户重置并重新勾选“辅助功能”。
+- 关联问题：P-2025-004
+
+## PAT-2025-003 Electron 无边框窗口拖拽记忆模式
+
+- 场景：在 macOS 上开发无边框（frame: false）的 Electron 应用，需要支持窗口拖拽并记住上次呼出的位置。
+- 实现关键点：
+  1. **HTML/CSS 拖拽区域**：
+     - 为 `body` 或顶层元素添加 `-webkit-app-region: drag`。
+     - 为交互元素（input, button, list）添加 `no-drag` 排除。
+     - 确保拖拽层的 `z-index` 足够高，防止被内容遮挡。
+  2. **位置持久化**：
+     - 使用 `electron-store` 在 `moved` 和 `close` 事件中保存窗口 `bounds`。
+     - 呼出时使用 `screen.getAllDisplays()` 校验保存的位置是否在当前可用屏幕内，防止拔掉外接显示器后窗口“飞走”。
+- 关联问题：P-2025-003
+
+## PAT-2025-002 macOS 全屏插件框架选型模式
+
+- 场景：在 macOS 上开发需要覆盖在全屏应用（如全屏浏览器、代码编辑器）之上的工具类插件。
+- 决策逻辑：
+  1. **全屏覆盖能力**：若必须在全屏模式下可见，**目前唯一可靠方案是 Electron**。通过 `setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })` 实现。
+  2. **Tauri 的限制**：Tauri 底层的 `tao` 库目前（2025Q1）不支持 `visibleOnFullScreen` 选项，虽能接收输入但窗口无法被渲染引擎绘制到全屏 Space 的顶层。
+  3. **层级选型**：在 Electron 中应使用 `'screen-saver'` 或 `'maximum'` 等级以确保覆盖系统级 UI。
+- 关联问题：P-2025-002
 
 ## PAT-2025-001 macOS 应用精准焦点唤回模式
 

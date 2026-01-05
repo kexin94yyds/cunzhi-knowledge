@@ -33,6 +33,69 @@
 
 ## 问题清单
 
+## P-2025-004 打包应用重命名导致权限失效与 Apple Events (-1743) 错误
+
+- 项目：Full-screen-prompt (Electron)
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：2.0.0 (Prompter)
+- 现象：
+  1. 应用从 "Prompt" 重命名为 "Prompter" 后，在辅助功能已授权的情况下，点击插入依然无效。
+  2. 开发者工具 Console 报错：`execution error: 未获得授权将Apple事件发送给System Events。 (-1743)`。
+  3. 应用通过 Dock 退出时无法彻底关闭，进程常驻后台。
+- 根因：
+  1. **Bundle ID 变更**：macOS 的 TCC 权限绑定 Bundle ID。重命名并修改 appId 后，旧权限不再适用于新应用。
+  2. **缺少 Entitlements**：打包后的应用运行在沙盒或 Hardened Runtime 下，需要显式声明 `com.apple.security.automation.apple-events` 权限。
+  3. **自动化权限 (Automation)**：模拟按键 `tell application "System Events" to keystroke` 属于跨应用控制，需要用户在“隐私与安全性 -> 自动化”中手动授权。
+- 修复：
+  1. 在 `package.json` 中配置 `hardenedRuntime: true` 并指向包含自动化权限的 `entitlements.mac.plist`。
+  2. 在 `Info.plist` (通过 `extendInfo`) 添加 `NSAppleEventsUsageDescription` 描述。
+  3. 引导用户重置辅助功能权限并前往“自动化”设置开启 System Events 授权。
+  4. 在 `main.js` 中增加 `before-quit` 监听以确保彻底退出。
+- 回归检查：R-2025-004
+- 状态：verified
+- 日期：2025-12-30
+
+## P-2025-003 Electron 无边框窗口拖拽失效与位置丢失
+
+- 项目：Full-screen-prompt (Electron)
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：2.0.0
+- 现象：
+  1. 应用采用无边框（frame: false）设计后，窗口没有任何区域可以拖动，用户无法调整窗口位置。
+  2. 每次使用快捷键呼出窗口时，窗口总是重置到屏幕中央，无法记住用户上次摆放的位置。
+- 根因：
+  1. 缺少 `-webkit-app-region: drag` 配置，且原有的手动拖拽逻辑层被遮挡或失效。
+  2. main.js 中未实现窗口位置的持久化存储逻辑。
+- 修复：
+  1. 在 `app.html` 中为 `body` 和顶层 `drag-bar` 添加 `-webkit-app-region: drag`。
+  2. 扩大顶部拖拽区域（32px 高度）并置于最高层级（z-index: 10000）。
+  3. 为搜索框、按钮等交互元素添加 `no-drag` 排除拖拽。
+  4. 在 `main.js` 中使用 `electron-store` 在窗口移动和关闭时保存 `bounds`，并在 `showOnActiveSpace` 时恢复。
+- 回归检查：R-2025-003
+- 状态：verified
+- 日期：2025-12-30
+
+## P-2025-002 Tauri 2.0 macOS 兼容性与全屏显示限制
+
+- 项目：Full-screen-prompt (Tauri)
+- 仓库：/Users/apple/提示词最新的/Full-screen-prompt
+- 发生版本：Tauri 2.0.0-rc + Core-Graphics 0.24
+- 现象：
+  1. 编译错误：Tauri 2.0 中 `ns_window()` 返回 `Result` 而非 `Option`；`WindowExtMacOS` 导入失效。
+  2. 运行时崩溃：设置 `NS_WINDOW_STYLE_NONACTIVATING_PANEL` 或在 FFI 回调中抛出 Objective-C 异常导致 panic。
+  3. 全屏不可见：窗口在全屏应用（如 Chrome）上虽可接收输入但肉眼不可见。
+- 根因：
+  1. API 变更：Tauri 2.0 重构了 macOS 扩展接口。
+  2. 库封装限制：`core-graphics` 0.24 删除了 `display` 模块，需手动声明 FFI 绑定。
+  3. 框架硬伤：Tauri 底层 `tao` 库目前不支持 `visibleOnFullScreen` 属性（见 tao#189）。
+- 修复：
+  1. 适配 Tauri 2.0 Result 类型和移除废弃导入。
+  2. 手动声明 `CGWindowLevelKey` 绑定。
+  3. 决策：由于 Tauri 全屏限制为框架级硬伤，暂时切回 Electron 版本作为生产方案。
+- 回归检查：R-2025-002
+- 状态：fixed
+- 日期：2025-12-30
+
 ## P-2025-001 Windsurf/Cursor 编辑器插入失败
 
 - 项目：Full-screen-prompt (Electron)
