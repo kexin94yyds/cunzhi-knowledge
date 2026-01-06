@@ -6918,3 +6918,24 @@ P-2026-001: 导出功能无法在侧边栏 iframe 中执行抓取。
 - `src/rust/bridge/ws.rs` (架构重构)
 - `bridge_test.html` (连接逻辑升级)
 - Cloudflare Tunnel 部署流程建议
+
+## P-2026-003: Tauri 应用内管理外部隧道进程时的符号导出与流解析失败
+
+### 现象
+1. **编译错误**：在 `builder.rs` 中注册命令时，提示找不到 `__cmd__*` 符号。
+2. **状态卡死**：开启远程访问后，UI 状态一直卡在“启动中”，无法获取公网域名。
+
+### 根因
+1. **Tauri 宏限制**：`generate_handler!` 宏在生成内部命令映射时，无法正确处理通过模块 `mod.rs` re-export 后的路径，必须使用定义命令的原始路径（如 `crate::tunnel::commands::*`）。
+2. **日志输出流不确定性**：`cloudflared` 的关键信息（如域名生成）可能交替出现在 `stdout` 和 `stderr` 中，仅读取其中一个流会导致解析遗漏。
+3. **类型系统冲突**：在 Rust 闭包中处理 `ChildStdout` 和 `ChildStderr` 时，它们是不同的具体类型，不能直接作为同一个闭包参数。
+
+### 解决方案
+1. **修正路径注册**：在 `builder.rs` 中直接引用命令原始模块路径。
+2. **多流并发解析**：重构 `TunnelManager`，同时 `take()` 进程的 `stdout` 和 `stderr`。
+3. **泛型提取**：定义泛型函数 `spawn_log_reader<R: AsyncRead + ...>`，为每个输出流分别开启异步解析任务。
+
+### 影响范围
+- `src/rust/app/builder.rs` (命令注册)
+- `src/rust/tunnel/manager.rs` (进程解析逻辑)
+- `src/rust/tunnel/commands.rs` (命令定义)
