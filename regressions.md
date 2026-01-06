@@ -4954,3 +4954,11 @@ The Web Bridge UI must not clear its content immediately after a user submits a 
 
 ## P-ID Association
 P-2026-002
+
+## R-2026-998 - ji 门禁验证：markdown 列表格式字段提取
+- 关联 P-ID：P-2026-999
+- 类型：manual
+- 位置：src/rust/mcp/tools/memory/manager.rs
+- 关键断言：`extract_id_from_fields` 能正确识别 `- 关联 P-ID：P-YYYY-NNN` 格式
+- 运行方式：调用 `ji(action=沉淀, category=regressions)` 并观察是否成功写入
+- 日期：2026-01-06
