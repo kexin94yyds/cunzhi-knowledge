@@ -6869,7 +6869,34 @@ P-2026-002: macOS 辅助工具交互优化
 - **状态**: verified
 - **日期**: 2026-01-04
 
-<<<<<<< HEAD
+·## P-2026-004: 移动端多窗口切换无效
+- **现象**: 在手机端通过 ∞ 菜单点击切换项目时，页面内容不更新，标题也不变化。
+- **根因**: 
+  1. 桌面端 `AppContent.vue` 收到 `request_sync` 时未校验 `project_path`，导致所有窗口同时响应或响应错误。
+  2. `bridge_test.html` 中更新标题的 DOM ID 错误（`project-path` vs `currentProjectName`）。
+  3. 桌面端窗口在启动时若无请求则以 `Unknown` 路径注册，导致菜单列表项不准。
+- **影响范围**: 移动端多窗口操作体验。
+- **修复方案**: 
+  1. 在 `AppContent.vue` 中增加对 `request_sync` 的路径过滤逻辑。
+  2. 修复 `bridge_test.html` 中的 DOM ID 并增加菜单高亮。
+  3. 在 `AppContent.vue` 中增加 watch 逻辑，确保项目路径变化时自动重新注册窗口。
+  4. **移除 IPC Server 锁**: 在 `src/rust/ipc/mod.rs` 中移除 `busy` 状态校验，允许并发转发请求。
+  5. **前端事件隔离**: 在 `useMcpHandler.ts` 的 `mcp-request` 监听器中增加 `project_path` 匹配校验，确保窗口只处理属于自己的请求。
+- **状态**: verified
+- **关联 P-ID**: 无
+- **日期**: 2026-01-06
+
+## P-2026-005: 多进程模式下手机端操作指令不生效
+- **现象**: 手机端点击“确认/继续/增强”等按钮后，桌面端的弹窗窗口没有反应（不执行动作也不关闭）。
+- **根因**: 
+  1. 手机端的 `mcp_action` 指令只发到了主进程（8080）。
+  2. 弹窗窗口是独立进程，无法接收主进程的 Tauri Event。
+  3. WebView CORS 拦截：桌面弹窗进程尝试 fetch 8080 时被跨域安全策略拦截。
+- **影响范围**: 移动端对多窗口并发弹窗的远程控制能力。
+- **状态**: verified
+- **关联 P-ID**: P-2026-004
+- **日期**: 2026-01-07
+
 ## P-2026-001: ji 工具沉淀分类单复数兼容性修复
 
 ### 问题
@@ -6880,25 +6907,11 @@ P-2026-002: macOS 辅助工具交互优化
 2. **容错性增强**：在校验层支持单数形式并自动映射为对应的复数形式存储。
 
 ### 修复方案
-在 `@/Users/apple/cunzhi/src/rust/mcp/tools/memory/mcp.rs:65-75` 中修改 `match` 逻辑，增加单数映射：
-```rust
-let category = match request.category.as_str() {
-    "patterns" | "problems" | "regressions" => request.category.as_str(),
-    "pattern" => "patterns",
-    "problem" => "problems",
-    "regression" => "regressions",
-    _ => return Err(...)
-};
-```
+在 `@/Users/apple/cunzhi/src/rust/mcp/tools/memory/mcp.rs:65-75` 中修改 `match` 逻辑，增加单数映射。
 
 ### 验证结果
 已重启 Windsurf 并通过 `category: "problem"` 测试，确认修复生效。
-=======
-P-2026-001: 导出功能无法在侧边栏 iframe 中执行抓取。
-现象：集成后导出按钮点击无反应，无法获取 AI 供应商页面的聊天内容。
-根因：AI 页面在 iframe 中，原来的脚本尝试在父页面 Tab 中执行抓取逻辑，跨域限制导致无法访问 iframe 内容。
-状态：open
->>>>>>> 295e57f321e5f8143d84080d3afa5d1616c65a9c
+
 
 ## 问题记录 P-2026-001: 实现 Web 端与 MCP 窗口双向互通镜像
 - **现象**：用户需要在非 PC 设备（如手机）上同步查看并操作电脑端的 MCP 交互界面。
