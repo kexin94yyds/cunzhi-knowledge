@@ -6898,3 +6898,23 @@ P-2026-001: 导出功能无法在侧边栏 iframe 中执行抓取。
 - **根因**：原有的 MCP 交互仅限本地 Tauri 窗口，缺乏跨端中转机制。
 - **解决方案**：在 Rust 后端建立 WebSocket 桥接（0.0.0.0:8080），Vue 前端通过 Tauri Emitter 实时同步状态，Web 端通过镜像 UI 进行双向操作。
 - **状态**：verified
+
+## P-2026-002: 公网环境下 MCP Web Bridge 同步失效与 WebSocket 连通性问题
+
+### 现象
+在使用 Cloudflare Tunnel 等公网隧道时，Web 镜像页显示“连接已断开”，且无法同步电脑端弹窗状态。
+
+### 根因
+1. **多端口转发限制**：公网隧道默认通常只转发单端口（如 80/443），而之前的架构 HTTP (8080) 与 WebSocket (8081) 占用不同端口，导致 WS 通道无法穿透。
+2. **协议不匹配**：公网域名强制使用 HTTPS (WSS)，而 HTML 中硬编码了 `ws://`，导致安全降级拦截。
+3. **域名漂移**：Quick Tunnel 每次重启分配新域名，导致旧连接失效。
+
+### 解决方案
+1. **单端口集成**：重构 Rust 后端桥接服务，在 Axum 中集成 WebSocket 升级（`/ws` 路径），使 HTTP 和 WS 共享 8080 端口。
+2. **协议动态自适应**：更新 `bridge_test.html`，通过 `window.location.protocol` 自动识别并切换 `ws:` 或 `wss:` 协议。
+3. **统一转发逻辑**：只需运行 `cloudflared tunnel --url http://localhost:8080` 即可同时支持页面加载与实时通信。
+
+### 影响范围
+- `src/rust/bridge/ws.rs` (架构重构)
+- `bridge_test.html` (连接逻辑升级)
+- Cloudflare Tunnel 部署流程建议
