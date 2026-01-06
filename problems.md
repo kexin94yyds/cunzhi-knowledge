@@ -31,6 +31,36 @@
 
 ---
 
+---
+
+## P-2026-003 Web Bridge 粘贴图片发送失败
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：在 Web 端面板粘贴图片并提交后，桌面端收到的响应中 `images` 字段始终为空。
+- 根因：`src/frontend/composables/useEventHandlers.ts` 在处理 `bridgeAction` 时，将 `images` 字段硬编码为空数组，忽略了 payload 中的图片数据。
+- 修复：修改 `useEventHandlers.ts`，从 payload 中提取 `images`，将 Data URL 转换为 Base64 格式并填充到响应对象中。
+- 回归检查：R-2026-003
+- 状态：verified
+- 日期：2026-01-06
+
+---
+
+## P-2026-002 iOS 构建失败 - Tauri 2.0 API 不匹配
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：构建 iOS 目标时，Rust 编译报错。`tauri::WebviewWindow` 找不到方法：`set_max_size`, `set_min_size`, `set_size`, `set_always_on_top`。此外，`src/rust/ui/window_registry.rs` 存在类型不匹配错误。
+- 根因：Tauri 2.0 在移动端（iOS/Android）上不支持部分桌面端特有的窗口管理 API。代码中未针对 `target_os = "ios"` 进行条件编译或适配。
+- 修复：使用 `#[cfg(not(any(target_os = "ios", target_os = "android"))) ]` 对桌面端特有 API 调用进行条件编译保护；为 `is_process_running` 添加移动端 fallback 返回值。
+- 回归检查：R-2026-002
+- 状态：verified
+- 日期：2026-01-06
+
+---
+
 ## P-2026-001 .gitignore 通配符导致 .cunzhi-knowledge 文件被忽略
 
 - 项目：iterate (CunZhi)
@@ -808,23 +838,6 @@
 - 状态：verified
 - 日期：2024-12-16
 - 经验：localStorage 存储图片需要压缩处理
-
----
-
-## P-2024-060 tobooks Cmd+Enter 保存笔记无效
-
-- 项目：tobooks
-- 仓库：/Users/apple/tobooks
-- 发生版本：当前版本
-- 现象：在笔记编辑框中按 Cmd+Enter 无法保存笔记
-- 根因：keydown 事件监听在 iframe 内无法捕获
-- 修复：改用 window capture 模式监听快捷键
-- 回归检查：手动验证
-- 状态：verified
-- 日期：2024-12-16
-- 经验：iframe 内的快捷键需要特殊处理
-
----
 
 ## P-2024-061 tobooks 高亮功能导致内容消失
 
@@ -6939,3 +6952,76 @@ P-2026-001: 导出功能无法在侧边栏 iframe 中执行抓取。
 - `src/rust/app/builder.rs` (命令注册)
 - `src/rust/tunnel/manager.rs` (进程解析逻辑)
 - `src/rust/tunnel/commands.rs` (命令定义)
+# P-2026-001: MCP Web Bridge Popup Isolation
+
+## Description
+When running `zhi` tool in multi-process environment (e.g., child processes forked for MCP requests), popups were only visible in the local process and failed to sync with the Web Bridge, preventing mobile interaction.
+
+## Root Cause
+Each `--mcp-request` process was isolated. The Web Bridge listener only existed in the main process, while child processes tried to spawn their own GUI or handle requests locally.
+
+## Impact
+Users could not see or respond to `zhi` popups on mobile when they were triggered from CLI or IDE sub-processes.
+
+## Resolution
+1. Implemented a local IPC server (TCP 127.0.0.1:37101) in the main process.
+2. Modified child processes to forward MCP requests via IPC to the main process.
+3. Main process handles the request, triggers UI, syncs via Tauri events to Web Bridge, and returns the response via IPC.
+4. Optimized Mobile Web Bridge UI to match desktop experience (Markdown, theme switching, layout).
+
+## Status
+Fixed (2026-01-06)
+# P-2026-002: Web Bridge UI State Reset After Submission
+
+## Description
+In the mobile Web Bridge, submitting an MCP response caused the UI to immediately reset to an "empty/waiting" state. This prevented users from reviewing the context or their response while the backend was processing the task.
+
+## Root Cause
+The frontend state management triggered a complete cleanup of the `currentRequest` and UI components immediately upon receiving a response event, without considering the asynchronous nature of the subsequent task execution.
+
+## Impact
+Poor user experience; users lost visibility of the context they just replied to, creating a feeling of "disconnected" interaction.
+
+## Resolution
+1. Modified `renderState` in `bridge_test.html` to implement a "persistent view" logic.
+2. When a request is completed, the UI retains the last request's data but disables interaction buttons.
+3. Added visual feedback (opacity/disabled states) to indicate that the submission was successful and the bridge is now in "read-only" mode until the next request.
+
+## Status
+Fixed (2026-01-06)
+
+## P-2026-001: Rust 代码风格与 Lint 警告
+
+### 现象
+项目在快速迭代过程中积累了大量的代码风格不一致（如缩进、空格）以及 Rust Clippy 报告的性能和代码质量警告。
+
+### 根因
+1. `cargo fmt` 未能定期运行，导致不同文件的风格不统一。
+2. `cargo clippy` 报告了多处 `ptr_arg` 警告（建议使用 `&Path` 代替 `&PathBuf` 以提高通用性并减少分配）以及 `const_is_empty` 冗余检查。
+
+### 影响范围
+- 全局 Rust 代码风格。
+- `src/rust/ui/updater.rs` 中的路径处理逻辑及版本检查逻辑。
+
+### 解决方案
+1. 运行 `cargo fmt` 格式化全部 Rust 文件。
+2. 手动修复 `src/rust/ui/updater.rs` 中的 clippy 警告：
+   - 将函数参数 `&PathBuf` 改为 `&Path`。
+   - 移除 `const VERSION: &str` 冗余的 `.is_empty()` 检查。
+3. 提交清理后的代码。
+
+### 状态
+fixed
+
+## P-2026-999 知识库流程门禁逻辑验证
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：门禁逻辑测试 - 第一步：记录问题事实。
+- 根因：验证 ji 沉淀三件套强制顺序 P -> R -> PAT。
+- 修复：执行测试。
+- 回归检查：R-2026-999
+- 状态：open
+- 日期：2026-01-06
+
