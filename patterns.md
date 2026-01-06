@@ -33,7 +33,6 @@
 
 ### 📱 桌面应用 (Electron/Tauri)
 
-### 📱 桌面应用 (Electron/Tauri)
 | ID | 名称 | 核心要点 |
 |----|------|----------|
 | PAT-2024-008 | macOS 拖拽替代 | 自定义鼠标拖拽 |
@@ -44,6 +43,8 @@
 | PAT-2025-002 | 全局快捷键的运行时热切换 | 状态同步链与动态注册 |
 | PAT-2025-003 | Tauri 应用动态快捷键同步 | 后端持久化与前端分层处理 |
 | PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
+| PAT-2026-002 | Tauri 跨平台窗口 API 适配 | 使用 cfg 保护非移动端 API |
+| PAT-2026-003 | Web Bridge 结构化图片转发 | 统一 DataURL 到 Base64 的转换处理 |
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -69,7 +70,33 @@
 
 ---
 
-## PAT-2026-001 知识库目录的 .gitignore 保护与自动检测模式
+---
+
+## PAT-2026-002 Tauri 跨平台窗口 API 适配模式
+
+- **场景**：Tauri 2.0 应用在适配 iOS/Android 时，部分桌面端特有的窗口管理 API（如 `set_size`, `set_always_on_top`）在移动端不存在或调用会报错。
+- **模式描述**：
+  1. **条件编译保护**：使用 `#[cfg(not(any(target_os = "ios", target_os = "android")))]` 包装仅限桌面端的 API 调用。
+  2. **逻辑分流**：在移动端分支中，使用 `let _ = ...` 消耗未使用的变量，并提供 fallback 逻辑或日志说明。
+  3. **进程检查适配**：对于移动端不支持的进程检查（如 `is_process_running`），提供默认返回值（如 `false`）以满足类型签名要求。
+- **关联问题**：P-2026-002
+- **日期**：2026-01-06
+
+---
+
+## PAT-2026-003 Web Bridge 结构化图片转发模式
+
+- **场景**：Web 端通过 WebSocket (Bridge) 与桌面端通信时，需要发送粘贴的图片数据。
+- **模式描述**：
+  1. **前端统一收集**：在 Web 端前端统一捕获 `paste` 事件，将图片转换为 Data URL。
+  2. **Payload 结构化**：在 `mcp_action` 的 payload 中包含 `images` 数组，保持与桌面端弹窗一致的格式。
+  3. **后端转换协议**：在接收端（Tauri 前端）处理 `bridgeAction` 时，显式从 payload 提取 `images`，并将 Data URL 统一切分为 Base64 字符串以匹配最终的响应协议。
+- **关联问题**：P-2026-003
+- **日期**：2026-01-06
+
+---
+
+## PAT-2026-001 知识库目录的 .gitignore 保护与自动检测
 
 - **场景**：项目根目录存在破坏性的 `.gitignore` 规则（如 `*.md`, `*.json`），导致插件目录或知识库子仓库的文件被意外忽略，IDE 不可见。
 - **模式描述**：
@@ -1277,3 +1304,95 @@ NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
 ```
 
 - **关联 P-ID**: P-2026-005
+
+---
+
+## PAT-2026-007: Tauri 应用内管理外部隧道进程
+
+- **适用场景**: Tauri/Electron 桌面应用需要管理外部命令行工具（如 cloudflared、ngrok）实现内网穿透
+- **核心模式**:
+  1. **单例管理**: 使用全局 `Lazy<Arc<RwLock<Manager>>>` 确保进程唯一
+  2. **启动前清理**: `start()` 前先调用 `stop()` 避免僵尸进程
+  3. **异步日志解析**: spawn 独立 task 读取 stderr，用正则提取域名
+  4. **状态机设计**: Stopped → Starting → Running → Error，前端轮询同步
+  5. **健康检查前置**: 启动隧道前先检查本地服务端口可达性
+  6. **kill_on_drop**: Tokio Command 设置此选项确保父进程退出时子进程被清理
+
+**Rust 实现要点**:
+```rust
+let mut child = Command::new("cloudflared")
+    .args(["tunnel", "--url", "http://127.0.0.1:8080"])
+    .stderr(Stdio::piped())
+    .kill_on_drop(true)  // 关键：父进程退出时自动杀死子进程
+    .spawn()?;
+
+// 异步解析 stderr 提取域名
+tokio::spawn(async move {
+    let reader = BufReader::new(stderr);
+    while let Ok(Some(line)) = reader.lines().next_line().await {
+        if let Some(m) = DOMAIN_REGEX.find(&line) {
+            // 更新状态
+        }
+    }
+});
+```
+
+**前端配合**:
+- 启动后轮询 `get_status()` 直到获取到域名
+- 状态灯颜色映射：灰色(stopped) → 黄色闪烁(starting) → 绿色(running) → 红色(error)
+- 二维码使用第三方 API：`https://api.qrserver.com/v1/create-qr-code/?data=...`
+
+- **关联回归**: R-2026-003
+- **日期**: 2026-01-06
+# PAT-2026-001: Single-Instance IPC Forwarding Pattern
+
+## Pattern Description
+A pattern for synchronizing UI state across multiple processes by forwarding requests to a single "master" process via a local IPC mechanism (TCP/Unix Socket).
+
+## Problem Context
+When an application runs as multiple independent processes (e.g., CLI tools, background workers) but needs to share a central UI or communication channel (like a Web Bridge).
+
+## Key Implementation Details
+1. **Master Process**: Starts an IPC server at a fixed port/path.
+2. **Client Processes**: Check if the IPC server is available. If so, forward their payload (e.g., JSON request) and await a response.
+3. **Response Handling**: Master process emits internal events (e.g., Tauri events) to trigger UI and waits for user interaction before sending the result back to the IPC client.
+4. **Graceful Degradation**: If IPC is unavailable, client processes fall back to local UI or standalone execution.
+
+## Related
+- P-2026-001
+- R-2026-001
+
+# PAT-2026-002: UI Retention Pattern for Web Bridges
+
+## Pattern Description
+A pattern that maintains the visibility of the last active context in a request-response UI after the response has been sent, providing continuity until a new context is available.
+
+## Problem Context
+Stateless or auto-resetting UIs can be disorienting in asynchronous workflows where the user might want to refer back to the information that triggered the interaction.
+
+## Key Implementation Details
+1. **Deferred Cleanup**: Instead of clearing the UI model immediately on submission, keep the model active.
+2. **Interaction Lock**: Disable all input elements (buttons, textareas) and provide visual feedback (e.g., lower opacity) to prevent duplicate submissions or confusion about the current state.
+3. **Implicit Update**: Automatically replace the old state only when a new, valid payload is received from the backend.
+
+## Related
+- P-2026-002
+- R-2026-001
+
+# PAT-2026-003: Mobile-First Desktop-Aligned UI Strategy
+
+## Pattern Description
+A design pattern for creating web-based mirrors of desktop applications that prioritizes mobile usability while strictly maintaining the visual identity of the desktop counterpart.
+
+## Problem Context
+Web bridges often feel like "secondary" interfaces with degraded UI, causing cognitive friction when users switch between desktop and mobile.
+
+## Key Implementation Details
+1. **Thematic Consistency**: Use CSS variables to mirror the desktop's color palette (e.g., specific hex codes for backgrounds and borders).
+2. **Visual Hierarchy Alignment**: Position critical controls (like theme toggles) in the same relative locations as the desktop app (e.g., top-right or center header).
+3. **Responsive Scaling**: Use flexible layouts (Flexbox/Grid) that allow desktop components to stack naturally on mobile without losing their distinct look (e.g., maintaining the specific "Inactive: White, Active: Black" button logic).
+4. **Library Parity**: Ensure critical rendering libraries (like Markdown parsers) are identical or highly compatible across platforms to ensure content looks the same everywhere.
+
+## Related
+- P-2026-001
+- PAT-2026-001

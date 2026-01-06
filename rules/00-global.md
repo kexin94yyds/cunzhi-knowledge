@@ -25,7 +25,7 @@
 - **禁止替代**：不得仅输出文字 "zhi"，必须真正调用工具
 - **对话终止权**：**AI 永远不能主动判断任务完成或切断对话**
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
-- **沉淀三件套**：解决问题后必须完成 `problems.md` → `patterns.md` → `regressions.md`（位于 `.cunzhi-knowledge/` 目录）
+- **沉淀三件套**：解决问题后必须完成 `problems.md` → `regressions.md` → `patterns.md`（位于 `.cunzhi-knowledge/` 目录）
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 </core_principles>
@@ -42,7 +42,7 @@
 | "sou" | `mcp0_sou` / `search_web` | 自动判断：代码相关→语义搜索；外部知识→网络搜索 |
 | "xi" | `mcp0_xi` | 搜索 `.cunzhi-knowledge/` 历史经验和已解决问题 |
 | prompts 目录名 | `mcp0_ci` | 如 "ci" → 调用 ci 工具搜索 `prompts/<目录>/` 找相关模板并应用 |
-| 解决问题后 | `ji(沉淀)` | **必须完成** problems → patterns → regressions 三件套 |
+| 解决问题后 | `ji(沉淀)` | **必须完成** problems → regressions → patterns 三件套 |
 | 对话结束 | `ji(摘要)` | 写入 `.cunzhi-memory/sessions.md` 记录会话要点 |
 </shortcuts>
 
@@ -121,7 +121,7 @@
 
 - **ji (记忆)**：回忆/记忆/沉淀/摘要
   - 必须绑定 git 根目录
-  - 沉淀流程：problems → patterns → regressions
+  - 沉淀流程：problems → regressions → patterns
 
 - **sou (搜索)**：语义代码搜索（增强版 codebase_search）
   - 代码相关（函数名、变量、文件路径）→ `mcp0_sou` 或 `code_search`

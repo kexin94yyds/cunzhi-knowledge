@@ -17,11 +17,14 @@
 | R-2024-464 | P-2024-464 | update.sh osascript 密码对话框 | 手工检查 |
 | R-2025-001 | P-2025-001 | 按钮 3D 凹陷反馈验证 | 手工检查 |
 | R-2026-005 | P-2026-005 | macOS Swift 全局热键 Option+Q | 手工检查 |
+| R-2026-002 | P-2026-002 | iOS 编译适配验证 | 编译验证 |
+| R-2026-003 | P-2026-003 | Web Bridge 粘贴图片验证 | 手工检查 |
 
 ### 🔧 知识库与流程
 | ID | 关联问题 | 名称 | 类型 |
 |----|----------|------|------|
 | R-2024-001 | P-2024-001 | 全局知识库流程验证 | 流程验证 |
+| R-2026-001 | P-2026-001 | .gitignore 风险检测与修复指引 | 流程验证 |
 
 ### 🌐 Web/SaaS
 | ID | 关联问题 | 名称 | 类型 |
@@ -43,7 +46,38 @@
 
 ---
 
-## R-2026-001 .gitignore 保护与自动检测验证
+---
+
+## R-2026-002 iOS 编译适配验证
+
+- **类型**：编译/部署验证
+- **描述**：验证 iOS 侧编译是否通过，确保无桌面端特有 API 导致的编译错误。
+- **检查步骤**：
+  1. 运行 `cargo check --target aarch64-apple-ios`
+  2. 检查 `src/rust/ui/window.rs` 和 `src/rust/ui/window_registry.rs`。
+- **关联 P-ID**：P-2026-002
+- **预期结果**：编译无 `not found in this scope` 或 `mismatched types` 错误。
+- **验证版本**：v0.5.0 (Verified)
+- **日期**：2026-01-06
+
+---
+
+## R-2026-003 Web Bridge 粘贴图片验证
+
+- **类型**：手工检查
+- **描述**：验证 Web 端面板粘贴图片并提交后，桌面端是否能正确收到图片数据。
+- **检查步骤**：
+  1. 打开 trycloudflare Web 面板。
+  2. 粘贴一张图片并点击提交。
+  3. 检查桌面端收到的 `BridgeAction` 消息 payload。
+- **关联 P-ID**：P-2026-003
+- **预期结果**：桌面端收到的 `response.images` 包含 Base64 格式的图片数据。
+- **验证版本**：v0.5.0 (Verified)
+- **日期**：2026-01-06
+
+---
+
+## R-2026-001 .gitignore 风险检测与修复指引
 
 - **类型**：流程/逻辑验证
 - **描述**：验证系统能否识别并预防项目级忽略规则对知识库的干扰。
@@ -4879,3 +4913,29 @@ R-2026-001:
 ### 失败规避
 - 若 8080 报错，请检查 `iterate` 是否正在运行主进程。
 - 若域名不出现，检查控制台是否有 `spawn_log_reader` 相关的 IO 错误。
+# R-2026-001: MCP Web Bridge Sync and Mobile UI Consistency
+
+## Requirement
+Ensure `zhi` popups are synchronized to the mobile web bridge and provide a consistent UI/UX.
+
+## Test Cases
+1. **IPC Forwarding**: Run `iterate --mcp-request` in a separate terminal while main iterate is running. Verify popup appears in main process and syncs to mobile.
+2. **Mobile Interaction**: Submit a response from the mobile web bridge. Verify the CLI process receives the correct output and exits.
+3. **Theme Sync**: Toggle theme on mobile. Verify background and text colors change correctly and persist.
+4. **Visual Alignment**: Verify ∞ icon is black and button selection colors (Inactive: White/Gray, Active: Black/Blue) match specifications.
+
+## P-ID Association
+P-2026-001
+
+## R-2026-002: UI State Retention Verification
+
+## Requirement
+The Web Bridge UI must not clear its content immediately after a user submits a response.
+
+## Test Cases
+1. **Retention Test**: Open the bridge on mobile, receive a `zhi` popup, and click "Submit". Verify that the AI message and your input remain visible.
+2. **Interaction Lock Test**: After submission, verify that the "Submit", "Continue", and "Enhance" buttons are visually disabled and unclickable.
+3. **Refresh Test**: Trigger a new `zhi` request from the desktop. Verify that the mobile UI correctly updates with the new content and re-enables all buttons.
+
+## P-ID Association
+P-2026-002

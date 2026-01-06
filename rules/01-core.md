@@ -56,10 +56,10 @@
 
 **交互流程（一次确认，自动完成）：**
 1. **problems** → 自动沉淀 + 自动 push（不询问）
-2. **patterns** → 调用 `zhi` 询问"是否需要补充？"
-3. **regressions** → 根据类型处理：
+2. **regressions** → 根据类型处理：
    - **记录型** → 自动沉淀 + 自动 push
    - **验证型** → 沉淀后询问用户是否执行
+3. **patterns** → 调用 `zhi` 询问"是否需要补充？"
 
 ## Memory vs Knowledge 分工
 - `.cunzhi-memory/` = 项目级临时记忆（context/preferences/notes/rules）

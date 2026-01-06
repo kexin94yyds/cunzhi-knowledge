@@ -19,8 +19,8 @@
 
 3. **调用 ji(沉淀)** 写入（自动 git push）
    - `ji(action=沉淀, category=problems, content=...)`
-   - `ji(action=沉淀, category=patterns, content=...)`
    - `ji(action=沉淀, category=regressions, content=...)`
+   - `ji(action=沉淀, category=patterns, content=...)`
 
 4. **确认同步结果**
    - 看到 "🚀 已自动推送到 GitHub" → 成功
@@ -35,9 +35,9 @@
 ## 三件套顺序
 
 ```
-problems.md → patterns.md → regressions.md
-     ↓              ↓              ↓
-  P-YYYY-NNN    PAT-YYYY-NNN    R-YYYY-NNN
+problems.md → regressions.md → patterns.md
+     ↓                ↓              ↓
+  P-YYYY-NNN      R-YYYY-NNN    PAT-YYYY-NNN
 ```
 
 **P-ID 与 R-ID 必须一一对应**
@@ -48,10 +48,10 @@ problems.md → patterns.md → regressions.md
 ✅ 已沉淀到 .cunzhi-knowledge/problems.md
 🚀 已自动推送到 GitHub
 
-✅ 已沉淀到 .cunzhi-knowledge/patterns.md
+✅ 已沉淀到 .cunzhi-knowledge/regressions.md
 🚀 已自动推送到 GitHub
 
-✅ 已沉淀到 .cunzhi-knowledge/regressions.md
+✅ 已沉淀到 .cunzhi-knowledge/patterns.md
 🚀 已自动推送到 GitHub
 
 ✓ 三件套沉淀完成，已同步到 GitHub
