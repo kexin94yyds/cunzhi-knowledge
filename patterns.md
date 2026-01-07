@@ -1434,3 +1434,42 @@ Web bridges often feel like "secondary" interfaces with degraded UI, causing cog
 ## Related
 - P-2026-001
 - PAT-2026-001
+
+# PAT-2026-008: PDF Outline → EPUB 多级目录映射模式
+
+## 适用场景
+- 输入源为 PDF，且 PDF 自带书签/目录（Outline）。
+- 需要将 PDF 转为 EPUB，并在 EPUB 中保留原有多级章节目录。
+
+## 核心思路
+- 用 PDF 的 Outline 作为“章节结构来源”。
+- 将每个目录条目的 `dest` 解析为页码（起始页）。
+- 按“目录起始页范围”对 PDF 文本进行切分，生成多个 EPUB 章节文件。
+- 用同一棵目录树生成 EPUB 的两套目录：
+  - `nav.xhtml`（EPUB3，嵌套 `<ol>`）
+  - `toc.ncx`（兼容旧阅读器，嵌套 `navPoint`）
+
+## 实现要点（浏览器端 / pdf.js）
+1. **解析 Outline**：
+  - `pdfDoc.getOutline()` 获取目录树。
+2. **dest → 页码**：
+  - 若 `dest` 为 string：`pdfDoc.getDestination(dest)` 得到显式 dest。
+  - 取显式 dest 的第一个元素作为 page ref，然后用 `pdfDoc.getPageIndex(ref)` 得到 `pageIndex`，最终页码 = `pageIndex + 1`。
+3. **章节切分**：
+  - 先按页提取文本 `pageTexts[pageNo]`。
+  - 将（叶子）目录条目按页码排序，章节范围为 `[startPage, nextStartPage-1]`。
+  - 将范围内页文本拼接为对应章节内容。
+4. **目录 href 映射**：
+  - 叶子节点对应 `chapter{n}.xhtml`。
+  - 父节点若无独立内容，可将 href 指向其第一个子节点的 href，保证点击可跳转。
+5. **生成目录文件**：
+  - `nav.xhtml`：递归生成 `<ol><li><a href=...>`。
+  - `toc.ncx`：递归生成 `<navPoint>`，并正确维护 `playOrder` 与 `dtb:depth`。
+
+## 注意事项
+- PDF 的 Outline 并不总是完整/可解析：需要在无法解析时降级为单一章节（全文）。
+- 若多个目录条目指向同一页，需确保排序稳定，避免生成空章节。
+
+## 关联
+- P-2026-008
+- R-2026-008

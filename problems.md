@@ -7071,3 +7071,30 @@ fixed
 - 回归检查：R_2026_007 (Temporary Placeholder)
 - 状态：open
 - 日期：2026-01-07
+
+## P-2026-008: 2Books PDF 转 EPUB 未保留章节目录（Outline → EPUB TOC）
+
+### 现象
+- PDF 文件本身带有目录/书签（Outline）。
+- 在 2Books 的 `text-to-epub.html` 将 PDF 转为 EPUB 后，目录缺少章节层级（通常只有 1 个条目）。
+
+### 根因
+- PDF 转换仅做逐页 `getTextContent()` 抽取文本并合并成单一章节。
+- EPUB 的 `nav.xhtml` / `toc.ncx` 目录结构由 `chapters` 生成；当 PDF 只有 1 个 chapter 时无法体现目录层级。
+- 未读取/解析 PDF 的 `pdfDoc.getOutline()` 并映射到 EPUB。
+
+### 解决方案
+- 读取 `pdfDoc.getOutline()`（书签目录）。
+- 将 Outline 条目 `dest` 解析为页码（`getDestination` → `getPageIndex`）。
+- 按目录起始页切分 PDF 文本为多个 `chapters`。
+- 将多级目录写入 EPUB：
+  - `nav.xhtml`：嵌套 `<ol>`
+  - `toc.ncx`：嵌套 `navPoint`
+
+### 影响范围
+- 页面：`text-to-epub.html`
+- 功能：PDF → EPUB 转换
+
+### 状态
+- 状态：verified
+- 日期：2026-01-07
