@@ -58,6 +58,7 @@
 |----|------|----------|
 | PAT-2024-016 | 全功能部署脚本 | 5 步流程 |
 | PAT-2024-021 | 应用项目更新脚本规范 | 编译→构建→同步→签名→安装 |
+| PAT-2026-008 | Cloudflare Tunnel 在 macOS 上的稳定自启 | token 连接器 + LaunchDaemon + 禁用 LaunchAgent |
 
 ### 📚 其他
 | ID | 名称 | 核心要点 |
@@ -87,6 +88,17 @@
 - **日期**: 2026-01-07
 
 ---
+
+ ## PAT-2026-008 Cloudflare Tunnel 在 macOS 上的稳定自启模式
+
+ - **场景**：固定域名（如 `iterate.tobooks.xin`）通过 Cloudflare Tunnel 暴露本机服务时，偶发出现 Cloudflare Error 1033（Tunnel Connector DOWN）。
+ - **模式描述**：
+   1. **优先使用 token connector**：从 Zero Trust 面板获取 `cloudflared tunnel run --token <...>`，避免本地 credentials/证书导致的连接不确定性。
+   2. **使用 LaunchDaemon 保证自启**：通过 `sudo cloudflared service install <token...>` 安装为系统服务（`/Library/LaunchDaemons/com.cloudflare.cloudflared.plist`），减少因终端关闭、用户会话变化导致的断线。
+   3. **禁用旧的 LaunchAgent**：将 `~/Library/LaunchAgents/com.imhuso.cloudflared.iterate.plist` 卸载并移走，避免双开与状态混乱。
+   4. **用 launchctl 作为“真实状态源”**：`sudo launchctl print system/com.cloudflare.cloudflared` 用于确认服务是否 running；日志查看 `/Library/Logs/com.cloudflare.cloudflared.*.log`。
+ - **关联问题**：P-2026-008
+ - **日期**：2026-01-07
 
 ## PAT-2026-999 知识库三件套沉淀模式
 

@@ -45,6 +45,18 @@
 - 状态：verified
 - 日期：2026-01-07
 
+## P-2026-008 Cloudflare Tunnel Connector DOWN 导致 iterate.tobooks.xin Error 1033
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：N/A
+- 现象：手机访问 `https://iterate.tobooks.xin` 返回 Cloudflare Error 1033 (Tunnel error)，Cloudflare Zero Trust 面板显示 tunnel `iterate` 状态为 DOWN。
+- 根因：Cloudflare Tunnel 对应的 connector 未建立有效连接（`cloudflared` 进程虽可能存在但未成功连上，且使用用户级 LaunchAgent 管理导致不稳定/易中断）。
+- 修复：使用 Zero Trust 面板提供的 `--token` 命令重新拉起 connector，并通过 `sudo cloudflared service install <token...>` 安装为 macOS LaunchDaemon；随后禁用旧的 `~/Library/LaunchAgents/com.imhuso.cloudflared.iterate.plist`，避免双开与状态混乱；并更新 `update.sh` 的重启逻辑优先重启 `com.cloudflare.cloudflared`（若不存在则 fallback 到旧 LaunchAgent）。
+- 回归检查：R-2026-008
+- 状态：verified
+- 日期：2026-01-07
+
 ## P-2026-003 Web Bridge 粘贴图片发送失败
 
 - 项目：iterate (CunZhi)
