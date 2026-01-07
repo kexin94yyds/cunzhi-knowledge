@@ -54,7 +54,7 @@
 - 发生版本：feat/mcp-web-bridge (`d81ebc3`)
 - 现象：当文本中同时出现多个 ID（例如正文里提到其它 `PAT-*` / `R-*` / `P-*`），`ji`/知识库门禁校验可能选择错误的“主 ID”（primary id），导致关联到错误条目。
 - 根因：`src/rust/mcp/tools/memory/manager.rs` 的 `extract_primary_id()` 从“优先匹配 Markdown 标题行 `## <ID>`”简化为“全文扫描并按 `PAT -> R -> P` 顺序取第一个匹配”，在混合内容场景更容易误判。
-- 修复：待定（可能恢复标题优先策略，或引入更明确的协议字段/显式传参来指定 primary id）。
+- 修复：待定（可能恢复标题优先策略，或引入更明确的协议字段/显式传参来指定 primary id；2026-01-08 复测 iterate.app 仍复现：ji 沉淀含 R-ID 的 P 条目报“沉淀 problems 内容必须包含 P-YYYY-NNN 编号”）。
 - 回归检查：N/A
 - 状态：open
 - 日期：2026-01-08
@@ -7136,3 +7136,18 @@ fixed
 ### 状态
 - 状态：verified
 - 日期：2026-01-07
+
+## P-2099-001 主 ID 提取验证（临时）
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：test
+- 现象：验证多 ID 文本时主 ID 选择是否正确
+- 根因：测试用例
+- 修复：N/A
+- 回归检查：R-2099-001
+- 状态：open
+- 日期：2099-01-01
+
+正文包含额外 ID: R-2099-001、PAT-2099-001，用于验证主 ID 不误判。
+
