@@ -45,6 +45,20 @@
 - 状态：verified
 - 日期：2026-01-07
 
+---
+
+## P-2026-010 MemoryTool/ji 主 ID 提取可能误判（标题优先逻辑缺失）
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：feat/mcp-web-bridge (`d81ebc3`)
+- 现象：当文本中同时出现多个 ID（例如正文里提到其它 `PAT-*` / `R-*` / `P-*`），`ji`/知识库门禁校验可能选择错误的“主 ID”（primary id），导致关联到错误条目。
+- 根因：`src/rust/mcp/tools/memory/manager.rs` 的 `extract_primary_id()` 从“优先匹配 Markdown 标题行 `## <ID>`”简化为“全文扫描并按 `PAT -> R -> P` 顺序取第一个匹配”，在混合内容场景更容易误判。
+- 修复：待定（可能恢复标题优先策略，或引入更明确的协议字段/显式传参来指定 primary id）。
+- 回归检查：N/A
+- 状态：open
+- 日期：2026-01-08
+
 ## P-2026-008 Cloudflare Tunnel Connector DOWN 导致 iterate.tobooks.xin Error 1033
 
 - 项目：iterate (CunZhi)
