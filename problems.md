@@ -33,6 +33,18 @@
 
 ---
 
+## P-2026-009 tobooks 笔记面板搜索框点击后面板被误关闭
+
+- 项目：tobooks
+- 仓库：https://github.com/kexin94yyds/tobooks
+- 发生版本：fcc516f
+- 现象：打开“笔记与高亮”面板后，点击顶部搜索输入框会立刻失焦/面板被关闭，导致无法继续输入搜索内容。
+- 根因：`showNotesPanel()` 每次打开都会绑定新的 `document.click` outside-click 监听，但 `hideNotesPanel()` 关闭时未统一移除旧监听，导致监听器残留/重复绑定；后续点击搜索框被旧监听误判为“面板外点击”触发关闭。
+- 修复：将 outside-click handler 存储在 `window.closeNotesOnOutsideClickHandler`，并在 `showNotesPanel()` 打开前与 `hideNotesPanel()` 关闭时统一移除 document/iframe 的对应监听，避免重复绑定与误判。
+- 回归检查：R-2026-009
+- 状态：verified
+- 日期：2026-01-07
+
 ## P-2026-003 Web Bridge 粘贴图片发送失败
 
 - 项目：iterate (CunZhi)
