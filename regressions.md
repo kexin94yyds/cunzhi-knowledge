@@ -5054,3 +5054,13 @@ P-2026-002
 ### 状态
 - verified
 - 日期：2026-01-07
+
+## R-2099-001 主 ID 提取验证回归（临时）
+
+- 关联 P-ID：P-2099-001
+- 类型：manual
+- 位置：src/rust/mcp/tools/memory/manager.rs
+- 关键断言：主 ID 提取优先标题，不会因正文含 R/PAT 误判
+- 运行方式：调用 `ji(action=沉淀, category=problems)` 写入包含多 ID 的 P 条目
+- 日期：2099-01-01
+
