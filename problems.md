@@ -7053,3 +7053,21 @@ fixed
 - 状态：fixed
 - 日期：2026-01-07
 
+
+## P-2026-007 “沉淀三件套”规则矛盾与工具校验逻辑缺陷
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v0.5.0
+- 现象：
+  1. 规则文件（01-core.md, 03-workflows.md）在“三件套”执行顺序（PAT vs R）上存在描述不一致。
+  2. `ji(沉淀)` 工具在校验 Problem 内容时，因正则匹配顺序（PAT->R->P）导致内容中包含 R-ID 时主 ID 提取错误，进而导致校验失败。
+- 根因：
+  1. 多处规则文件重复定义且未进行版本化的同步。
+  2. `MemoryManager::extract_primary_id` 未针对沉淀分类进行定向校验，且未优先匹配标题行。
+- 修复：
+  1. 统一规则定义顺序：`problems` -> `regressions` -> `patterns`。
+  2. 优化 `manager.rs` 逻辑：根据 `category` 动态调整校验期望，并优先匹配 Markdown 标题行。
+- 回归检查：R_2026_007 (Temporary Placeholder)
+- 状态：open
+- 日期：2026-01-07
