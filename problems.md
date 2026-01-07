@@ -7038,3 +7038,18 @@ fixed
 - 状态：verified
 - 日期：2026-01-06
 
+
+## P-2026-006 沉淀三件套口径不一致导致流程混乱与误写入风险
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：N/A
+- 现象：沉淀三件套在不同规则文件与工具实现中存在口径不一致（顺序/状态/交互），导致执行时容易出现“先沉淀经验再补回归”、或对 knowledge 发生误写入/误 push 的风险。
+- 根因：
+  1. `~/.codeium/windsurf/rules/*` 内部对三件套顺序与交互描述不一致。
+  2. `ji` 工具实现对 `patterns` 采用“预览+确认沉淀”，但 `problems/regressions` 直接写入，规则未与实现对齐。
+- 修复：统一规则口径：顺序 `problems → regressions → patterns`；状态 `open → fixed → audited → verified`（audited 必经）；交互与 Rust 实现保持一致：仅 `patterns` 需要 `zhi` 确认后走 `ji(action=确认沉淀)`。
+- 回归检查：待创建
+- 状态：fixed
+- 日期：2026-01-07
+
