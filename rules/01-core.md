@@ -40,9 +40,9 @@
 ## 问题解决沉淀三件套（强制流程）
 解决问题后，**必须按顺序**完成以下四步，缺一不可：
 1. **沉淀问题** → 记录遇到的问题（根因、现象、修复方案） → P-YYYY-NNN 写入 `.cunzhi-knowledge/problems.md`
-2. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 `.cunzhi-knowledge/patterns.md`
-3. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 `.cunzhi-knowledge/regressions.md`
-4. **收尾审计（可选）**：完成三件套后询问用户是否需要 Codex 审计。
+2. **沉淀回归** → 记录回归检查要点（如何验证问题不再发生） → R-YYYY-NNN 写入 `.cunzhi-knowledge/regressions.md`
+3. **沉淀经验** → 记录解决问题的可复用经验 → PAT-YYYY-NNN 写入 `.cunzhi-knowledge/patterns.md`
+4. **收尾审计（必经）**：完成三件套后执行 Codex 审计，将问题状态推进为 `audited`。
 
 ### 沉淀安全守则（PREVENT OVERWRITE）
 - **追加协议（Append-Only）**：知识库文件为增量式事实库。**严禁整体覆盖**，必须使用追加（append）或合并（merge）逻辑。
@@ -51,16 +51,14 @@
 - **同步原子性**：写入前执行 `git pull --rebase`，写入后立即执行 `git add / commit / push`，确保云端一致性。
 
 **约束：**
-- 三者 ID 后缀必须关联（如 P-2024-022 → PAT-2024-024 → R-2024-022）
+- 三者 ID 后缀必须关联（如 P-2024-022 → R-2024-022 → PAT-2024-022）
 - 未完成三件套前，禁止视为"问题已解决"
 - 索引表必须同步更新
 
-**交互流程（一次确认，自动完成）：**
-1. **problems** → 自动沉淀 + 自动 push（不询问）
-2. **regressions** → 根据类型处理：
-   - **记录型** → 自动沉淀 + 自动 push
-   - **验证型** → 沉淀后询问用户是否执行
-3. **patterns** → 调用 `zhi` 询问"是否需要补充？"
+**交互流程（与工具实现保持一致）：**
+1. **problems / regressions** → 允许直接调用 `ji(沉淀)` 写入并自动 push
+2. **regressions（验证型）** → 沉淀后通过 `zhi` 询问是否需要执行验证步骤
+3. **patterns** → 返回预览后，必须先调用 `zhi` 让用户确认；确认后再调用 `ji(action=确认沉淀)` 执行写入
 
 ## Memory vs Knowledge 分工
 - `.cunzhi-memory/` = 项目级临时记忆（context/preferences/notes/rules）
