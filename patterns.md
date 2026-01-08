@@ -1497,3 +1497,13 @@ Web bridges often feel like "secondary" interfaces with degraded UI, causing cog
 ## 关联
 - P-2026-008
 - R-2026-008
+
+## PAT-2099-001 主 ID 提取验证经验（临时）
+
+- 关联问题：P-2099-001
+- 适用场景：`ji(沉淀)` 内容中同时包含 P/R/PAT 多种 ID
+- 核心做法：主 ID 优先从标题提取；无标题时按文本出现顺序取第一个 ID
+- 预期收益：避免主 ID 误判导致沉淀失败或关联错误
+- 状态：open
+- 日期：2099-01-01
+
