@@ -55,8 +55,9 @@
 - **描述**：验证敏感文件是否已成功重命名并伪装，且能正常被系统识别。
 - **检查步骤**：
   1. 确认原始文件 `新名称.rpm` 不再存在。
-  2. 确认新路径 `/Users/apple/Downloads/.sys_config_node_b35b2bd0_lock.bin` 存在。
+  2. 确认新路径 `/Users/apple/Downloads/windsurf_setup_d02c.rpm` 存在。
   3. 确认文件大小与原始文件一致。
+  4. 执行 `xattr -l` 确认无任何残留扩展属性。
 - **关联 P-ID**：P-2026-011
 - **日期**：2026-01-08
 
