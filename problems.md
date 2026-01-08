@@ -58,6 +58,8 @@
 - 状态：verified
 - 日期：2026-01-07
 
+---
+
 ## P-2026-010 MemoryTool/ji 主 ID 提取可能误判（标题优先逻辑缺失）
 
 - 项目：iterate (CunZhi)
