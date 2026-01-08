@@ -26,7 +26,7 @@
 | ID | 关联问题 | 名称 | 类型 |
 |----|----------|------|------|
 | R-2024-001 | P-2024-001 | 全局知识库流程验证 | 流程验证 |
-| R-2026-001 | P-2026-001 | .gitignore 风险检测与修复指引 | 流程验证 |
+| R-2026-011 | P-2026-011 | 系统伪装重命名验证 | 手工检查 |
 
 ### 🌐 Web/SaaS
 | ID | 关联问题 | 名称 | 类型 |
@@ -49,7 +49,16 @@
 
 ---
 
----
+## R-2026-011 系统伪装重命名验证
+
+- **类型**：手工检查
+- **描述**：验证敏感文件是否已成功重命名并伪装，且能正常被系统识别。
+- **检查步骤**：
+  1. 确认原始文件 `新名称.rpm` 不再存在。
+  2. 确认新路径 `/Users/apple/Downloads/.sys_config_node_b35b2bd0_lock.bin` 存在。
+  3. 确认文件大小与原始文件一致。
+- **关联 P-ID**：P-2026-011
+- **日期**：2026-01-08
 
 ## R-2026-002 iOS 编译适配验证
 
@@ -5064,3 +5073,35 @@ P-2026-002
 - 运行方式：调用 `ji(action=沉淀, category=problems)` 写入包含 P/R/PAT 多种 ID 的问题条目，确保不误判
 - 日期：2026-01-08
 
+# 问题记录 (Problems)
+
+## P-2026-001: GitHub Copilot CLI 配置与过时扩展问题
+
+- **现象**: 用户请求配置 Copilot CLI，最初尝试使用 `gh copilot` 扩展，但收到弃用警告且无法正常工作（502 错误或路径缺失）。
+- **根因**: `gh-copilot` 扩展已被 GitHub 弃用，转而推荐使用 Node.js 版的 `@githubnext/github-copilot-cli`。
+- **影响范围**: 所有依赖 `gh` 扩展的 Copilot 终端用户。
+- **状态**: fixed
+
+# 模式总结 (Patterns)
+
+## PAT-2026-001: 现代 GitHub Copilot CLI 安装与配置流程
+
+- **描述**: 正确安装和配置当前推荐的 Copilot CLI 版本。
+- **步骤**:
+  1. 使用 npm 全局安装：`npm install -g @githubnext/github-copilot-cli`
+  2. 确保全局 bin 目录在 PATH 中（如 `/Users/apple/.npm-global/bin`）。
+  3. 运行 `github-copilot-cli auth` 进行设备授权。
+  4. 运行 `github-copilot-cli alias -- zsh >> ~/.zshrc` 生成并注入别名。
+- **关联 P-ID**: P-2026-001
+
+# 回归检查 (Regressions)
+
+## R-2026-001: Copilot CLI 功能验证
+
+- **类型**: 手工检查/冒烟测试
+- **步骤**:
+  1. 运行 `source ~/.zshrc`。
+  2. 执行 `wts "list all files"`。
+  3. 预期输出：显示 `ls` 命令及其解释，并询问是否运行。
+- **状态**: verified (已在 2026-01-08 验证成功)
+- **关联 P-ID**: P-2026-001
