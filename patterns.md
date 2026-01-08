@@ -23,6 +23,7 @@
 | PAT-2024-007 | 外部依赖降级 | 无 API key 时用内置替代 |
 | PAT-2024-020 | MCP Agent 规范格式 | 工具+约束+反模式 |
 | PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
+| PAT-2026-010 | 主 ID 提取优先级策略 | 标题优先 + 文本顺序兜底 |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
@@ -1507,4 +1508,3 @@ Web bridges often feel like "secondary" interfaces with degraded UI, causing cog
   3. **ID 归一化**：统一处理特殊破折号与全角冒号，保证匹配稳定。
 - **关联问题**：P-2026-010
 - **日期**：2026-01-08
-
