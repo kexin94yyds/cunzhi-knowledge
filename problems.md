@@ -7226,3 +7226,5 @@ fixed
   3. 预期输出：显示 `ls` 命令及其解释，并询问是否运行。
 - **状态**: verified (已在 2026-01-08 验证成功)
 - **关联 P-ID**: P-2026-001
+
+P-2025-002 Spotlight 的 Cmd+Space 失效，原因是 Spotlight server 被禁用（`mdutil -s /` 显示 disabled）。恢复方式：`sudo mdutil -a -i on` 启用索引服务，必要时 `sudo mdutil -E /` 重建索引；再重启 `Spotlight` 与 `SystemUIServer` 后恢复正常。
