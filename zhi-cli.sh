@@ -8,7 +8,12 @@ PROJECT_PATH="${3:-$(pwd)}"
 
 # 弹窗引擎路径
 ITERATE_APP="/Applications/iterate.app/Contents/MacOS/iterate"
-WINDSURF_CUNZHI="$HOME/bin/windsurf-cunzhi"
+# windsurf-cunzhi 路径（优先知识库内，其次全局）
+if [[ -x "$(dirname "$0")/bin/windsurf-cunzhi" ]]; then
+    WINDSURF_CUNZHI="$(dirname "$0")/bin/windsurf-cunzhi"
+else
+    WINDSURF_CUNZHI="$HOME/bin/windsurf-cunzhi"
+fi
 
 # 创建临时请求文件（使用 PID 和时间戳确保唯一）
 REQUEST_FILE="/tmp/zhi_request_$$_$(date +%s).json"
