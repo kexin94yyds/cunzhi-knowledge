@@ -65,14 +65,14 @@ use_windsurf_cunzhi() {
     "$WINDSURF_CUNZHI" --ui --message "$MESSAGE" --options "$OPTIONS" 2>&1
 }
 
-# 主逻辑：只用 iterate（windsurf-cunzhi 作为备用，需手动启用）
-# 设置 USE_WINDSURF_CUNZHI=1 可强制使用 windsurf-cunzhi
-if [[ "${USE_WINDSURF_CUNZHI:-0}" == "1" ]] && [[ -x "$WINDSURF_CUNZHI" ]]; then
-    use_windsurf_cunzhi
-elif [[ -x "$ITERATE_APP" ]]; then
+# 主逻辑：优先 windsurf-cunzhi（更稳定），iterate 作为备用
+# 设置 USE_ITERATE=1 可强制使用 iterate
+if [[ "${USE_ITERATE:-0}" == "1" ]] && [[ -x "$ITERATE_APP" ]]; then
     use_iterate
 elif [[ -x "$WINDSURF_CUNZHI" ]]; then
     use_windsurf_cunzhi
+elif [[ -x "$ITERATE_APP" ]]; then
+    use_iterate
 else
     echo '{"error": "No popup engine available"}' >&2
     exit 1
