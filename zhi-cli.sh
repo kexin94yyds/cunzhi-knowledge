@@ -40,23 +40,11 @@ cat > "$REQUEST_FILE" << EOF
 }
 EOF
 
-# 尝试使用 iterate 弹窗
+# 尝试使用 iterate 弹窗（不稳定，仅作备用）
 use_iterate() {
     export ITERATE_IPC_FORWARD=0
-    
-    # 杀死所有现有 iterate 进程（避免主页干扰弹窗）
     pkill -9 -x iterate 2>/dev/null || true
-    
-    # 等待进程完全退出
-    for i in $(seq 1 10); do
-        if ! pgrep -x iterate > /dev/null 2>&1; then
-            break
-        fi
-        sleep 0.2
-    done
     sleep 0.5
-    
-    # 启动弹窗
     "$ITERATE_APP" --mcp-request "$REQUEST_FILE" 2>&1
 }
 
@@ -65,11 +53,8 @@ use_windsurf_cunzhi() {
     "$WINDSURF_CUNZHI" --ui --message "$MESSAGE" --options "$OPTIONS" 2>&1
 }
 
-# 主逻辑：优先 windsurf-cunzhi（更稳定），iterate 作为备用
-# 设置 USE_ITERATE=1 可强制使用 iterate
-if [[ "${USE_ITERATE:-0}" == "1" ]] && [[ -x "$ITERATE_APP" ]]; then
-    use_iterate
-elif [[ -x "$WINDSURF_CUNZHI" ]]; then
+# 主逻辑：只用 windsurf-cunzhi（iterate 弹窗不稳定）
+if [[ -x "$WINDSURF_CUNZHI" ]]; then
     use_windsurf_cunzhi
 elif [[ -x "$ITERATE_APP" ]]; then
     use_iterate
