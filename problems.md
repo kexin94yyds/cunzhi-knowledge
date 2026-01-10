@@ -31,7 +31,23 @@
 
 ---
 
-## P-2026-013 MCP 工具调用间歇性 Permission Denied
+## P-2026-014 完善实验报告 PDF 导出功能（定制格式）
+
+- 项目：chemlab-intelligence
+- 仓库：/Users/apple/chemlab-智囊-(chemlab-intelligence) 
+- 发生版本：N/A
+- 现象：原本只有“导出报告 (PDF)”按钮，但未实现具体导出逻辑，且用户要求严格遵循特定的“涂料中氯离子含量测定实验报告”格式。
+- 根因：功能尚未开发完成，且需要支持复杂的固定报告模板。
+- 修复：
+  1. 安装 `jspdf` 和 `html2canvas` 依赖。
+  2. 在 `Workflow.tsx` 中实现 `exportPDF` 异步函数。
+  3. **关键修复**：在组件中定义一个隐藏的 HTML 模板 (`#report-template`)，其 HTML 结构完全遵循用户提供的“实验目的、原理、仪器、步骤、数据记录、结果、结论”七大板块。
+  4. 利用 `html2canvas` 在导出瞬间临时显示该模板并截图，再由 `jsPDF` 生成 A4 规格 PDF。
+  5. 自动填充实验数据（浓度、体积、RSD、结果等）到模板表格和段落中。
+- 回归检查：R-2026-014
+- 状态：fixed
+- 日期：2026-01-10
+
 
 - 项目：iterate (CunZhi)
 - 仓库：/Users/apple/cunzhi
