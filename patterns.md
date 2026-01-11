@@ -1631,3 +1631,31 @@ Tauri 应用必须使用 `cargo tauri build` 而不是 `cargo build --release`�
 - iterate (cunzhi)
 - 所有 Tauri 桌面应用
 
+
+---
+
+## PAT-2026-014: 手机端 API 调用必须使用相对路径
+
+**关联问题**: P-2026-013
+**日期**: 2026-01-11
+
+### 模式描述
+当手机端通过 Cloudflare Tunnel 或其他反向代理访问本地服务时，前端 JavaScript 中的 API 调用不能使用 `http://127.0.0.1:port/` 硬编码地址。
+
+### 正确做法
+```javascript
+// ❌ 错误：手机端无法访问 localhost
+fetch('http://127.0.0.1:8080/files?project_path=...')
+
+// ✅ 正确：使用相对路径，自动使用当前域名
+fetch('/files?project_path=...')
+```
+
+### 适用场景
+- Bridge Server 的所有 API 端点
+- 任何需要手机端访问的 HTTP API
+- 通过 Cloudflare Tunnel 暴露的服务
+
+### 注意事项
+- 相对路径会自动使用当前页面的域名和协议
+- 确保后端 CORS 配置正确

@@ -742,29 +742,7 @@
 
 ---
 
-## P-2026-021 Web Bridge 模式 @文件 搜索功能失效
-
-- 项目：iterate (CunZhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v0.5.0
-- 现象：在手机 Web Bridge 端点击 `@文件` 时，无法加载文件列表，搜索框无响应。
-- 根因：`PopupContent.vue` 中的 `openFileMenu` 仅调用了桌面端特有的 `invoke('list_project_files')`，Web 环境下该方法无效，且缺乏获取远程文件系统的接口调用。
-- 修复：在 `PopupContent.vue` 中增加环境判断，Web 环境下通过 fetch 调用 Bridge Server 提供的 `/files` 接口获取文件列表，并对返回数据进行格式化适配。
-- 回归检查：R-2026-021
-- 状态：open
-- 日期：2026-01-11
-
-## P-2026-022 应用更新端点与 GitHub 仓库不一致
-
-- 项目：iterate (CunZhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v0.5.0
-- 现象：应用无法检测到新版本更新，且项目卡片中的 GitHub 链接指向旧仓库。
-- 根因：`tauri.conf.json` 中的 `updater.endpoints` 和 `ProjectInfoCard.vue` 中的链接仍指向 `imhuso/cunzhi`，而实际仓库已变更为 `kexin94yyds/iterate`。
-- 修复：更新 `tauri.conf.json` 和 `ProjectInfoCard.vue` 中的相关 URL 为最新的仓库地址。
-- 回归检查：R-2026-022
-- 状态：open
-- 日期：2026-01-11
+## P-2024-050 RI index.html 文件被意外清空
 
 - 项目：RI (Replace-Information)
 - 仓库：https://github.com/kexin94yyds/RI
@@ -7407,3 +7385,28 @@ cargo tauri build
 ### 关联
 - PAT-2026-013: Tauri 应用编译规范
 
+
+---
+
+## P-2026-013: 手机端 @文件 按钮无法显示文件列表
+
+**日期**: 2026-01-11
+**状态**: verified
+**严重性**: 中
+
+### 问题描述
+手机端点击 @文件 按钮后，文件列表弹窗不显示。
+
+### 根因
+1. **变量名错误**：代码使用 `currentState?.request?.project_path`，但实际变量名是 `currentRequest`
+2. **API 路径问题**：使用 `http://127.0.0.1:8080/files` 硬编码地址，手机端通过 Cloudflare Tunnel 访问时无法连接到 localhost
+
+### 修复
+1. 修正变量名：`currentState?.request?.project_path` → `currentRequest?.project_path`
+2. 改用相对路径：`/files?project_path=...`
+
+### 回归检查
+R-2026-013
+
+### 关联 commit
+c053fc3
