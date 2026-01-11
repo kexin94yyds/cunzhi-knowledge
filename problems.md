@@ -7294,3 +7294,94 @@ fixed
 - **关联 P-ID**: P-2026-001
 
 P-2025-002 Spotlight 的 Cmd+Space 失效，原因是 Spotlight server 被禁用（`mdutil -s /` 显示 disabled）。恢复方式：`sudo mdutil -a -i on` 启用索引服务，必要时 `sudo mdutil -E /` 重建索引；再重启 `Spotlight` 与 `SystemUIServer` 后恢复正常。
+
+---
+
+## P-2026-011: iterate 模仿 Infinite WF 模式实现
+
+**日期**: 2026-01-11
+**状态**: fixed → verified
+**关联**: PAT-2026-011
+
+### 问题描述
+iterate 需要实现类似 Infinite WF 的交互模式：
+1. 文件交互：`~/.cunzhi/{port}/output.md` + `input.md`
+2. VSCode 扩展：自动端口分配、复制开头语
+3. 多窗口多开支持
+
+### 根因分析
+- 原 iterate 依赖 MCP 协议，被封禁后无法使用
+- 需要改用文件交互模式绕过限制
+
+### 解决方案
+
+#### 1. 修改 cunzhi.py 支持文件交互
+```python
+# ~/.cunzhi/{port}/output.md - AI 写入任务摘要
+# ~/.cunzhi/{port}/input.md - 用户输入写入此文件
+
+def read_output_file(port):
+    data_dir = Path.home() / '.cunzhi' / str(port)
+    output_file = data_dir / 'output.md'
+    return output_file.read_text() if output_file.exists() else '任务完成'
+
+def write_input_file(port, user_input, ...):
+    input_file = data_dir / 'input.md'
+    input_file.write_text(content)
+```
+
+#### 2. 修改 send_mcp_response 写入响应文件
+```rust
+// src/rust/ui/commands.rs
+if let Ok(response_file) = std::env::var("ITERATE_RESPONSE_FILE") {
+    std::fs::write(&response_file, &response_str)?;
+}
+```
+
+#### 3. 创建 VSCode 扩展
+- 路径：`/Users/apple/cunzhi/vscode-extension/`
+- 自动端口分配（从 5310 开始）
+- 启动 `windsurf-cunzhi --serve`
+- 生成 `.windsurfrules` 到项目目录
+- "复制开头语"按钮
+
+### 验证
+- [x] cunzhi.py 文件交互模式测试通过
+- [x] --serve 模式 GUI 正常显示
+- [x] VSCode 扩展安装成功
+- [x] 复制开头语功能正常
+
+
+---
+
+## P-2026-012: Tauri 编译必须使用 cargo tauri build
+
+**日期**: 2026-01-11
+**状态**: verified
+**严重性**: 高（反复出现）
+
+### 问题描述
+使用 `cargo build --release` 编译 Tauri 应用后，GUI 显示空白。
+
+### 根因
+- `cargo build --release` 只编译 Rust 代码，**不会打包前端资源**
+- Tauri 应用需要前端资源（HTML/CSS/JS）才能正常显示
+- 必须使用 `cargo tauri build` 才会执行 `beforeBuildCommand`（vite build）并打包资源
+
+### 正确做法
+```bash
+# ❌ 错误：只编译 Rust，不打包前端
+cargo build --release
+
+# ✅ 正确：编译 Rust + 打包前端资源
+pnpm tauri:build
+# 或
+cargo tauri build
+```
+
+### 验证方法
+检查 `target/release/bundle/macos/iterate.app/Contents/Resources/` 是否包含前端资源。
+
+### 关联
+- PAT-2026-013: Tauri 应用编译规范
+

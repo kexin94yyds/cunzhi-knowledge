@@ -111,11 +111,28 @@
 
 **第二层：cunzhi MCP 工具（协调与增强）**
 
-**L0: zhi (寸止)** - 顶层协调者
+**L0: zhi (寸止)** - 顶层协调者（run_command 模式）
 - 所有对话必经，控制任务流程
 - 显示消息、接收输入、确认/授权/反问/终止
-- ❌ 禁止仅输出文字 "zhi"，必须真正调用工具
-- ⚠️ **必须传递 `project_path` 参数**：当前项目的绝对路径
+- ❌ 禁止仅输出文字 "zhi"，必须真正调用命令
+- ⚠️ **调用方式**：使用 `run_command` 工具执行：
+  ```bash
+  python3 "/Users/apple/cunzhi/bin/cunzhi.py" {PORT}
+  ```
+- **文件交互模式**（Infinite WF 风格）：
+  1. AI 将任务摘要写入 `~/.cunzhi/{PORT}/output.md`
+  2. AI 调用脚本: `python3 cunzhi.py {PORT}`
+  3. 脚本弹出 iterate GUI 显示内容
+  4. 用户输入后，结果写入 `~/.cunzhi/{PORT}/input.md`
+  5. AI 读取 `input.md` 获取用户指令
+- **返回格式**：
+  - `KeepGoing=true` + `input_file: /path/to/input.md` → 继续对话
+  - `KeepGoing=false` → 结束对话
+- **input.md 格式**：
+  - `image_paths:` 用户上传的图片路径（置顶）
+  - 用户输入文本
+  - `selected_options:` 用户选中的上下文选项
+- **Blocking 必须为 true**：等待用户输入后继续
 
 **L1: 执行层工具**
 

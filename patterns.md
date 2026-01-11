@@ -1554,3 +1554,80 @@ Web bridges often feel like "secondary" interfaces with degraded UI, causing cog
   3. 预期输出：显示 `ls` 命令及其解释，并询问是否运行。
 - **状态**: verified (已在 2026-01-08 验证成功)
 - **关联 P-ID**: P-2026-001
+
+---
+
+## PAT-2026-011: Infinite WF 风格文件交互模式
+
+**日期**: 2026-01-11
+**关联问题**: P-2026-011
+
+### 模式描述
+通过文件系统实现 AI 与用户的无限对话循环，绕过 MCP 协议限制。
+
+### 核心架构
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   AI (Cascade)  │────▶│   cunzhi.py     │────▶│  iterate GUI    │
+│                 │◀────│   (脚本)         │◀────│  (弹窗)          │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+        │                       │                       │
+        ▼                       ▼                       ▼
+   output.md              HTTP 请求              input.md
+   (AI 写入)              (端口通信)            (用户输入)
+```
+
+### 文件结构
+```
+~/.cunzhi/{port}/
+├── output.md    # AI 写入任务摘要
+└── input.md     # 用户输入写入此文件
+```
+
+### 使用流程
+1. AI 写入 `~/.cunzhi/{port}/output.md`
+2. AI 调用 `python3 cunzhi.py {port}`
+3. 脚本读取 output.md，发送 HTTP 请求到 iterate --serve
+4. iterate 弹出 GUI 显示内容
+5. 用户输入后，结果写入 `~/.cunzhi/{port}/input.md`
+6. 脚本返回 `KeepGoing=true` + `input_file: path`
+7. AI 读取 input.md 获取用户指令
+
+### VSCode 扩展功能
+- 自动端口分配（从 5310 开始）
+- 启动 `windsurf-cunzhi --serve`
+- 生成 `.windsurfrules` 到项目目录
+- "复制开头语"按钮
+
+### 适用场景
+- MCP 协议被封禁时的替代方案
+- 需要独立弹窗 UI 的场景
+- 多项目多窗口并行工作
+
+
+---
+
+## PAT-2026-013: Tauri 应用编译规范
+
+**日期**: 2026-01-11
+**关联问题**: P-2026-012
+
+### 模式描述
+Tauri 应用必须使用 `cargo tauri build` 而不是 `cargo build --release`。
+
+### 规则
+| 场景 | 命令 | 结果 |
+|------|------|------|
+| 开发调试 | `cargo tauri dev` | 热重载，前端 dev server |
+| 生产构建 | `cargo tauri build` 或 `pnpm tauri:build` | 完整打包，包含前端资源 |
+| ❌ 错误 | `cargo build --release` | 只有 Rust 二进制，GUI 空白 |
+
+### 检查清单
+编译后验证：
+1. `ls target/release/bundle/macos/*.app/Contents/Resources/` 应包含前端资源
+2. 运行应用，GUI 应正常显示内容
+
+### 适用项目
+- iterate (cunzhi)
+- 所有 Tauri 桌面应用
+
