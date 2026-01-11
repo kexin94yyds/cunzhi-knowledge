@@ -31,6 +31,17 @@
 
 ---
 
+## P-2026-021 AI 使用 heredoc 写入 output.md 失败导致弹窗显示默认消息
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 现象：AI 调用 cunzhi 脚本后，iterate 弹窗只显示"任务完成，请确认是否继续？"默认消息，而不是 AI 写入的任务摘要。
+- 根因：AI 使用 `<<EOF` 语法写入 output.md 时，heredoc 内容包含反引号等特殊字符，导致命令没有正确结束（终端显示 `cmdand heredoc>` 提示符），文件为空或写入失败。
+- 修复：应使用 `<<'MD'`（带引号）防止变量展开和特殊字符问题，或使用 `write_to_file` 工具直接写入文件。
+- 回归检查：R-2026-021
+- 状态：open
+- 日期：2026-01-11
+
 ## P-2026-020 寸止端口监听集成到设置页
 
 - 项目：iterate (CunZhi)
