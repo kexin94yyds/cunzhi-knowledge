@@ -301,6 +301,19 @@
 
 ---
 
+## P-2026-002: Web 导入 JSON 后标题无法更新（刷新后回到旧值）
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：N/A
+- 现象：Web 端导入 iOS 导出的 JSON 后，页面上短暂显示新标题；但 Cmd+R 刷新后标题回到旧值/空值，且右上角出现 Synced...（刷新触发云端数据合并）。
+- 根因：待确认。疑点包括：云端文档 `$id` 与本地 `screenshot.id` 不一致（iOS 端可能用 `ID.unique()`，业务 id 存在 doc 的 `id/screenshotId` 字段），导致 `updateDocument` 404 且刷新时 `fetchFromCloud` 用 `$id` 合并覆盖；或云端字段名并非 `title` 导致读取为空；或 Appwrite 权限/规则导致更新失败，云端仍是旧值/空值。
+- 修复：未完成。计划：统一云端与业务 id 映射（优先让 `fetchFromCloud` 使用业务 id 字段或 iOS 写入时使用业务 id 作为 documentId），核对 Appwrite attributes 与字段名，确保 update 返回 200，并在 merge 时避免空值覆盖本地。
+- 回归检查：R-2026-002
+- 状态：open
+- 日期：2026-01-08
+- 排查：在 `fetchFromCloud` 打印 `doc.$id`/`doc.title`/`Object.keys(doc)`；比对单条截图的本地 id 与云端 id/title；在 Appwrite Console 查看 collection attributes、document `$id` 与 title 字段真实值。
+
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)
@@ -1127,6 +1140,34 @@
 ---
 
 ## P-2024-071 注意力追踪器计时器占位符闪烁
+
+- 项目：注意力追踪器
+- 仓库：/Users/apple/zhuyili
+- 发生版本：当前版本
+- 现象：计时器在加载时出现占位符闪烁
+- 根因：React 状态初始化异步导致的 UI 抖动
+- 修复：添加 Loading 状态保护
+- 回归检查：手动验证
+- 状态：verified
+- 日期：2024-12-16
+
+---
+
+## P-2026-001: 图片浏览体验待升级 - 缺少信息流模式
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：v1.0.0
+- 现象：当前图片展示可能需要点击才能查看详情，或者在电脑端没有充分利用屏幕宽度，图片展示不够直观完整。
+- 根因：UI 设计初期偏向移动端网格展示，未针对电脑端宽屏进行信息流式（Feed）的大图优化。
+- 修复：
+  1. 升级 iOS 和 Web 端为单列 Feed 布局，取消图片裁切，实现全屏流式查看。
+  2. 集成 Appwrite 云端服务，实现双端数据（图片与元数据）同步。
+  3. iOS 端增加 `AppwriteService` 负责上传和删除同步。
+  4. Web 端增加 `appwrite.ts` 负责拉取、上传和删除同步。
+- 回归检查：R-2026-001
+- 状态: fixed
+- 日期：2026-01-07
 
 - 项目：注意力追踪器
 - 仓库：/Users/apple/注意力追踪器最终版

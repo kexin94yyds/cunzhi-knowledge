@@ -52,8 +52,12 @@
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
 |----|------|----------|
+<<<<<<< HEAD
 | PAT-2024-022 | iOS 后台持续运行 | 静音音频播放绕过系统限制 |
 | PAT-2024-023 | AI/LLM 品牌图标获取 | lobehub/lobe-icons CDN |
+=======
+| PAT-2024-023 | 跨平台 Feed 同步架构 | Appwrite 实现 App/Web 高清信息流同步 |
+>>>>>>> 0e5a877 (docs: save local knowledge entries)
 
 ### 🚀 部署与运维
 | ID | 名称 | 核心要点 |
@@ -241,6 +245,35 @@
   3. 留出激活延迟：在激活指令后设置 100-200ms 的延时，再发送按键事件。
 - 关联问题：P-2025-001
 - 日期：2025-12-31
+
+---
+
+## PAT-2024-023 跨平台 Feed 同步架构 (Appwrite)
+
+- 来源：Monoshot 图片流升级项目
+- 日期：2026-01-07
+
+**场景**：
+App 需要与 Web 端同步高清图片和元数据，且要求展示效果为类似社交媒体的“信息流”（Feed）模式。
+
+**架构设计**：
+1. **BaaS 层 (Appwrite)**：
+   - **Storage**：存储原始高清图片。
+   - **Database**：存储元数据（ID, Title, Category, Timestamp, ImageUrl, FileId）。
+   - **Permissions**：设置集合与桶的权限为 Any (Read/Write) 以简化个人工具同步。
+
+2. **iOS 端实现**：
+   - **UI**：使用 `LazyVStack` 替换 `LazyVGrid`，图片使用 `.aspectRatio(contentMode: .fit)` 保证完整显示。
+   - **Service**：封装 `AppwriteService`，通过 `URLSession` 调用 Appwrite REST API 实现上传和删除同步。
+
+3. **Web 端实现**：
+   - **UI**：使用 Tailwind CSS 构建响应式单列布局，设置 `max-w-2xl` 优化宽屏阅读。
+   - **Sync**：集成 `appwrite` SDK，实现 `fetchFromCloud`、`syncToCloud` 和 `deleteFromCloud`。
+
+**关键技巧**：
+- **高清展示**：取消固定高度限制，让图片按原比例撑开容器。
+- **宽屏适配**：在桌面端（Web/iPad）增加最大宽度限制（如 800px），避免图片过大导致视觉疲劳。
+- **删除同步**：删除文档时必须同时通过 `fileId` 删除关联的 Storage 文件，防止云端空间浪费。
 
 ---
 
