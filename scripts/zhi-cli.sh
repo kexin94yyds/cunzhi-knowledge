@@ -1,15 +1,14 @@
 #!/bin/bash
-# zhi-cli: 命令行版寸止交互工具（调用完整 Tauri 输入框）
+# zhi-cli: 命令行版寸止交互工具（支持 iterate + windsurf-cunzhi fallback）
 # 用法: zhi-cli.sh "消息" ["选项1,选项2,选项3"] [project_path]
-
-set -e
 
 MESSAGE="${1:-请确认是否继续？}"
 OPTIONS="${2:-}"
 PROJECT_PATH="${3:-$(pwd)}"
 
-# iterate 应用路径
+# 弹窗引擎路径
 ITERATE_APP="/Applications/iterate.app/Contents/MacOS/iterate"
+WINDSURF_CUNZHI="$HOME/bin/windsurf-cunzhi"
 
 # 创建临时请求文件（使用 PID 和时间戳确保唯一）
 REQUEST_FILE="/tmp/zhi_request_$$_$(date +%s).json"
@@ -26,31 +25,67 @@ fi
 REQUEST_ID="zhi-cli-$(date +%s)-$$"
 
 # 生成请求 JSON（PopupRequest 格式）
+# 使用 jq -Rs 正确处理多行文本
+MESSAGE_JSON=$(printf '%s' "$MESSAGE" | jq -Rs .)
+PROJECT_JSON=$(printf '%s' "$PROJECT_PATH" | jq -Rs .)
+
 cat > "$REQUEST_FILE" << EOF
 {
   "id": "$REQUEST_ID",
-  "message": $(echo "$MESSAGE" | jq -R .),
+  "message": $MESSAGE_JSON,
   "predefined_options": $OPTIONS_JSON,
   "is_markdown": true,
-  "project_path": $(echo "$PROJECT_PATH" | jq -R .)
+  "project_path": $PROJECT_JSON
 }
 EOF
 
-# 强制杀死所有 iterate 进程
-killall -9 iterate 2>/dev/null || true
-sleep 1
-
-# 确认进程已完全退出
-for i in {1..10}; do
-    if ! pgrep -x iterate > /dev/null 2>&1; then
-        break
-    fi
-    killall -9 iterate 2>/dev/null || true
+# 尝试使用 iterate 弹窗
+use_iterate() {
+    export ITERATE_IPC_FORWARD=0
+    
+    # 彻底停止 LaunchAgent（避免 KeepAlive 自动重启主页）
+    # 使用 bootout 替代 unload，适配 macOS 新版 launchctl
+    launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || \
+    launchctl unload ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || true
+    
+    # 杀死所有现有 iterate 进程
+    pkill -9 -x iterate 2>/dev/null || true
+    
+    # 等待进程完全退出
+    for i in $(seq 1 10); do
+        if ! pgrep -x iterate > /dev/null 2>&1; then
+            break
+        fi
+        sleep 0.2
+    done
     sleep 0.3
-done
+    
+    # 启动弹窗
+    "$ITERATE_APP" --mcp-request "$REQUEST_FILE" 2>&1
+    
+    # 恢复 LaunchAgent
+    # 使用 bootstrap 替代 load，适配 macOS 新版 launchctl
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || \
+    launchctl load ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || true
+}
 
-# 直接调用二进制（阻塞等待响应）
-"$ITERATE_APP" --mcp-request "$REQUEST_FILE"
+# 尝试使用 windsurf-cunzhi 弹窗（fallback）
+use_windsurf_cunzhi() {
+    "$WINDSURF_CUNZHI" --ui --message "$MESSAGE" --options "$OPTIONS" 2>&1
+}
+
+# 主逻辑：只用 iterate（windsurf-cunzhi 作为备用，需手动启用）
+# 设置 USE_WINDSURF_CUNZHI=1 可强制使用 windsurf-cunzhi
+if [[ "${USE_WINDSURF_CUNZHI:-0}" == "1" ]] && [[ -x "$WINDSURF_CUNZHI" ]]; then
+    use_windsurf_cunzhi
+elif [[ -x "$ITERATE_APP" ]]; then
+    use_iterate
+elif [[ -x "$WINDSURF_CUNZHI" ]]; then
+    use_windsurf_cunzhi
+else
+    echo '{"error": "No popup engine available"}' >&2
+    exit 1
+fi
 
 # 清理临时文件
 rm -f "$REQUEST_FILE"
