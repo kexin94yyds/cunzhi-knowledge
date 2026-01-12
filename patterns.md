@@ -1626,7 +1626,7 @@ Web bridges often feel like "secondary" interfaces with degraded UI, causing cog
 
 ### VSCode 扩展功能
 - 自动端口分配（从 5310 开始）
-- 启动 `windsurf-cunzhi --serve`
+- 启动 `iterate --serve`
 - 生成 `.windsurfrules` 到项目目录
 - "复制开头语"按钮
 

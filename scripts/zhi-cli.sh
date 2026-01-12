@@ -1,5 +1,5 @@
 #!/bin/bash
-# zhi-cli: 命令行版寸止交互工具（支持 iterate + windsurf-cunzhi fallback）
+# zhi-cli: 命令行版寸止交互工具（iterate）
 # 用法: zhi-cli.sh "消息" ["选项1,选项2,选项3"] [project_path]
 
 MESSAGE="${1:-请确认是否继续？}"
@@ -8,7 +8,9 @@ PROJECT_PATH="${3:-$(pwd)}"
 
 # 弹窗引擎路径
 ITERATE_APP="/Applications/iterate.app/Contents/MacOS/iterate"
-WINDSURF_CUNZHI="$HOME/bin/windsurf-cunzhi"
+ITERATE_BIN="/opt/homebrew/bin/iterate"
+ITERATE_USER_BIN="$HOME/bin/iterate"
+ITERATE_CUNZHI_BIN="$HOME/.cunzhi/bin/iterate"
 
 # 创建临时请求文件（使用 PID 和时间戳确保唯一）
 REQUEST_FILE="/tmp/zhi_request_$$_$(date +%s).json"
@@ -61,7 +63,7 @@ use_iterate() {
     sleep 0.3
     
     # 启动弹窗
-    "$ITERATE_APP" --mcp-request "$REQUEST_FILE" 2>&1
+    "$1" --mcp-request "$REQUEST_FILE" 2>&1
     
     # 恢复 LaunchAgent
     # 使用 bootstrap 替代 load，适配 macOS 新版 launchctl
@@ -69,21 +71,17 @@ use_iterate() {
     launchctl load ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || true
 }
 
-# 尝试使用 windsurf-cunzhi 弹窗（fallback）
-use_windsurf_cunzhi() {
-    "$WINDSURF_CUNZHI" --ui --message "$MESSAGE" --options "$OPTIONS" 2>&1
-}
-
-# 主逻辑：只用 iterate（windsurf-cunzhi 作为备用，需手动启用）
-# 设置 USE_WINDSURF_CUNZHI=1 可强制使用 windsurf-cunzhi
-if [[ "${USE_WINDSURF_CUNZHI:-0}" == "1" ]] && [[ -x "$WINDSURF_CUNZHI" ]]; then
-    use_windsurf_cunzhi
-elif [[ -x "$ITERATE_APP" ]]; then
-    use_iterate
-elif [[ -x "$WINDSURF_CUNZHI" ]]; then
-    use_windsurf_cunzhi
+# 主逻辑：只用 iterate
+if [[ -x "$ITERATE_APP" ]]; then
+    use_iterate "$ITERATE_APP"
+elif [[ -x "$ITERATE_BIN" ]]; then
+    use_iterate "$ITERATE_BIN"
+elif [[ -x "$ITERATE_CUNZHI_BIN" ]]; then
+    use_iterate "$ITERATE_CUNZHI_BIN"
+elif [[ -x "$ITERATE_USER_BIN" ]]; then
+    use_iterate "$ITERATE_USER_BIN"
 else
-    echo '{"error": "No popup engine available"}' >&2
+    echo '{"error": "iterate not found (no popup engine available)"}' >&2
     exit 1
 fi
 
