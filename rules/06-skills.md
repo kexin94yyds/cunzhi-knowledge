@@ -11,6 +11,8 @@ trigger: always_on
 
 | 意图关键词 | Skill | 核心能力 |
 |------------|-------|----------|
+| iterate、cunzhi、寸止、端口不可用、服务器未启动 | `iterate` | 脚本交互与故障自动恢复 |
+| debug、调试、Bug、错误、排查、问题定位 | `debug` | 系统化调试方法论 |
 | MCP 服务器、MCP server | `mcp-builder` | 创建高质量 MCP 服务器 |
 | 测试 Web、Playwright | `webapp-testing` | Web 应用自动化测试 |
 | 创建 Skill | `skill-creator` | 创建自定义 Skills |
@@ -36,4 +38,24 @@ trigger: always_on
 → 加载：skills/mcp-builder/SKILL.md
 → 按需加载：reference/node_mcp_server.md 或 reference/python_mcp_server.md
 ```
+
+## iterate Skill 自动恢复（重要）
+
+当调用 `cunzhi.py` 脚本返回 `Error: Port {PORT} is not available` 时：
+
+1. **自动启动服务器**（非阻塞）：
+   ```bash
+   iterate --serve --port {PORT}
+   ```
+
+2. **等待 2-3 秒**后重新调用脚本
+
+3. 如果仍然失败，提示用户手动检查
+
+**端口约定**：
+| 环境 | 端口 |
+|------|------|
+| Windsurf | 5315 |
+| VS Code | 5314 |
+| Cursor | 5316 |
 
