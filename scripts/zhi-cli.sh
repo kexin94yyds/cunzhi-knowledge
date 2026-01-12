@@ -1,0 +1,89 @@
+#!/bin/bash
+# zhi-cli: 命令行版寸止交互工具（iterate）
+# 用法: zhi-cli.sh "消息" ["选项1,选项2,选项3"] [project_path]
+
+MESSAGE="${1:-请确认是否继续？}"
+OPTIONS="${2:-}"
+PROJECT_PATH="${3:-$(pwd)}"
+
+# 弹窗引擎路径
+ITERATE_APP="/Applications/iterate.app/Contents/MacOS/iterate"
+ITERATE_BIN="/opt/homebrew/bin/iterate"
+ITERATE_USER_BIN="$HOME/bin/iterate"
+ITERATE_CUNZHI_BIN="$HOME/.cunzhi/bin/iterate"
+
+# 创建临时请求文件（使用 PID 和时间戳确保唯一）
+REQUEST_FILE="/tmp/zhi_request_$$_$(date +%s).json"
+
+# 构建预定义选项数组
+if [[ -n "$OPTIONS" ]]; then
+    IFS=',' read -ra OPT_ARRAY <<< "$OPTIONS"
+    OPTIONS_JSON=$(printf '%s\n' "${OPT_ARRAY[@]}" | jq -R . | jq -s .)
+else
+    OPTIONS_JSON="[]"
+fi
+
+# 生成唯一ID
+REQUEST_ID="zhi-cli-$(date +%s)-$$"
+
+# 生成请求 JSON（PopupRequest 格式）
+# 使用 jq -Rs 正确处理多行文本
+MESSAGE_JSON=$(printf '%s' "$MESSAGE" | jq -Rs .)
+PROJECT_JSON=$(printf '%s' "$PROJECT_PATH" | jq -Rs .)
+
+cat > "$REQUEST_FILE" << EOF
+{
+  "id": "$REQUEST_ID",
+  "message": $MESSAGE_JSON,
+  "predefined_options": $OPTIONS_JSON,
+  "is_markdown": true,
+  "project_path": $PROJECT_JSON
+}
+EOF
+
+# 尝试使用 iterate 弹窗
+use_iterate() {
+    export ITERATE_IPC_FORWARD=0
+    
+    # 彻底停止 LaunchAgent（避免 KeepAlive 自动重启主页）
+    # 使用 bootout 替代 unload，适配 macOS 新版 launchctl
+    launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || \
+    launchctl unload ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || true
+    
+    # 杀死所有现有 iterate 进程
+    pkill -9 -x iterate 2>/dev/null || true
+    
+    # 等待进程完全退出
+    for i in $(seq 1 10); do
+        if ! pgrep -x iterate > /dev/null 2>&1; then
+            break
+        fi
+        sleep 0.2
+    done
+    sleep 0.3
+    
+    # 启动弹窗
+    "$1" --mcp-request "$REQUEST_FILE" 2>&1
+    
+    # 恢复 LaunchAgent
+    # 使用 bootstrap 替代 load，适配 macOS 新版 launchctl
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || \
+    launchctl load ~/Library/LaunchAgents/com.imhuso.iterate.bridge.plist 2>/dev/null || true
+}
+
+# 主逻辑：只用 iterate
+if [[ -x "$ITERATE_APP" ]]; then
+    use_iterate "$ITERATE_APP"
+elif [[ -x "$ITERATE_BIN" ]]; then
+    use_iterate "$ITERATE_BIN"
+elif [[ -x "$ITERATE_CUNZHI_BIN" ]]; then
+    use_iterate "$ITERATE_CUNZHI_BIN"
+elif [[ -x "$ITERATE_USER_BIN" ]]; then
+    use_iterate "$ITERATE_USER_BIN"
+else
+    echo '{"error": "iterate not found (no popup engine available)"}' >&2
+    exit 1
+fi
+
+# 清理临时文件
+rm -f "$REQUEST_FILE"

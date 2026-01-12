@@ -8,8 +8,11 @@ Bug 标记为"已修复"前，**必须同时满足**：
 2. 回归检查在当前版本实际通过
 3. 问题原因、修复方式沉淀到 `.cunzhi-knowledge/problems.md`
 4. 回归检查写入 `.cunzhi-knowledge/regressions.md`
-5. 每个步骤完成后调用 `寸止` 汇报进度
-6. 通过最终 `寸止` 授权
+5. 解决模式沉淀到 `.cunzhi-knowledge/patterns.md`
+6. 每个步骤完成后调用 `寸止` 汇报进度
+7. 通过最终 `寸止` 
+8. **跨 IDE 审计闭环（必经）**：在完成“三件套”沉淀后，AI 必须生成审计 Prompt 供用户复制，并推进状态为 `audited`（在回归通过后再推进 `verified`）。
+9. **闭环审计自动化**：在 Codex 审计返回 `LGTM` 且包含针对 `.cunzhi-knowledge/problems.md` 的 Diff 时，AI 助手应当先通过 `zhi` 请求用户确认；确认后再自动应用该改动并执行 Git 同步（add/commit/push），将状态推进至 `audited (Codex已审计)`。
 
 ### 回归检查强制要求
 - **P-ID 与 R-ID 一一对应**
@@ -18,20 +21,37 @@ Bug 标记为"已修复"前，**必须同时满足**：
 - 禁止只写 problems.md 而跳过 regressions.md
 
 ### 状态枚举
-- **open** → **fixed** → **verified**
-- 只有 `verified` 状态才能标记为已完成
+- **open** → **fixed** → **audited** → **verified**
+- - **verified**：回归检查已通过。
+- - **audited**：已通过 Codex 审计（不等于回归验证）；必须执行并通过回归检查后才可标记为 `verified`。
+- - **fixed**：代码已修复，且三件套已沉淀（顺序：`problems` → `regressions` → `patterns`）。
 - 禁止跳过 `fixed` 直接到 `verified`
 
 ## 全局知识库规则
 
 ### 唯一来源
-- 所有问题与经验记录必须写入 `.cunzhi-knowledge/`
-- Bug 记录：`problems.md`
-- 回归经验：`regressions.md`
-- 解决完问题后，必须调用 `寸止` 询问是否记录
+- 所有问题与经验记录必须写入项目根目录下的 `.cunzhi-knowledge/` 文件夹
+- Bug 记录：`.cunzhi-knowledge/problems.md`
+- 回归经验：`.cunzhi-knowledge/regressions.md`
+- 最佳实践：`.cunzhi-knowledge/patterns.md`
+- **禁止在根目录创建临时/副本文件进行中转。**
 
-### 同步要求
-- 文件修改后：调用 `寸止` 询问是否执行 `git add / commit / push`
+### 写入方式（CRITICAL）
+- 默认写入方式：**必须**通过 `ji(沉淀)` 工具写入，它会自动执行 git add → commit → push
+- **patterns 写入前置确认（强制）**：`patterns` 必须先返回预览，并通过 `zhi` 获得用户明确确认后，才允许执行写入（`ji(action=确认沉淀)`）
+- **例外（闭环审计）**：当 Codex 返回针对 `.cunzhi-knowledge/problems.md` 的 unified diff 时，AI 助手也必须先通过 `zhi` 请求用户确认；确认后再使用编辑工具应用该 diff，并确保完成 git add → commit → push
+- **追加逻辑**：使用 `>>` 或编辑器追加模式，禁止使用 `>` 或 `cp` 直接覆盖整个文件。
+- **ji(沉淀) 前置检查**：
+  - **分类匹配**：`category` 必须是 `patterns` (PAT-ID), `problems` (P-ID), 或 `regressions` (R-ID)。
+  - **单复数兼容**：虽然工具已支持单数，但建议 AI 优先使用复数形式。
+  - **ID 校验**：内容必须包含对应格式的 ID（如 PAT-2025-001），否则工具会拦截。
+- 原因：直接编辑不会触发自动同步，导致内容只在本地
+
+### 同步与冲突要求
+- `ji(沉淀)` 会自动执行 `git add / commit / push`
+- **冲突预警**：发现 ID 冲突（如 P-ID 重复）时，必须调用 `zhi` 确认是否需要重编号，严禁直接跳过或覆盖旧记录。
+- **文件合并**：若必须进行大规模合并，优先使用 Git 提供的合并工具，严禁人工手动覆盖。
+- 如果看到 "⚠️ Git 同步失败"，需要手动处理。
 - remote：https://github.com/kexin94yyds/cunzhi-knowledge.git
 
 ### 经验沉淀引导

@@ -6,7 +6,7 @@
 
 ## 索引表
 
-### 🖥️ 桌面应用 (Tauri/Electron/SwiftUI)
+### 🖥️ 桌面应用 (Tauri/Electron/Swift)
 | ID | 关联问题 | 名称 | 类型 |
 |----|----------|------|------|
 | R-2024-002 | P-2024-002 | WindowSwitcher 上下箭头切换窗口置顶 | 手工检查 |
@@ -16,19 +16,49 @@
 | R-2024-053 | P-2024-053 | 中文输入候选栏位置 | 手工检查 |
 | R-2024-464 | P-2024-464 | update.sh osascript 密码对话框 | 手工检查 |
 | R-2025-001 | P-2025-001 | 按钮 3D 凹陷反馈验证 | 手工检查 |
-| R-2025-002 | P-2025-002 | SwiftUI WebView 加载循环与入口冲突验证 | 手工检查 |
-| R-2025-003 | P-2025-003 | AirDrop 共享功能验证 | 手工检查 |
+| R-2026-005 | P-2026-005 | macOS Swift 全局热键 Option+Q | 手工检查 |
+| R-2026-002 | P-2026-002 | iOS 编译适配验证 | 编译验证 |
+| R-2026-003 | P-2026-003 | Web Bridge 粘贴图片验证 | 手工检查 |
+| R-2026-006 | P-2026-005 | 移动端多进程弹窗交互验证 | 手工检查 |
+| R-2026-008 | P-2026-008 | Cloudflare Tunnel 1033 恢复与自启稳定性验证 | 手工检查 |
+| R-2026-020 | P-2026-020 | 寸止端口监听前端启动/停止与状态同步 | 手工检查 |
+
+---
+
+## R-2026-020 寸止端口监听前端启动/停止与状态同步
+
+- **类型**：手工检查
+- **描述**：验证在设置页面中，“寸止端口监听”模块的启动、停止、端口自动切换及状态显示功能是否正常工作。
+- **检查步骤**：
+  1. 打开应用设置页，展开“寸止端口监听”模块。
+  2. 保持默认端口 5321，点击“启动服务”。
+  3. **预期结果**：状态变为“运行中”，显示正确的端口和 PID，按钮变为“停止服务”。
+  4. 开启另一个终端，手动监听 5321 端口（如 `nc -l 5321`），然后在设置页尝试启动服务。
+  5. **预期结果**：系统应检测到端口占用，自动切换到 5322 或其他空闲端口，并显示警告提示。
+  6. 点击“停止服务”。
+  7. **预期结果**：服务进程被杀死，状态恢复为“未启动”。
+  8. 调用 `python3 bin/cunzhi.py [端口] --message "测试"`，验证是否能正常触发 GUI 弹窗并返回响应。
+- **关联 P-ID**：P-2026-020
+- **日期**：2026-01-11
+
+---
 
 ### 🔧 知识库与流程
 | ID | 关联问题 | 名称 | 类型 |
 |----|----------|------|------|
 | R-2024-001 | P-2024-001 | 全局知识库流程验证 | 流程验证 |
+| R-2026-012 | P-2026-012 | MCP 混淆名称调用验证 | 流程验证 |
+| R-2026-013 | P-2026-013 | MCP 间歇性拦截恢复验证 | 手工检查 |
+| R-2026-015 | P-2026-015 | MCP 错误处理提示验证 | 手工检查 |
+| R-2026-016 | P-2026-016 | MCP 影子执行功能验证 | 流程验证 |
+| R-2026-001 | P-2026-001 | .gitignore 风险检测与修复指引 | 流程验证 |
 
 ### 🌐 Web/SaaS
 | ID | 关联问题 | 名称 | 类型 |
 |----|----------|------|------|
 | R-2024-005 | P-2024-005 | Supabase RLS anon 角色权限 | 手工检查 |
 | R-2024-051 | P-2024-051 | AI-Sidebar NotebookLM 标题捕获 | 手工检查 |
+| R-2026-009 | P-2026-009 | tobooks 笔记面板搜索框点击不应关闭面板 | 手工检查 |
 
 ---
 
@@ -44,34 +74,110 @@
 
 ---
 
-## 详细记录
+## R-2026-011 系统伪装重命名验证
 
-## R-2025-002 SwiftUI WebView 加载与入口回归检查
+- **类型**：手工检查
+- **描述**：验证敏感文件是否已成功重命名并伪装，且能正常被系统识别。
+- **检查步骤**：
+  1. 确认原始文件 `新名称.rpm` 不再存在。
+  2. 确认新路径 `/Users/apple/Downloads/windsurf_setup_d02c.rpm` 存在。
+  3. 确认文件大小与原始文件一致。
+  4. 执行 `xattr -l` 确认无任何残留扩展属性。
+- **关联 P-ID**：P-2026-011
+- **日期**：2026-01-08
 
-- ID: R-2025-002
-- 关联问题: P-2025-002
-- 类型: 手工检查
-- 位置: `Notebook-Mac/Notebook-Mac/ContentView.swift`
-- 关键断言: 
-  1. 应用启动后，CPU 占用正常，没有出现无响应状态。
-  2. 窗口显示原生标题栏，顶部有足够的呼吸空间。
-  3. 切换侧边栏“主页”和“编辑器”，WebView 内容能正确切换且不闪烁。
-- 运行方式: 
-  1. 在 Xcode 中运行项目。
-  2. 确认应用能正常点击侧边栏。
-  3. 检查窗口顶部是否带有原生标题栏。
+## R-2026-002 iOS 编译适配验证
 
-## R-2025-003 AirDrop 共享功能回归检查
+- **类型**：编译/部署验证
+- **描述**：验证 iOS 侧编译是否通过，确保无桌面端特有 API 导致的编译错误。
+- **检查步骤**：
+  1. 运行 `cargo check --target aarch64-apple-ios`
+  2. 检查 `src/rust/ui/window.rs` 和 `src/rust/ui/window_registry.rs`。
+- **关联 P-ID**：P-2026-002
+- **预期结果**：编译无 `not found in this scope` 或 `mismatched types` 错误。
+- **验证版本**：v0.5.0 (Verified)
+- **日期**：2026-01-06
 
-- ID: R-2025-003
-- 关联问题: P-2025-003
-- 类型: 手工检查
-- 位置: `Notebook-Mac/Notebook-Mac/ContentView.swift`
-- 关键断言: 点击“分享”按钮后，弹出的菜单中必须包含“隔空投送” (AirDrop) 选项。
-- 运行方式: 
-  1. 在“编辑器”页面输入一些内容。
-  2. 点击顶部工具栏右侧的分享图标（`square.and.arrow.up`）。
-  3. 确认弹出菜单中有 AirDrop。
+---
+
+## R-2026-003 Web Bridge 粘贴图片验证
+
+- **类型**：手工检查
+- **描述**：验证 Web 端面板粘贴图片并提交后，桌面端是否能正确收到图片数据。
+- **检查步骤**：
+  1. 打开 trycloudflare Web 面板。
+  2. 粘贴一张图片并点击提交。
+  3. 检查桌面端收到的 `BridgeAction` 消息 payload。
+- **关联 P-ID**：P-2026-003
+- **预期结果**：桌面端收到的 `response.images` 包含 Base64 格式的图片数据。
+- **验证版本**：v0.5.0 (Verified)
+- **日期**：2026-01-06
+
+---
+
+
+## R-2026-009 tobooks 笔记面板搜索框点击不应关闭面板
+
+- **类型**：手工检查
+- **描述**：验证打开“笔记与高亮”面板后，点击搜索框可持续输入，不会被 outside-click 误判导致面板关闭。
+- **检查步骤**：
+  1. 打开 `tobooks-main/index.html`，进入阅读界面。
+  2. 点击“笔记与高亮”按钮打开左侧面板。
+  3. 点击顶部搜索输入框。
+  4. 连续输入多次字符（例如 `abc`），确认焦点保持在输入框且面板不关闭。
+  5. 点击面板外区域，确认此时面板会关闭。
+- **预期结果**：步骤 4 面板不关闭、输入不中断；步骤 5 才会关闭。
+- **关联 P-ID**：P-2026-009
+- **验证版本**：fcc516f
+- **日期**：2026-01-07
+
+## R-2026-008 Cloudflare Tunnel 1033 恢复与自启稳定性验证
+
+- **类型**：手工检查
+- **描述**：验证 `iterate.tobooks.xin` 使用 Cloudflare Tunnel 时，connector 在线且可在重启后自动恢复，避免 Error 1033。
+- **检查步骤**：
+  1. 打开 Cloudflare Zero Trust：`Networks -> Connectors`，确认 tunnel `iterate` 状态为 **HEALTHY**。
+  2. 在 macOS 上确认服务存在：`sudo launchctl list | grep com.cloudflare.cloudflared`。
+  3. 确认旧 LaunchAgent 未启用：`ls -l ~/Library/LaunchAgents | grep com.imhuso.cloudflared.iterate.plist` 应无结果，或文件在 `~/Library/LaunchAgents/disabled/`。
+  4. 手机端访问 `https://iterate.tobooks.xin`，应能正常打开（不出现 1033）。
+  5. 重启 Mac（或重启 `com.cloudflare.cloudflared` 服务）后重复步骤 1-4。
+- **预期结果**：Connector 持续在线，域名可访问，不出现 Error 1033。
+- **关联 P-ID**：P-2026-008
+- **日期**：2026-01-07
+
+## R-2026-001 .gitignore 风险检测与修复指引
+
+- **类型**：流程/逻辑验证
+- **描述**：验证系统能否识别并预防项目级忽略规则对知识库的干扰。
+- **检查步骤**：
+  1. 故意在 `.gitignore` 中删除 `!.cunzhi-knowledge/` 规则，并确保存在 `*.md`。
+  2. 调用 `ji(action="回忆")`。
+  3. **预期结果**：输出中应包含 "⚠️ 配置风险检测" 警告，并显示修复命令。
+  4. 执行修复命令。
+  5. 再次调用 `ji(action="回忆")`，警告应消失。
+  6. 检查 IDE 资源管理器，`.cunzhi-knowledge/` 内的文件应正常显示。
+- **关联 P-ID**：P-2026-001
+- **验证版本**：v0.5.0
+- **日期**：2026-01-03
+
+---
+## R-2026-006 移动端多进程弹窗交互验证
+
+- **类型**：手工检查
+- **描述**：验证在多进程弹窗模式下，手机端能够正确切换并驱动不同进程的桌面弹窗。
+- **检查步骤**：
+  1. 同时在两个不同项目触发 `zhi` 请求，确保桌面显示两个独立窗口。
+  2. 手机端连接 Bridge，在 ∞ 菜单中切换项目 A。
+  3. 点击“继续”，确认桌面窗口 A 响应并继续生成。
+  4. 在手机端切换项目 B，点击“确认”，确认桌面窗口 B 响应并正常关闭。
+- **预期结果**：每个独立进程都能准确接收并执行其对应项目的手机端指令。
+- **关联 P-ID**：P-2026-005
+- **验证版本**：v0.6.0 (Verified)
+- **日期**：2026-01-07
+
+---
+
+## R-2025-001 Windsurf 插入功能回归检查
 
 - ID: R-2025-001
 - 关联问题: P-2025-001
@@ -82,6 +188,60 @@
   1. 打开 Windsurf
   2. Shift+Cmd+P 呼出 Prompt
   3. 选择插入，检查 Windsurf 是否被激活并完成粘贴。
+
+## R-2025-005 全局快捷键开关与系统快捷键冲突验证
+
+- **类型**：交互/功能回归
+- **描述**：验证全局快捷键切换功能是否能彻底禁用本地及插件监听，并确保不干扰系统快捷键。
+- **检查步骤**：
+  1. 打开寸止弹窗，点击顶部“闪电”图标至置灰状态。
+  2. 按 `Tab` 和 `Shift+Tab`，确认窗口不应最小化或恢复，且焦点应在输入框内正常切换。
+  3. 点击“闪电”图标至高亮（蓝色）状态。
+  4. 按 `Cmd+Tab`，确认应正常触发系统的应用切换功能，而不是触发寸止的最小化。
+  5. 验证 `PopupHeader.vue` 中的切换按钮是否仅显示图标，不再显示“已禁”文字。
+- **关联 P-ID**：P-2025-005
+- **预期结果**：禁用时本地监听失效，启用时不拦截系统组合键，UI 简洁无文字。
+- **验证版本**：v1.2.0 (Verified)
+- **日期**：2025-12-30
+
+---
+
+## R-2025-004 全局快捷键热切换验证
+
+- 关联问题：P-2025-004
+- 类型：手工检查
+- 位置：`src/frontend/components/popup/PopupHeader.vue`
+- 关键断言：
+  1. 点击顶部“闪电”图标按钮，图标应变为禁用状态（`flash-off`）。
+  2. 禁用状态下，按下全局快捷键（如 `Shift+Tab`），不应触发应用行为（如窗口恢复）。
+  3. 再次点击图标启用后，快捷键应立即恢复功能。
+  4. 切换状态应能持久化到配置文件中，并在重启后保持。
+- 运行方式：
+  1. 打开寸止弹窗。
+  2. 点击头部闪电图标将其禁用。
+  3. 最小化弹窗，按下 `Shift+Tab`，验证弹窗不被唤起。
+  4. 再次打开弹窗启用快捷键，验证 `Shift+Tab` 恢复正常。
+- 状态：verified
+
+---
+
+## R-2025-003 上下文追加项勾选验证
+
+- 关联问题：P-2025-003
+- 类型：手工检查
+- 位置：`src/frontend/components/popup/PopupInput.vue`
+- 关键断言：
+  1. 弹窗中取消勾选某个上下文项时，该项内容不应出现在最终追加的 Prompt 中。
+  2. 取消勾选时，对应的 Switch 开关应变为禁用（Disabled）状态。
+  3. 勾选状态应能通过 `update_conditional_prompt_active` 命令持久化到配置文件中。
+- 运行方式：
+  1. 打开寸止弹窗。
+  2. 在“上下文追加”区域取消勾选某项（如“是否生成测试脚本”）。
+  3. 输入文字并提交，验证后端收到的 Prompt 中不包含该项的模板内容。
+  4. 重启应用，验证该项仍处于未勾选状态。
+- 状态：verified
+
+---
 
 ## R-2024-022 iterate.app 更新后工具同步
 
@@ -102,7 +262,18 @@
 
 ---
 
-## R-2024-001 全局知识库流程验证
+## R-2026-001 iOS & Web 升级 Feed 模式与 Appwrite 同步验证
+
+- **类型**: 手工检查
+- **P-ID**: P-2026-001
+- **步骤**:
+    1. 在 iOS App 中进入 Gallery 页面，确认布局已变为单列 Feed 模式。
+    2. 确认图片按原比例完整显示，且在大屏（iPad/Mac）上有限宽。
+    3. 在 Web 端 `monoshot-vault` 确认布局同步为 Feed 模式。
+    4. 在 iOS 端新增或删除截图，观察 Appwrite 控制台数据变化。
+    5. 刷新 Web 端，确认云端数据已同步拉取并展示。
+- **状态**: verified
+- **日期**: 2026-01-07
 
 - 关联问题：P-2024-001
 - 类型：流程验证
@@ -110,6 +281,21 @@
 - 运行方式：手工验证
 
 ---
+
+## R-2025-001 自动备份功能验证
+
+- 关联问题：P-2025-001
+- 类型：手工检查
+- 位置：`~/Library/Application Support/replace-information/backups/`
+- 关键断言：
+  1. 应用启动 3 秒后，备份目录应出现新的 `backup_YYYY-MM-DD...` 子目录。
+  2. 备份目录内应包含完整的 `config.json` 和 `IndexedDB` 文件夹。
+  3. 修改数据后，等待 30 分钟或调用 `backup.now()`，应产生新的备份点。
+  4. 手动删除 `config.json` 后，通过 `backup.restore(name)` 应能成功恢复数据。
+- 运行方式：
+  1. 打开应用，检查日志确认 `✅ 自动备份完成`。
+  2. 进入 Finder 查看备份文件完整性。
+  3. 执行 `window.electronAPI.backup.list()` 验证列表输出。
 
 ## R-2024-002 WindowSwitcher 上下箭头切换窗口置顶
 
@@ -4700,3 +4886,283 @@ R-2024-005
 5. 调整窗口大小，验证终端是否自适应。
 期望：终端在窗口内正常运行且可交互。
 关联：P-2024-005。
+
+---
+
+## R-2026-002: 验证 AI 聊天记录导出功能
+- **关联问题**: P-2026-002
+- **类型**: 手工检查
+- **预期结果**: 成功生成包含 ### User 和 ### Assistant 交替出现的 Markdown 文件，代码块高亮正常。
+
+---
+
+## R-2026-003: 验证黑白极简 UI 风格
+- **关联问题**: P-2026-003
+- **类型**: 视觉回归测试
+- **预期结果**: 全局无彩色、无圆角，按钮悬停反色反馈灵敏。
+
+---
+
+## R-2026-004: 验证持久化存储和历史管理功能
+- **关联问题**: P-2026-004
+- **类型**: 功能测试
+- **预期结果**: 成功提取 conversationId，保存前自动检测重复，历史记录 CRUD 正常。
+
+R-2026-001: 
+1. 启动 PathHelper.app。
+2. 确认左上角悬浮球可见且可点击切换颜色。
+3. 在 Finder 复制文件，终端粘贴应为路径。
+4. 在网页右键复制图片，终端粘贴应为本地保存的图片路径。
+关联 P-ID: P-2026-001
+
+---
+
+## R-2026-005: macOS Swift 全局热键 Option+Q 回归检查
+
+- **关联问题**: P-2026-005
+- **类型**: 手工检查
+- **检查步骤**:
+  1. 启动 PathHelper.app，确认悬浮球显示
+  2. 按 `Option + Q`，验证悬浮球隐藏
+  3. 再按 `Option + Q`，验证悬浮球恢复显示
+  4. 切换到其他应用（如 Finder），再按 `Option + Q`，验证全局生效
+  5. 如果失效，检查 System Preferences → Security & Privacy → Accessibility 权限
+- **预期结果**: 无论应用是否在前台，`Option + Q` 都能切换悬浮球显示状态
+- **注意事项**: 
+  - 修改可执行文件后需重新签名并重新授权辅助功能权限
+  - keyCode 12 = Q 键
+
+## 回归检查 R-2026-001: WebSocket 镜像互通验证
+- **检查项**：
+  1. WebSocket 端口 8080 监听在 0.0.0.0。
+  2. 访问 `bridge_test.html` 显示“已连接”。
+  3. 当电脑端出现 MCP 弹窗时，Web 端镜像 UI 自动渲染对应的消息和选项。
+  4. Web 端刷新时能通过 `request_sync` 获取当前最新状态。
+- **验证结论**：通过。
+
+## 回归检查 R-2026-001: WebSocket 镜像互通验证
+- **检查项**：
+  1. 端口 8080 监听在 0.0.0.0。
+  2. Web 端连接显示“已连接”。
+  3. MCP 弹窗时，Web 端镜像 UI 自动同步内容。
+  4. 手机点击“确认”后，电脑端窗口同步关闭。
+- **结论**：验证通过。
+
+## R-2026-002: 公网单端口镜像控制台回归检查
+
+### 检查清单
+1. **单端口可用性**
+   - [ ] 启动应用后，执行 `lsof -i:8080` 确认仅需一个端口即可工作。
+   - [ ] 访问 `http://localhost:8080/ws` 应返回 400 或 426 (需要升级)，而非 404。
+2. **隧道连通性 (5G 测试)**
+   - [ ] 运行 `cloudflared tunnel` 获取最新域名。
+   - [ ] 手机 5G 访问该域名，顶部状态灯应在 1 秒内变绿（已连接）。
+3. **全功能闭环**
+   - [ ] 点击手机端“快捷模板”，电脑端输入框同步更新。
+   - [ ] 手机端点击“✨ 增强”，电脑端执行动作。
+   - [ ] **手机端点击“确认”**，电脑端当前 `zhi` 弹窗正常关闭。
+
+### 失败规避
+- 若显示 `ERR_CONNECTION_CLOSED`，确认终端中 `cloudflared` 进程未退出且域名未过期。
+- 若无法连接 WS，检查浏览器控制台是否有 CSP 或 Mixed Content 报错。
+
+---
+
+## R-2026-003 应用内一键 Tunnel 功能验证
+
+- **关联问题**: 无（新功能）
+- **类型**: 手工检查
+- **位置**: `src/frontend/components/settings/IterateSettings.vue` + `src/rust/tunnel/`
+- **关键断言**:
+  1. **健康检查**: 点击"刷新"按钮，8080 端口状态正确显示（绿色=可达，红色=不可达）
+  2. **启动流程**: 点击"开启远程访问"，状态灯变为黄色闪烁（启动中），几秒后变绿（运行中）
+  3. **域名获取**: 运行中状态下，显示 `https://xxx.trycloudflare.com` 域名
+  4. **复制功能**: 点击"复制"按钮，域名被复制到剪贴板
+  5. **二维码显示**: 点击"显示二维码"，二维码图片正确渲染
+  6. **停止功能**: 点击"停止"，状态恢复为"未启动"
+  7. **单实例保证**: 重复点击"开启"不会启动多个 cloudflared 进程
+  8. **错误处理**: cloudflared 未安装时，显示明确错误提示
+- **运行方式**:
+  1. 打开 iterate 设置页 → iterate 折叠项
+  2. 依次验证上述 8 项检查点
+  3. 使用 `ps aux | grep cloudflared` 确认进程管理正确
+- **预期结果**: 所有检查点通过，用户可一键开启/关闭公网访问
+- **日期**: 2026-01-06
+
+## R-2026-004: 多窗口切换功能验证
+- **关联 P-ID**: P-2026-004
+- **类型**: 手工检查
+- **位置**: `bridge_test.html` + `src/frontend/components/AppContent.vue`
+- **检查项**:
+  1. **菜单渲染**: 点击 ∞ 图标，能正确显示所有活跃项目列表。
+  2. **高亮状态**: 当前手机端正在查看的项目在菜单中应有高亮背景和圆点标识。
+  3. **切换响应**: 点击菜单中的其他项目，手机端标题应立即更新，且内容区应切到对应项目的 MCP 状态。
+  4. **标题同步**: 手机端左上角应正确显示当前项目的目录名。
+  5. **隔离性**: 在切换项目时，不相关的桌面窗口不应发出响应干扰。
+- **运行方式**:
+  1. 在 Mac 上打开两个不同项目的 iterate 窗口。
+  2. 手机访问固定域名，点击 ∞ 菜单。
+  3. 依次点击两个项目，验证 UI 和数据切换是否一致。
+- **预期结果**: 切换流畅，项目名显示正确，数据同步无误。
+- **日期**: 2026-01-06
+
+## R-2026-003: 应用内一键 Tunnel 功能闭环检查清单
+
+### 检查清单
+1. **编译与路径检查**
+   - [ ] 运行 `./update.sh` 确认无 `__cmd__` 相关解析错误。
+2. **一键开启验证 (5G 环境)**
+   - [ ] 点击「开启远程访问」，确认本地状态灯变为绿色（8080 正常）。
+   - [ ] 确认状态经历「启动中...」并在 10 秒内成功转为「运行中」。
+   - [ ] 确认 UI 自动解析并显示了以 `.trycloudflare.com` 结尾的链接。
+3. **远程功能闭环**
+   - [ ] 手机 5G 扫码打开链接，确认内容与电脑端弹窗实时同步。
+   - [ ] 手机端点击「确认」按钮，电脑端弹窗应立即关闭。
+4. **错误恢复检查**
+   - [ ] 手动 kill 掉 cloudflared 进程，UI 应能检测到状态变为 Stopped 或 Error。
+   - [ ] 再次点击「开启远程访问」，应能成功生成新域名并重新连通。
+
+### 失败规避
+- 若 8080 报错，请检查 `iterate` 是否正在运行主进程。
+- 若域名不出现，检查控制台是否有 `spawn_log_reader` 相关的 IO 错误。
+# R-2026-001: MCP Web Bridge Sync and Mobile UI Consistency
+
+## Requirement
+Ensure `zhi` popups are synchronized to the mobile web bridge and provide a consistent UI/UX.
+
+## Test Cases
+1. **IPC Forwarding**: Run `iterate --mcp-request` in a separate terminal while main iterate is running. Verify popup appears in main process and syncs to mobile.
+2. **Mobile Interaction**: Submit a response from the mobile web bridge. Verify the CLI process receives the correct output and exits.
+3. **Theme Sync**: Toggle theme on mobile. Verify background and text colors change correctly and persist.
+4. **Visual Alignment**: Verify ∞ icon is black and button selection colors (Inactive: White/Gray, Active: Black/Blue) match specifications.
+
+## P-ID Association
+P-2026-001
+
+## R-2026-002: UI State Retention Verification
+
+## Requirement
+The Web Bridge UI must not clear its content immediately after a user submits a response.
+
+## Test Cases
+1. **Retention Test**: Open the bridge on mobile, receive a `zhi` popup, and click "Submit". Verify that the AI message and your input remain visible.
+2. **Interaction Lock Test**: After submission, verify that the "Submit", "Continue", and "Enhance" buttons are visually disabled and unclickable.
+3. **Refresh Test**: Trigger a new `zhi` request from the desktop. Verify that the mobile UI correctly updates with the new content and re-enables all buttons.
+
+## P-ID Association
+P-2026-002
+
+## R-2026-998 - ji 门禁验证：markdown 列表格式字段提取
+- 关联 P-ID：P-2026-999
+- 类型：manual
+- 位置：src/rust/mcp/tools/memory/manager.rs
+- 关键断言：`extract_id_from_fields` 能正确识别 `- 关联 P-ID：P-YYYY-NNN` 格式
+- 运行方式：调用 `ji(action=沉淀, category=regressions)` 并观察是否成功写入
+- 日期：2026-01-06
+
+## R-2026-007 “沉淀三件套”规则一致性与 ID 提取校验
+
+- **类型**：流程/逻辑验证
+- **描述**：验证规则文件中的沉淀顺序一致性，以及 `ji(沉淀)` 工具在多 ID 场景下的主 ID 提取正确性。
+- **检查步骤**：
+  1. **规则检查**：搜索所有规则文件中的“三件套”描述，确保顺序均为 `problems` -> `regressions` -> `patterns`。
+  2. **逻辑验证 (P-ID)**：调用 `ji(沉淀)` 尝试写入一个包含 R-ID 的 Problem 条目（如当前的 P-2026-007 内容）。
+  3. **逻辑验证 (PAT-ID)**：验证 Pattern 沉淀时是否正确提取 PAT-ID 而非关联的 P-ID 或 R-ID。
+- **关联 P-ID**：P-2026-007
+- **预期结果**：
+  1. 所有规则文件描述统一。
+  2. `ji(沉淀)` 能够正确识别主 ID，不再因为内容中包含其他 ID 格式而报错。
+- **验证版本**：v0.5.0 (In Progress)
+- **日期**：2026-01-07
+
+## R-2026-008: 2Books PDF→EPUB 多级目录与跳转回归检查
+
+- **关联 P-ID**：P-2026-008
+- **类型**：manual
+- **范围**：`text-to-epub.html`（PDF→EPUB 转换）
+
+### 回归步骤（手工）
+1. 打开 `https://tobooks.xin/text-to-epub.html`（或本地 `http://127.0.0.1:<port>/text-to-epub.html`）。
+2. 准备一个带多级书签目录（Outline）的 PDF（目录条目可点击跳转到不同页）。
+3. 将该 PDF 拖入页面，等待生成 EPUB 并下载。
+4. 用 2Books 阅读器打开生成的 EPUB，检查目录：
+   - 目录是否为**多级结构**（父级/子级）
+   - 点击任意目录条目，是否能跳转到对应章节（大致对应 PDF 页范围）
+5. 选取 2-3 个不同层级的目录条目重复验证。
+
+### 判定标准
+- **通过**：目录层级完整，点击目录可跳转到对应章节。
+- **失败**：
+  - 目录缺失/变成单层
+  - 点击目录无跳转
+  - 跳转到明显错误位置（错页严重）
+
+### 状态
+- verified
+- 日期：2026-01-07
+
+## R-2026-010 主 ID 提取标题优先回归
+
+- 关联 P-ID：P-2026-010
+- 类型：manual
+- 位置：src/rust/mcp/tools/memory/manager.rs
+- 关键断言：多 ID 文本下主 ID 优先取标题；无标题时按出现顺序取首个 ID
+- 运行方式：调用 `ji(action=沉淀, category=problems)` 写入包含 P/R/PAT 多种 ID 的问题条目，确保不误判
+- 日期：2026-01-08
+
+# 问题记录 (Problems)
+
+## P-2026-001: GitHub Copilot CLI 配置与过时扩展问题
+
+- **现象**: 用户请求配置 Copilot CLI，最初尝试使用 `gh copilot` 扩展，但收到弃用警告且无法正常工作（502 错误或路径缺失）。
+- **根因**: `gh-copilot` 扩展已被 GitHub 弃用，转而推荐使用 Node.js 版的 `@githubnext/github-copilot-cli`。
+- **影响范围**: 所有依赖 `gh` 扩展的 Copilot 终端用户。
+- **状态**: fixed
+
+# 模式总结 (Patterns)
+
+## PAT-2026-001: 现代 GitHub Copilot CLI 安装与配置流程
+
+- **描述**: 正确安装和配置当前推荐的 Copilot CLI 版本。
+- **步骤**:
+  1. 使用 npm 全局安装：`npm install -g @githubnext/github-copilot-cli`
+  2. 确保全局 bin 目录在 PATH 中（如 `/Users/apple/.npm-global/bin`）。
+  3. 运行 `github-copilot-cli auth` 进行设备授权。
+  4. 运行 `github-copilot-cli alias -- zsh >> ~/.zshrc` 生成并注入别名。
+- **关联 P-ID**: P-2026-001
+
+# 回归检查 (Regressions)
+
+## R-2026-001: Copilot CLI 功能验证
+
+- **类型**: 手工检查/冒烟测试
+- **步骤**:
+  1. 运行 `source ~/.zshrc`。
+  2. 执行 `wts "list all files"`。
+  3. 预期输出：显示 `ls` 命令及其解释，并询问是否运行。
+- **状态**: verified (已在 2026-01-08 验证成功)
+- **关联 P-ID**: P-2026-001
+
+---
+
+## R-2026-013: 手机端 @文件 文件列表功能
+
+**关联问题**: P-2026-013
+**日期**: 2026-01-11
+**类型**: 手工检查
+
+### 检查步骤
+1. 在手机端打开 `https://iterate.tobooks.xin/`
+2. 等待连接成功（显示"已连接"）
+3. 点击 @文件 按钮
+4. 验证文件列表弹窗正常显示
+5. 验证搜索功能正常
+6. 验证点击文件后在输入框添加 `@文件路径`
+7. 验证关闭按钮可点击且不被刘海遮挡
+
+### 预期结果
+- 文件列表弹窗正常显示
+- 顶部标题栏不被刘海遮挡
+- 关闭按钮可正常点击
+- 搜索功能正常过滤文件
+- 点击文件后正确添加到输入框
