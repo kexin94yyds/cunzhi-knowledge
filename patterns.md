@@ -30,13 +30,15 @@
 | PAT-2024-005 | Smart Guard 依赖检查 | 删文件前查依赖 |
 | PAT-2024-017 | AI 防注入安全 | Lethal Trifecta 三要素 |
 
-### 📱 桌面应用 (Electron/Tauri)
+### 📱 桌面应用 (Electron/Tauri/Native Mac)
 | ID | 名称 | 核心要点 |
 |----|------|----------|
 | PAT-2024-008 | macOS 拖拽替代 | 自定义鼠标拖拽 |
 | PAT-2024-009 | 防抖保存安全 | 关键操作前强制保存 |
 | PAT-2024-010 | IPC 事件语义分离 | 同步 ≠ 切换 |
 | PAT-2024-011 | IndexedDB 锁定诊断 | lsof + pkill |
+| PAT-2025-002 | SwiftUI WebView 加载防死循环 | updateNSView 状态检查 |
+| PAT-2025-003 | AirDrop 兼容性共享 | 临时文件路径优先于纯文本 |
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -63,7 +65,23 @@
 
 ## 详细记录
 
-## PAT-2025-001 macOS 应用精准焦点唤回模式
+## PAT-2025-002 SwiftUI WebView 加载防死循环
+
+- 场景：在 SwiftUI 中使用 `NSViewRepresentable` 包装 `WKWebView`。
+- 模式：在 `updateNSView` 中必须判断加载状态，否则每次视图更新都会重触发加载。
+- 实现关键点：
+  1. 在包装结构体中使用 `@State` 记录 `loadedFileName` 或 `lastURL`。
+  2. 在 `updateNSView` 逻辑开始前对比当前 `fileName` 与 `loadedFileName`。
+  3. 仅在不一致时执行 `loadFileURL`，并在 `DispatchQueue.main.async` 中更新状态位。
+
+## PAT-2025-003 AirDrop 兼容性共享模式
+
+- 场景：在 macOS 应用中使用 `NSSharingServicePicker` 分享内容，但“隔空投送” (AirDrop) 不显示。
+- 模式：优先分享文件 URL 而非纯文本。
+- 实现关键点：
+  1. 将要分享的文本写入 `FileManager.default.temporaryDirectory` 中的临时文件（如 `Note.txt`）。
+  2. 将该文件的 `URL` 对象作为 `items` 传递给 `NSSharingServicePicker`。
+  3. 系统会自动识别文件类型并启用 AirDrop 选项。
 
 - 场景：在 macOS 开发全局快捷键唤起的工具类应用（如粘贴板、提示词库）时，需要精准将焦点切换回之前的应用。
 - 模式：使用 Unix PID 识别而非应用名称。
