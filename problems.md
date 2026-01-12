@@ -6699,3 +6699,21 @@ P-2024-005 (Layout & Color Update)
 1. 颜色：将背景设置为纯黑（#000000），文字设置为纯白（#ffffff），并优化 ANSI 颜色。
 2. 布局：重构为绝对定位全屏覆盖（inset-x-0 bottom-0 top-[52px]），不影响主内容骨架，并添加了滑入滑出动画和关闭按钮。
 状态：fixed。
+
+---
+
+## P-2025-005 prompts/modes 未完全转换为 Skills 格式
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi
+- 发生版本：当前
+- 现象：`.cunzhi-knowledge/prompts/modes/` 目录下的提示词模板（如 coding.txt、learning.txt 等）尚未转换为 Anthropic Skills 格式
+- 根因：本次只创建了 `debug` 和 `iterate` 两个 Skills，其余 modes 中的提示词（如"思路"、"坚韧"、"扫描"等）仍为原始 .txt 格式
+- 影响范围：AI 无法通过 Skills 触发机制自动加载这些提示词
+- 待办：
+  1. 将 `modes/coding.txt` 中的核心提示词（思路、坚韧、扫描、出错、Test）转换为独立 Skills
+  2. 将 `modes/learning.txt`、`modes/reading.txt` 中的看书相关提示词转换为 Skills
+  3. 更新 `skills/INDEX.md` 添加新 Skills
+- 回归检查：待创建
+- 状态：open
+- 日期：2025-01-12
