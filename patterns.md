@@ -25,6 +25,7 @@
 | PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
 | PAT-2026-010 | 主 ID 提取优先级策略 | 标题优先 + 文本顺序兜底 |
 | PAT-2026-021 | Shell heredoc 安全写入模式 | 使用带引号的定界符防止特殊字符问题 |
+| PAT-2026-025 | Rust CLI 服务模式日志隔离 | 子进程 stdout/stderr 重定向到 null，避免日志污染终端 |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
