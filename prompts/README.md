@@ -22,6 +22,7 @@
 
 ```
 prompts/
+├── skills/        # Agent Skills（Anthropic 格式）→ 见 skills/INDEX.md
 ├── workflows/     # SDLC 工作流命令
 ├── git/           # Git 操作命令
 ├── issues/        # Issue 模板命令
@@ -34,6 +35,19 @@ prompts/
 ├── app/           # 开发环境
 └── modes/         # 场景模式提示词（原始导出 .txt）
 ```
+
+## Agent Skills
+
+遵循 Anthropic SKILL.md 格式的技能库。AI 根据触发词自动匹配并加载。
+
+**索引文件**：[skills/INDEX.md](skills/INDEX.md)
+
+### 触发机制
+
+1. AI 读取 `skills/INDEX.md` 获取可用 Skills 列表
+2. 根据用户请求匹配触发词
+3. 匹配成功后读取对应 `SKILL.md`
+4. 按需读取 `references/` 下的详细文档
 
 ## 模板分类
 
