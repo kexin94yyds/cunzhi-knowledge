@@ -7654,3 +7654,107 @@ R-2026-027
 ### 关联文件
 - `vscode-extension/src/extension.ts`
 - `vscode-extension/package.json`
+
+---
+
+## P-2026-028: cunzhi.py 脚本工作机制文档（技术参考）
+
+**日期**: 2026-01-12
+**状态**: documented
+**类型**: 技术文档
+
+### 概述
+`cunzhi.py` 是 AI 与用户交互的核心脚本，实现了类似 Infinite WF 的无限对话循环。
+
+### 工作流程
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    cunzhi.py 工作流程                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. AI 写入 output.md                                       │
+│     └─ ~/.cunzhi/{port}/output.md                          │
+│                                                             │
+│  2. AI 调用脚本                                             │
+│     └─ python3 cunzhi.py {port}                            │
+│                                                             │
+│  3. 脚本输出 "[Waiting for user response...]"              │
+│     └─ 第 283 行: print('[Waiting for user response...]')  │
+│                                                             │
+│  4. 脚本发送 HTTP 请求到 iterate --serve                    │
+│     └─ POST /api/dialog (第 207 行)                        │
+│     └─ 超时: 300 秒 (第 199 行)                            │
+│                                                             │
+│  5. iterate 弹出 GUI 窗口，等待用户输入                     │
+│     └─ 用户点击"发送"或"继续"                              │
+│                                                             │
+│  6. 服务器返回 JSON 响应                                    │
+│     └─ keep_going: true/false                              │
+│     └─ user_input: 用户输入文本                            │
+│     └─ image_paths: 图片路径列表                           │
+│                                                             │
+│  7. 脚本写入 input.md                                       │
+│     └─ ~/.cunzhi/{port}/input.md (第 307 行)               │
+│                                                             │
+│  8. 脚本输出结果                                            │
+│     └─ KeepGoing=true/false (第 310/316 行)                │
+│     └─ input_file: 路径 (第 314 行)                        │
+│                                                             │
+│  9. AI 读取 input.md 获取用户指令                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 关键代码位置
+
+| 功能 | 文件 | 行号 |
+|------|------|------|
+| 等待提示输出 | `cunzhi.py` | 283 |
+| HTTP 请求发送 | `cunzhi.py` | 207 |
+| 请求超时设置 | `cunzhi.py` | 199 |
+| 响应处理 | `cunzhi.py` | 288-316 |
+| input.md 写入 | `cunzhi.py` | 307 |
+| KeepGoing 输出 | `cunzhi.py` | 310, 316 |
+
+### 数据目录结构
+
+```
+~/.cunzhi/{port}/
+├── output.md    # AI 写入的消息（给用户看）
+├── input.md     # 用户响应（给 AI 看）
+└── images/      # 用户粘贴的图片
+```
+
+### HTTP API
+
+**请求**: `POST /api/dialog`
+```json
+{
+  "message": "任务摘要",
+  "options": ["选项1", "选项2"],
+  "workspace": "/path/to/project",
+  "is_markdown": true
+}
+```
+
+**响应**:
+```json
+{
+  "keep_going": true,
+  "user_input": "用户输入的文本",
+  "selected_options": ["选中的选项"],
+  "file_paths": ["引用的文件路径"],
+  "image_paths": ["图片路径"]
+}
+```
+
+### 修改注意事项
+1. 修改等待提示时，确保 AI 规则中的匹配字符串同步更新
+2. 修改 HTTP 超时时，考虑用户可能需要较长时间思考
+3. 修改 input.md 格式时，确保 AI 能正确解析
+
+### 关联文件
+- `bin/cunzhi.py` - 主脚本
+- `src/rust/server/mod.rs` - HTTP 服务器实现
+- `src/rust/app/cli.rs` - `--serve` 模式入口
