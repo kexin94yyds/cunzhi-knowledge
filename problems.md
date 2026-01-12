@@ -7576,3 +7576,81 @@ R-2026-025
 - `src/rust/app/cli.rs` - `--serve` 模式实现
 - `vscode-extension/src/extension.ts` - 服务启动逻辑
 - `~/.codeium/windsurf/rules/00-global.md` - 全局规则文件
+
+---
+
+## P-2026-026: 代码中仍有多处引用旧的 windsurf-cunzhi 命令
+
+**日期**: 2026-01-12
+**状态**: open
+**严重性**: 低
+
+### 问题描述
+虽然主要功能已切换到 `iterate`，但代码中仍有多处引用旧的 `windsurf-cunzhi` 命令，可能导致混淆或错误提示。
+
+### 影响位置
+
+1. **bin/cunzhi.py** (2 处)
+   - 第 267 行：错误提示 `Please start the server first: windsurf-cunzhi --serve`
+   - 第 274 行：错误提示 `Please start the server: windsurf-cunzhi --serve --port`
+
+2. **bin/cunzhi-server.py** (7 处)
+   - 第 5 行：注释 `调用 windsurf-cunzhi --ui`
+   - 第 24 行：注释 `fallback 到 windsurf-cunzhi`
+   - 第 29 行：fallback 路径 `~/bin/windsurf-cunzhi`
+   - 第 71 行：注释 `调用 windsurf-cunzhi --ui`
+   - 第 176-179 行：错误提示 `windsurf-cunzhi not found`
+
+3. **src/rust/app/cli.rs** (3 处)
+   - 第 92 行：注释 `windsurf-cunzhi 兼容模式`
+   - 第 137 行：注释 `windsurf-cunzhi 兼容`
+   - 第 356 行：帮助信息 `windsurf-cunzhi 兼容`
+
+### 建议修复
+将所有 `windsurf-cunzhi` 引用统一替换为 `iterate`，保持命名一致性。
+
+### 优先级
+低 - 不影响功能，仅影响用户体验和代码可读性
+
+### 回归检查
+R-2026-026
+
+### 关联文件
+- `bin/cunzhi.py`
+- `bin/cunzhi-server.py`
+- `src/rust/app/cli.rs`
+
+---
+
+## P-2026-027: VSCode 插件中硬编码了用户特定路径
+
+**日期**: 2026-01-12
+**状态**: open
+**严重性**: 中
+
+### 问题描述
+VSCode 插件代码中硬编码了 `/Users/apple/cunzhi/bin/cunzhi.py` 路径，导致其他用户无法直接使用。
+
+### 影响位置
+
+1. **vscode-extension/src/extension.ts**
+   - 第 178 行：`cunzhiPath` 默认值 `/Users/apple/cunzhi/bin/cunzhi.py`
+   - 第 219 行：`cunzhiPath` 默认值 `/Users/apple/cunzhi/bin/cunzhi.py`
+
+2. **vscode-extension/package.json**
+   - `iterate.cunzhiPath` 默认值
+
+### 建议修复
+1. 使用相对路径或环境变量
+2. 将 `cunzhi.py` 打包到插件内
+3. 或使用 `~/.cunzhi/bin/cunzhi.py` 等通用路径
+
+### 优先级
+中 - 影响其他用户使用
+
+### 回归检查
+R-2026-027
+
+### 关联文件
+- `vscode-extension/src/extension.ts`
+- `vscode-extension/package.json`
