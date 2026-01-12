@@ -31,9 +31,51 @@
 
 ---
 
-## 问题清单
+## P-2025-002 Notebook-Mac 应用无响应 (ANR) 与 布局空间问题
 
-## P-2025-001 Windsurf/Cursor 编辑器插入失败
+- 项目：Notebook-Mac
+- 仓库：/Users/apple/信息置换起/RI/Notebook-Mac
+- 发生版本：Initial Port to Native Mac
+- 现象：
+  1. 启动后应用显示“没有响应”，无法操作。
+  2. 窗口顶部缺乏空间，UI 元素全部挤在最上方，与预览效果不符。
+  3. 运行的是旧代码而非最新修改的代码。
+- 根因：
+  1. `ContentView.swift` 中的 `updateNSView` 会在每次视图刷新时无条件调用 `loadFileURL`，导致 WebView 陷入死循环加载，阻塞主线程。
+  2. 开启了 `.windowStyle(.hiddenTitleBar)` 且移除了 HTML 工具栏，导致缺乏顶部留白。
+  3. 项目中存在多个 `@main` 入口（`App-Native-Shell.swift` 和 `Notebook_MacApp.swift`），编译器可能选择了旧的入口。
+- 修复：
+  1. 在 `WebView` 中添加 `loadedFileName` 状态位，仅在文件名变化时触发加载。
+  2. 注释掉 `.windowStyle(.hiddenTitleBar)` 恢复原生标题栏。
+  3. 禁用冗余的 `@main` 入口文件。
+- 回归检查：R-2025-002
+- 状态：verified
+- 日期：2025-12-31
+
+## P-2025-003 原生分享菜单缺失“隔空投送” (AirDrop) 选项
+
+- 项目：Notebook-Mac
+- 仓库：/Users/apple/信息置换起/RI/Notebook-Mac
+- 发生版本：v1.1.0
+- 现象：点击原生分享按钮（NSSharingServicePicker）后，弹出的菜单中只有信息、邮件等，没有“隔空投送”。
+- 根因：`NSSharingServicePicker` 仅共享纯文本字符串时，macOS 系统有时不会触发 AirDrop 选项。AirDrop 对文件类型（如 .txt）的兼容性更高。
+- 修复：将笔记内容先写入临时的 `Note.txt` 文件，然后共享该文件 URL。
+- 回归检查：R-2025-003
+- 状态：verified
+- 日期：2025-12-31
+
+## P-2025-004 笔记窗口缩放后 contenteditable 选区偏移导致无法编辑
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：当前版本
+- 现象：在笔记窗口中使用 `Cmd + +/-` 缩放页面后，选中文字时光标位置与实际点击位置不一致，导致无法正常选中、删除或加粗文字。新打开的页面正常，缩放过的页面出现问题。
+- 根因：浏览器 `webFrame.setZoomFactor()` 改变缩放级别后，`contenteditable` 元素的 Selection/Range API 坐标计算出现偏差。截图显示 `zoomFactor` 为 1.577（157%），远超正常值 1.0。
+- 临时解决方案：按 `Cmd + 0` 重置缩放级别为 1.0 后恢复正常
+- 修复：待定（可选方案：禁用缩放快捷键 / 添加修复按钮 / 智能检测提示）
+- 回归检查：待定
+- 状态：open
+- 日期：2025-01-12
 
 - 项目：Full-screen-prompt (Electron)
 - 仓库：/Users/apple/提示词最新的/Full-screen-prompt
