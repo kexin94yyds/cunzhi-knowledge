@@ -4,9 +4,25 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 
 ## 可用 Skills
 
-| Skill | 触发词 | 路径 |
+| Skill | 触发词 | 描述 |
 |-------|--------|------|
-| debug | debug、调试、Bug、错误、排查、问题定位 | [debug/SKILL.md](debug/SKILL.md) |
+| [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
+| [docx](docx/SKILL.md) | Word、文档、.docx | 文档创建、编辑、批注 |
+| [pdf](pdf/SKILL.md) | PDF、表单、合并、拆分 | PDF 处理工具包 |
+| [pptx](pptx/SKILL.md) | PPT、演示文稿、幻灯片 | 演示文稿创建编辑 |
+| [xlsx](xlsx/SKILL.md) | Excel、表格、.xlsx、公式 | 电子表格处理 |
+| [frontend-design](frontend-design/SKILL.md) | 前端、UI、网页、组件、界面 | 高质量前端界面设计 |
+| [web-artifacts-builder](web-artifacts-builder/SKILL.md) | React、Tailwind、shadcn | 复杂 Web 组件构建 |
+| [webapp-testing](webapp-testing/SKILL.md) | Playwright、测试、截图 | Web 应用测试 |
+| [mcp-builder](mcp-builder/SKILL.md) | MCP、服务器、FastMCP | MCP 服务器开发 |
+| [skill-creator](skill-creator/SKILL.md) | 创建 Skill、新技能 | Skill 创建指南 |
+| [doc-coauthoring](doc-coauthoring/SKILL.md) | 写文档、提案、技术规范 | 文档协作工作流 |
+| [internal-comms](internal-comms/SKILL.md) | 内部沟通、状态报告、3P | 内部通讯模板 |
+| [theme-factory](theme-factory/SKILL.md) | 主题、配色、字体 | 主题样式工厂 |
+| [slack-gif-creator](slack-gif-creator/SKILL.md) | GIF、Slack、动画 | Slack GIF 创建 |
+| [brand-guidelines](brand-guidelines/SKILL.md) | 品牌、风格指南 | 品牌规范 |
+| [canvas-design](canvas-design/SKILL.md) | Canvas、绘图、图形 | Canvas 设计 |
+| [algorithmic-art](algorithmic-art/SKILL.md) | 算法艺术、生成艺术 | 算法艺术创作 |
 
 ## 使用规则
 
