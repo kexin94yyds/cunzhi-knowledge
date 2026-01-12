@@ -87,6 +87,103 @@
 - 状态：verified
 - 日期：2025-12-30
 
+## P-2025-001 磁盘空间不足导致最新数据丢失
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：2.1.1
+- 现象：用户退出应用后再次打开，发现最新数据全部丢失。
+- 根因：系统磁盘空间完全耗尽（ENOSPC），导致 ElectronStore 在保存 `config.json` 时写入失败，且 IndexedDB 事务无法提交。
+- 修复：
+  1. 实现自动备份机制：应用启动时及运行期间每 30 分钟备份一次 `config.json` 和 `IndexedDB` 目录。
+  2. 限制备份数量：保留最近 10 次备份以平衡安全与空间占用。
+  3. 暴露备份 API：允许通过 `window.electronAPI.backup` 进行手动备份、查看列表及恢复。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-31
+
+## P-2025-005 全局快捷键开关失效及系统快捷键冲突
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：
+  1. 点击快捷键开关图标，状态虽变但快捷键在窗口聚焦时仍生效。
+  2. `Tab`/`Shift+Tab` 拦截了系统级组合键（如 `Cmd+Tab`），导致无法切换应用。
+  3. 修改代码后由于缺失 `@tauri-apps/api/event` 中的 `listen` 导入，导致前端无法接收状态变更。
+- 根因：
+  1. 仅注销了全局插件快捷键，未禁用前端 `document` 级别的本地监听器。
+  2. 键盘事件处理器缺乏对修饰键（Cmd/Alt/Ctrl）的排除逻辑。
+  3. `AppContent.vue` 中未导入 `listen` 函数，导致异步状态同步失败。
+- 修复：
+  1. 在 `AppContent.vue` 的 `handleGlobalKeydown` 中增加 `globalShortcutEnabled` 校验。
+  2. 优化 `Tab`/`Shift+Tab` 拦截逻辑，明确排除带修饰键的情况。
+  3. 补齐 `listen` 导入，确保 `global-shortcut-state-changed` 事件能被正确处理。
+  4. 移除 `PopupHeader.vue` 中冗余的“已禁”文本，优化 UI。
+- 回归检查：R-2025-005
+- 状态：verified
+- 日期：2025-12-30
+
+---
+
+## P-2025-004 全局快捷键无法临时禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：用户希望在某些场景下临时关闭全局快捷键（如 `Shift+Tab`），避免冲突，但目前只能通过系统设置或修改配置文件实现，操作不便。
+- 根因：缺乏快捷键状态的运行时管理机制和 UI 快速切换入口。
+- 修复：
+  1. 后端：在 `ShortcutConfig` 和 `AppState` 中增加 `global_enabled` 状态。
+  2. 逻辑：重构前端快捷键注册逻辑，支持动态监听状态变化并执行 `register/unregister`。
+  3. UI：在弹窗头部（`PopupHeader`）增加闪电图标按钮，支持一键切换。
+- 回归检查：R-2025-004
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+
+## P-2025-003 上下文追加项无法按需禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：弹窗中的“上下文追加”项（如“是否生成总结性Markdown文档”）总是会追加内容到输入框，用户无法在弹窗中临时选择不追加某一项。
+- 根因：数据结构 `CustomPrompt` 缺少启用状态标志（`is_active`），且前端 UI 只提供了模板状态切换（Switch），没有提供项级别的开启/关闭控制。
+- 修复：
+  1. 后端：在 `CustomPrompt` 结构体中添加 `is_active` 字段，并新增 `update_conditional_prompt_active` 命令。
+  2. 前端：在弹窗 UI 的上下文追加区域，为每项添加 Checkbox 勾选框；只有 `is_active` 为 true 的项才会参与内容追加。
+  3. 设置：在自定义 Prompt 设置页面增加“是否启用”开关。
+- 回归检查：R-2025-003
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+## P-2026-002: Web 导入 JSON 后标题无法更新（刷新后回到旧值）
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：N/A
+- 现象：Web 端导入 iOS 导出的 JSON 后，页面上短暂显示新标题；但 Cmd+R 刷新后标题回到旧值/空值，且右上角出现 Synced...（刷新触发云端数据合并）。
+- 根因：待确认。疑点包括：云端文档 `$id` 与本地 `screenshot.id` 不一致（iOS 端可能用 `ID.unique()`，业务 id 存在 doc 的 `id/screenshotId` 字段），导致 `updateDocument` 404 且刷新时 `fetchFromCloud` 用 `$id` 合并覆盖；或云端字段名并非 `title` 导致读取为空；或 Appwrite 权限/规则导致更新失败，云端仍是旧值/空值。
+- 修复：未完成。计划：统一云端与业务 id 映射（优先让 `fetchFromCloud` 使用业务 id 字段或 iOS 写入时使用业务 id 作为 documentId），核对 Appwrite attributes 与字段名，确保 update 返回 200，并在 merge 时避免空值覆盖本地。
+- 回归检查：R-2026-002
+- 状态：open
+- 日期：2026-01-08
+- 排查：在 `fetchFromCloud` 打印 `doc.$id`/`doc.title`/`Object.keys(doc)`；比对单条截图的本地 id 与云端 id/title；在 Appwrite Console 查看 collection attributes、document `$id` 与 title 字段真实值。
+
+## P-2026-021 Web 导入后新分类 Tab 刷新丢失（仅本地模式）
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：N/A
+- 现象：Web 端导入 JSON 后，顶部分类筛选按钮（Tabs）会出现新的分类（例如 coding/creating 等）；但页面刷新（Cmd+R）后，这些新分类按钮消失。截图条目数量不变、图片仍在。
+- 根因：`ENABLE_CLOUD_SYNC = false` 的本地模式下，`loadScreenshots()` 只执行了 `setScreenshots(localData)`，没有基于 `localData` 调用 `updateCategoriesFromData()` 重建 `categories` state。导致分类 Tabs 只存在于内存中，刷新后回到 `DEFAULT_CATEGORIES`。
+- 修复：在 `monoshot-vault/App.tsx` 的 `loadScreenshots()` 本地分支补上 `updateCategoriesFromData(localData)`，使分类 Tabs 在刷新后能从 IndexedDB 数据恢复。
+- 回归检查：R-2026-021
+- 状态：verified
+- 日期：2026-01-12
+
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)
