@@ -6738,3 +6738,26 @@ P-2024-005 (Layout & Color Update)
 - 状态：open
 - 日期：2025-01-12
 
+---
+
+## P-2026-022 iterate Checkpoint 恢复误删未跟踪文件 / 未包含 untracked 文件
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：`19ccc35` 之前
+- 现象：
+  1. 点击 Checkpoint 的“恢复”后，新建文件可能丢失（例如测试文件恢复后消失）。
+  2. Checkpoint 面板显示“恢复成功”，但实际新文件没有回到检查点时的内容。
+- 根因：
+  1. 恢复逻辑中使用 `git clean -fd` 会删除所有未跟踪文件。
+  2. `git stash show --name-only` 默认不包含 untracked 文件，导致“检查点涉及文件列表”不完整。
+- 修复：
+  1. 文件列表改为 `git stash show -u --name-only`，包含 untracked。
+  2. 恢复前仅对“检查点涉及文件”做强覆盖处理：
+     - 已跟踪文件：`git checkout -- <file>`
+     - 未跟踪文件：仅删除该文件/目录
+     - 然后 `git stash apply <stash>`
+  3. 回归测试通过：版本1→自动检查点→版本2→恢复回版本1。
+- 回归检查：R-2026-022
+- 状态：verified
+- 日期：2026-01-13

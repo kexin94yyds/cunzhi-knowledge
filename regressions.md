@@ -22,6 +22,7 @@
 | R-2026-006 | P-2026-005 | 移动端多进程弹窗交互验证 | 手工检查 |
 | R-2026-008 | P-2026-008 | Cloudflare Tunnel 1033 恢复与自启稳定性验证 | 手工检查 |
 | R-2026-020 | P-2026-020 | 寸止端口监听前端启动/停止与状态同步 | 手工检查 |
+| R-2026-022 | P-2026-022 | iterate Checkpoint restore 覆盖包含 untracked | 手工检查 |
 
 ---
 
@@ -40,6 +41,25 @@
   8. 调用 `python3 bin/cunzhi.py [端口] --message "测试"`，验证是否能正常触发 GUI 弹窗并返回响应。
 - **关联 P-ID**：P-2026-020
 - **日期**：2026-01-11
+
+---
+
+## R-2026-022 iterate Checkpoint restore 覆盖包含 untracked
+
+- **类型**：手工检查
+- **描述**：验证 Checkpoint restore 能正确恢复包含未跟踪文件（untracked）的检查点，并且不会误删无关的新文件。
+- **检查步骤**：
+  1. 在项目根目录创建测试文件：`echo "版本1" > checkpoint_regression.txt`
+  2. 调用脚本触发自动检查点：`python3 bin/cunzhi.py 5310 --workspace "/Users/apple/cunzhi"`
+  3. 修改文件：`echo "版本2" > checkpoint_regression.txt`
+  4. 打开 iterate → Checkpoint 面板，找到刚才创建的“自动检查点”，点击“恢复”。
+  5. 验证 `checkpoint_regression.txt` 内容回到“版本1”。
+  6. 额外验证：在步骤 3 之后再新建一个无关文件（例如 `touch unrelated.txt`），恢复后 `unrelated.txt` 不应被删除。
+- **预期结果**：
+  - 恢复后 `checkpoint_regression.txt` 等检查点涉及文件回到检查点内容。
+  - 不会因 `git clean -fd` 之类的全局清理导致未跟踪文件丢失。
+- **关联 P-ID**：P-2026-022
+- **日期**：2026-01-13
 
 ---
 

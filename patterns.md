@@ -49,6 +49,7 @@
 | PAT-2026-002 | Tauri 跨平台窗口 API 适配 | 使用 cfg 保护非移动端 API |
 | PAT-2026-003 | Web Bridge 结构化图片转发 | 统一 DataURL 到 Base64 的转换处理 |
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
+| PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -1712,5 +1713,21 @@ fetch('/files?project_path=...')
   ```
 - **关联问题**：P-2026-021
 - **日期**：2026-01-11
+
+## PAT-2026-022 Git stash Checkpoint 恢复强覆盖（含 untracked）
+
+- **场景**：用 `git stash` 实现 IDE Checkpoint（保存/恢复），需要恢复时尽量接近“回到检查点状态”，且避免误删无关新文件。
+- **问题特征**：
+  1. 恢复前使用 `git clean -fd` 会删除所有未跟踪文件，导致新文件丢失。
+  2. `git stash show --name-only` 默认不包含 untracked 文件，导致恢复覆盖范围不完整。
+- **模式描述**：
+  1. **列出检查点涉及文件（含 untracked）**：
+     - `git stash show -u <stash> --name-only`
+  2. **恢复前只处理“检查点涉及的文件”**（强覆盖）：
+     - 已跟踪文件：`git checkout -- <file>`（丢弃该文件当前修改）
+     - 未跟踪文件：仅删除该文件/目录（不做全局 clean）
+  3. **应用检查点**：`git stash apply <stash>`
+- **关联问题**：P-2026-022
+- **日期**：2026-01-13
 
 ---
