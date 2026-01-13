@@ -5204,3 +5204,13 @@ P-2026-002
 - 关闭按钮可正常点击
 - 搜索功能正常过滤文件
 - 点击文件后正确添加到输入框
+
+## R-2026-001: 验证迁移配置文件是否在仓库中
+
+- **类型**：手工检查 / 文件系统检查
+- **检查步骤**：
+  1. 执行 `git ls-files migrations/windsurf_migration.zip`。
+  2. 如果输出为空，说明文件未成功进入索引。
+  3. 执行 `git check-ignore migrations/windsurf_migration.zip`。
+  4. 如果返回忽略路径，则必须使用 `git add -f`。
+- **关联 P-ID**：P-2026-001
