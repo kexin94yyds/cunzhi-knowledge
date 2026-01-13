@@ -24,6 +24,7 @@
 | PAT-2024-020 | MCP Agent 规范格式 | 工具+约束+反模式 |
 | PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
 | PAT-2026-010 | 主 ID 提取优先级策略 | 标题优先 + 文本顺序兜底 |
+| PAT-2026-023 | Git stash Checkpoint 创建应保留条目 | stash push 后用 apply（不 pop）+ 可靠获取新 stash 引用 |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
@@ -50,6 +51,20 @@
 | PAT-2026-003 | Web Bridge 结构化图片转发 | 统一 DataURL 到 Base64 的转换处理 |
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
+
+---
+
+## PAT-2026-023 Git stash Checkpoint 创建应保留条目
+
+- **场景**：实现“Checkpoint 面板创建检查点并可随时 Restore”的功能时，需要既保存快照，又不影响当前工作区。
+- **问题**：若在 `git stash push` 后使用 `git stash pop`，会在成功应用后把 stash 条目从列表移除，导致 UI 面板刷新看不到刚创建的检查点（误以为没保存）。
+- **模式描述**：
+  1. **保存快照**：`git stash push --include-untracked -m iterate-checkpoint:<ts> | <name>`。
+  2. **保持工作区不变**：使用 `git stash apply --index <ref>`（而不是 `pop`）。
+  3. **可靠获取新条目引用**：优先读取 `git stash list -1 --format=%gd|%s` 并校验 message，必要时全量搜索 message，避免误指向旧 stash。
+  4. **验证闭环**：创建后刷新列表仍可见；再制造第二次改动后 Restore 能回到创建时状态。
+- **关联问题**：P-2026-023
+- **日期**：2026-01-13
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |

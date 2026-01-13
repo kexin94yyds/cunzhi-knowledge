@@ -6761,3 +6761,21 @@ P-2024-005 (Layout & Color Update)
 - 回归检查：R-2026-022
 - 状态：verified
 - 日期：2026-01-13
+
+---
+
+## P-2026-023 iterate Checkpoint 创建后不留存（stash pop 导致面板看不到）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：v0.5.0（修复前）
+- 现象：
+  1. 在 Checkpoint 面板创建检查点后，刷新面板可能看不到新检查点（看起来像“没有保存成功”）。
+  2. Restore 在 UI 上显示成功，但用户无法稳定通过面板回到预期检查点（因为检查点本身可能已被移除）。
+- 根因：Rust 侧 `create_checkpoint` 在 `git stash push` 后使用了 `git stash pop --index`，`pop` 会在成功应用后把 stash 条目从列表移除，导致面板 `list_checkpoints` 无法列出刚创建的检查点。
+- 修复：
+  1. `git stash pop --index` 改为 `git stash apply --index`，确保检查点留在 stash 列表中可被后续 Restore。
+  2. 获取检查点引用方式改为优先读取 `git stash list -1 --format=%gd|%s` 并校验 message，必要时全量搜索，避免误指向已有 stash。
+- 回归检查：R-2026-023
+- 状态：verified
+- 日期：2026-01-13
