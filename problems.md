@@ -6841,3 +6841,57 @@ P-2024-005 (Layout & Color Update)
 - **回归检查**：R-2026-026
 - **状态**：open（如果你暂时只记录现象）
 - **日期**：2026-01-15
+
+---
+
+## P-2026-027 cunzhi.py 等待用户响应 5 分钟后超时
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16 之前
+- **现象**：调用 `cunzhi.py` 脚本后，如果用户几分钟内没有响应，脚本返回 `KeepGoing=false` 和 `Error: 请求失败: timed out`，导致 AI 对话被迫中断。
+- **根因**：
+  1. `cunzhi.py:199` 的 HTTP 连接设置了 `timeout=300`（5分钟）
+  2. `cunzhi-server.py:92` 的 subprocess 也设置了 `timeout=300`（5分钟）
+  - 用户离开几分钟后回来，连接已超时断开。
+- **修复**：将两处超时配置改为 `timeout=None`（无限等待），让脚本一直等待用户响应。
+- **回归检查**：R-2026-027（手动验证：等待超过 5 分钟后响应，不再超时）
+- **状态**：fixed
+- **日期**：2026-01-16
+- **经验**：对于需要用户交互的阻塞式脚本，超时设置应根据实际使用场景调整；如果用户可能长时间离开，应使用无限等待或更长的超时时间。
+
+---
+
+## P-2026-028 Web 端（手机）上下文追加功能失效
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：通过手机访问 `iterate.tobooks.xin` 时，开启上下文追加开关后提交消息，追加内容没有被添加到用户输入中。
+- **根因**：`bridge_test.html` 的 `sendAction` 函数在提交时只发送了输入框的原始值，没有调用 `generateConditionalContent()` 追加条件性内容。
+- **修复**：
+  1. 在 `toggleCondition` 中同步更新本地 `customPrompts` 数据的 `current_state`
+  2. 添加 `generateConditionalContent()` 函数生成条件性内容
+  3. 在 `sendAction` 提交时自动追加上下文内容到 `user_input`
+- **回归检查**：R-2026-028（手动验证：手机端开启上下文追加后提交，内容正确追加）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：Web 端与桌面端功能同步时，需要确保所有业务逻辑（如条件性内容追加）都被正确实现，不能只同步 UI。
+
+---
+
+## P-2026-029 iterate 8080 服务崩溃后无法自动恢复
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：iterate 应用崩溃后，8080 端口的 Bridge Server 停止服务，导致手机端通过 Cloudflare Tunnel 访问时出现 502 Bad Gateway。
+- **根因**：iterate 是 GUI 应用，崩溃后没有自动重启机制。Cloudflare Tunnel 只是转发请求，源服务不可用时返回 502。
+- **修复**：
+  1. 创建 `bin/iterate-watchdog.sh` 监控脚本，每 10 秒检查 8080 端口
+  2. 配置 launchd 守护进程 `com.iterate.serve`，开机自启并保持 watchdog 运行
+  3. 服务崩溃后 watchdog 自动调用 `open -a iterate.app` 重启
+- **回归检查**：R-2026-029（手动验证：杀死 iterate 进程后 15 秒内自动恢复）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：GUI 应用作为后台服务时，需要额外的监控机制确保高可用；launchd 的 KeepAlive 对 GUI 应用效果有限，watchdog 脚本更可靠。
