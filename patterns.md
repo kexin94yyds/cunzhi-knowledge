@@ -1844,3 +1844,40 @@ fetch('/files?project_path=...')
   - 任何需要高可用的 macOS GUI 应用
 - **关联 P-ID**：P-2026-029
 - **日期**：2026-01-16
+
+---
+
+## PAT-2026-030: Tauri 应用全局快捷键的状态感知注册
+
+- **场景**：Tauri 应用需要注册全局快捷键，但只在特定状态下（如弹窗显示时）才需要响应。
+- **问题特征**：
+  1. 全局快捷键在应用启动时注册，后台运行时仍然响应，干扰其他应用
+  2. 用户在其他应用中使用相同快捷键时被意外拦截
+- **模式描述**：
+  1. **状态感知注册**：使用 Vue 的 `watch` 监听状态变化，动态注册/注销快捷键
+  2. **条件初始化**：`onMounted` 中检查状态，只在需要时才注册
+  3. **清理保证**：`onUnmounted` 中确保注销快捷键
+- **代码示例**：
+  ```typescript
+  // 监听状态变化
+  watch(() => props.showPopup, async (newValue) => {
+    if (newValue) {
+      await register('Shift+Tab', handler)
+    } else {
+      await unregister('Shift+Tab')
+    }
+  })
+  
+  // 初始化时检查状态
+  onMounted(async () => {
+    if (props.showPopup) {
+      await register('Shift+Tab', handler)
+    }
+  })
+  ```
+- **适用场景**：
+  - 弹窗/对话框专用快捷键
+  - 模式切换快捷键
+  - 任何需要条件响应的全局快捷键
+- **关联 P-ID**：P-2026-030
+- **日期**：2026-01-16

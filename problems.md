@@ -6904,9 +6904,16 @@ P-2024-005 (Layout & Color Update)
 - **仓库**：https://github.com/kexin94yyds/iterate
 - **发生版本**：2026-01-16
 - **现象**：配置 watchdog 自动启动 iterate 后，每次按下 Shift+Tab 快捷键都会呼出 iterate 主页窗口，妨碍正常操作。
-- **根因**：`open -a iterate.app` 默认会显示应用窗口并激活前台，导致主窗口响应全局快捷键。
-- **修复**：修改 watchdog 脚本，使用 `open -j -g -a iterate.app` 以隐藏模式启动应用（`-j` 隐藏启动，`-g` 不激活前台）。
-- **回归检查**：R-2026-030（手动验证：杀死 iterate 后自动重启，主窗口不显示）
-- **状态**：fixed
+- **根因**：
+  1. `Shift+Tab` 全局快捷键在应用启动时就注册，无论 MCP 弹窗是否显示
+  2. 隐藏模式启动后，点击 Dock 图标无法打开主页（缺少 Reopen 事件处理）
+- **修复**：
+  1. 修改 watchdog 脚本，使用 `open -j -g -a iterate.app` 以隐藏模式启动
+  2. 修改 `AppContent.vue`，只在 MCP 弹窗显示时注册 `Shift+Tab` 快捷键，弹窗关闭时注销
+  3. 修改 `builder.rs`，添加 macOS `RunEvent::Reopen` 事件处理，点击 Dock 图标时显示主窗口
+- **回归检查**：R-2026-030（手动验证：后台运行时 Shift+Tab 不触发，点击 Dock 可打开主页）
+- **状态**：verified
 - **日期**：2026-01-16
-- **经验**：macOS 的 `open` 命令支持 `-j`（隐藏启动）和 `-g`（后台启动）参数，适合需要后台运行的 GUI 应用。
+- **经验**：
+  1. 全局快捷键应根据应用状态动态注册/注销，避免后台运行时干扰其他应用
+  2. Tauri 应用隐藏启动时需处理 `RunEvent::Reopen` 事件，让用户可通过 Dock 图标打开窗口
