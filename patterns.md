@@ -1881,3 +1881,38 @@ fetch('/files?project_path=...')
   - 任何需要条件响应的全局快捷键
 - **关联 P-ID**：P-2026-030
 - **日期**：2026-01-16
+
+---
+
+## PAT-2026-031: 多窗口应用的状态隔离设计
+
+- **场景**：Tauri/Electron 多窗口应用中，某些状态需要窗口级别隔离，而非全局共享。
+- **问题特征**：
+  1. 在窗口 A 中修改设置，窗口 B 也受影响
+  2. 用户期望每个窗口独立管理自己的状态
+- **模式描述**：
+  1. **识别隔离需求**：快捷键启用、窗口大小、主题等通常需要窗口隔离
+  2. **前端本地状态**：使用 Vue `ref` 而非后端全局状态
+  3. **避免事件广播**：不使用 `app.emit()` 广播状态变化
+  4. **全局资源同步**：如全局快捷键，需要在状态变化时同步注册/注销
+- **代码示例**：
+  ```typescript
+  // 窗口级别状态
+  const localEnabled = ref(true)
+  
+  function handleToggle(enabled: boolean) {
+    localEnabled.value = enabled
+    // 同步全局资源
+    if (enabled) {
+      await register('Shift+Tab', handler)
+    } else {
+      await unregister('Shift+Tab')
+    }
+  }
+  ```
+- **适用场景**：
+  - 多窗口 IDE 插件
+  - 多项目管理工具
+  - 任何需要窗口独立配置的应用
+- **关联 P-ID**：P-2026-031
+- **日期**：2026-01-16
