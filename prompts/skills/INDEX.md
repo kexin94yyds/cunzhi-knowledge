@@ -23,6 +23,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [patch](patch/SKILL.md) | patch、补丁 | 补丁应用流程 |
 | [prime](prime/SKILL.md) | prime、准备 | 项目准备流程 |
 | [audit-with-codex](audit-with-codex/SKILL.md) | audit、codex、审计 | Codex 审计流程 |
+| [hooks](hooks/SKILL.md) | hooks、钩子、PreRun、PostRun | iterate Hooks 机制设计 |
 | [docx](docx/SKILL.md) | Word、文档、.docx | 文档创建、编辑、批注 |
 | [pdf](pdf/SKILL.md) | PDF、表单、合并、拆分 | PDF 处理工具包 |
 | [pptx](pptx/SKILL.md) | PPT、演示文稿、幻灯片 | 演示文稿创建编辑 |
