@@ -1,3 +1,8 @@
+---
+name: build
+description: 项目构建流程。触发词：构建、编译、build。
+---
+
 # /build
 
 **模板分类**: Action

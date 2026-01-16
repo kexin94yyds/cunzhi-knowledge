@@ -1,3 +1,8 @@
+---
+name: implement
+description: 功能实现流程。触发词：实现、开发、implement。
+---
+
 # /implement
 
 **模板分类**: Action

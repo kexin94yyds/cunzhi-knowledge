@@ -1,3 +1,8 @@
+---
+name: review
+description: 代码审查流程。触发词：审查、review、代码审查。
+---
+
 # /review
 
 **模板分类**: Structured Data

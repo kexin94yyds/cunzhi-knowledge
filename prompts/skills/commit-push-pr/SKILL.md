@@ -1,3 +1,8 @@
+---
+name: commit-push-pr
+description: Git 提交推送流程。触发词：提交、推送、PR、commit。
+---
+
 # /commit-push-pr
 
 提交代码、推送到远程并创建 Pull Request 的内部循环命令。

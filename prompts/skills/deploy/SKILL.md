@@ -1,3 +1,8 @@
+---
+name: deploy
+description: 部署发布流程。触发词：部署、发布、deploy。
+---
+
 # /deploy
 
 部署应用的内部循环命令。

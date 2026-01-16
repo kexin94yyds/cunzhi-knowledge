@@ -1,3 +1,8 @@
+---
+name: sync-knowledge
+description: 知识库同步流程。触发词：同步、sync、知识库。
+---
+
 # /sync-knowledge
 
 同步 .cunzhi-knowledge 知识库仓库的内部循环命令。

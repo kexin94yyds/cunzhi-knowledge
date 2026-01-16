@@ -1,3 +1,8 @@
+---
+name: plan
+description: 为复杂任务创建详细实施计划。触发词：计划、规划、plan。
+---
+
 # /plan
 
 **模板分类**: Path Resolution

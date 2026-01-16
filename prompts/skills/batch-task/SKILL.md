@@ -1,3 +1,8 @@
+---
+name: batch-task
+description: 将大任务拆分成 N 个批次，分配给 N 个子代理并行执行。触发词：pai、派发、子代理、批量任务。
+---
+
 # /batch-task
 
 **模板分类**: Action

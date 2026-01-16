@@ -1,3 +1,8 @@
+---
+name: settle
+description: 问题沉淀流程。触发词：沉淀、三件套、settle。
+---
+
 # /settle
 
 沉淀三件套的内部循环命令。确保每次沉淀都自动同步到 GitHub。

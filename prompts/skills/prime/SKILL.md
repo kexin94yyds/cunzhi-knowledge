@@ -1,3 +1,8 @@
+---
+name: prime
+description: 项目准备流程。触发词：prime、准备。
+---
+
 # /prime
 
 **模板分类**: Action

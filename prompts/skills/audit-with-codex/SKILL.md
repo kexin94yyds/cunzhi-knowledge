@@ -1,3 +1,8 @@
+---
+name: audit-with-codex
+description: Codex 审计流程。触发词：audit、codex、审计。
+---
+
 # Codex 审计提示词模板
 
 ## 角色

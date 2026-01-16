@@ -1,3 +1,8 @@
+---
+name: fix-lint
+description: 代码格式修复流程。触发词：lint、格式化、eslint。
+---
+
 # /fix-lint
 
 自动修复代码 lint 和格式错误的内部循环命令。

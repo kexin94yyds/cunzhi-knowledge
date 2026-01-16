@@ -1,3 +1,8 @@
+---
+name: validate
+description: 验证检查流程。触发词：验证、校验、validate。
+---
+
 # /validate
 
 **模板分类**: Action

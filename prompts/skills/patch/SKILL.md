@@ -1,3 +1,8 @@
+---
+name: patch
+description: 补丁应用流程。触发词：patch、补丁。
+---
+
 # /patch
 
 **模板分类**: Path Resolution

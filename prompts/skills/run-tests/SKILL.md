@@ -1,3 +1,8 @@
+---
+name: run-tests
+description: 测试执行流程。触发词：测试、test、运行测试。
+---
+
 # /run-tests
 
 运行测试套件的内部循环命令。
