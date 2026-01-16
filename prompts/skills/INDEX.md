@@ -6,6 +6,23 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 
 | Skill | 触发词 | 描述 |
 |-------|--------|------|
+| [iterate](iterate/SKILL.md) | iterate、cunzhi、寸止、端口不可用、服务器未启动 | 脚本交互与故障恢复 |
+| [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
+| [batch-task](batch-task/SKILL.md) | pai、派发、子代理、批量任务 | 子代理任务分配 |
+| [plan](plan/SKILL.md) | 计划、规划、plan | 任务实施计划 |
+| [build](build/SKILL.md) | 构建、编译、build | 项目构建流程 |
+| [deploy](deploy/SKILL.md) | 部署、发布、deploy | 部署发布流程 |
+| [commit-push-pr](commit-push-pr/SKILL.md) | 提交、推送、PR、commit | Git 提交流程 |
+| [fix-lint](fix-lint/SKILL.md) | lint、格式化、eslint | 代码格式修复 |
+| [implement](implement/SKILL.md) | 实现、开发、implement | 功能实现流程 |
+| [review](review/SKILL.md) | 审查、review、代码审查 | 代码审查流程 |
+| [run-tests](run-tests/SKILL.md) | 测试、test、运行测试 | 测试执行流程 |
+| [settle](settle/SKILL.md) | 沉淀、三件套、settle | 问题沉淀流程 |
+| [sync-knowledge](sync-knowledge/SKILL.md) | 同步、sync、知识库 | 知识库同步 |
+| [validate](validate/SKILL.md) | 验证、校验、validate | 验证检查流程 |
+| [patch](patch/SKILL.md) | patch、补丁 | 补丁应用流程 |
+| [prime](prime/SKILL.md) | prime、准备 | 项目准备流程 |
+| [audit-with-codex](audit-with-codex/SKILL.md) | audit、codex、审计 | Codex 审计流程 |
 | [docx](docx/SKILL.md) | Word、文档、.docx | 文档创建、编辑、批注 |
 | [pdf](pdf/SKILL.md) | PDF、表单、合并、拆分 | PDF 处理工具包 |
 | [pptx](pptx/SKILL.md) | PPT、演示文稿、幻灯片 | 演示文稿创建编辑 |
