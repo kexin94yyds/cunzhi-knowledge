@@ -6,8 +6,6 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 
 | Skill | 触发词 | 描述 |
 |-------|--------|------|
-| [iterate](iterate/SKILL.md) | iterate、cunzhi、寸止、端口不可用、服务器未启动 | 脚本交互与故障恢复 |
-| [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
 | [docx](docx/SKILL.md) | Word、文档、.docx | 文档创建、编辑、批注 |
 | [pdf](pdf/SKILL.md) | PDF、表单、合并、拆分 | PDF 处理工具包 |
 | [pptx](pptx/SKILL.md) | PPT、演示文稿、幻灯片 | 演示文稿创建编辑 |
