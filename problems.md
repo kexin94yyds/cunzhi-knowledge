@@ -6895,3 +6895,17 @@ P-2024-005 (Layout & Color Update)
 - **状态**：verified
 - **日期**：2026-01-16
 - **经验**：GUI 应用作为后台服务时，需要额外的监控机制确保高可用；launchd 的 KeepAlive 对 GUI 应用效果有限，watchdog 脚本更可靠。
+
+---
+
+## P-2026-030 iterate watchdog 自动启动后 Shift+Tab 会呼出主页
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：配置 watchdog 自动启动 iterate 后，每次按下 Shift+Tab 快捷键都会呼出 iterate 主页窗口，妨碍正常操作。
+- **根因**：待分析。可能是 iterate 应用注册了全局 Shift+Tab 快捷键，或者 watchdog 启动方式导致应用处于前台响应状态。
+- **修复**：待定
+- **回归检查**：待定
+- **状态**：open
+- **日期**：2026-01-16
