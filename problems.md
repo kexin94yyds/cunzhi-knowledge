@@ -6904,8 +6904,9 @@ P-2024-005 (Layout & Color Update)
 - **仓库**：https://github.com/kexin94yyds/iterate
 - **发生版本**：2026-01-16
 - **现象**：配置 watchdog 自动启动 iterate 后，每次按下 Shift+Tab 快捷键都会呼出 iterate 主页窗口，妨碍正常操作。
-- **根因**：待分析。可能是 iterate 应用注册了全局 Shift+Tab 快捷键，或者 watchdog 启动方式导致应用处于前台响应状态。
-- **修复**：待定
-- **回归检查**：待定
-- **状态**：open
+- **根因**：`open -a iterate.app` 默认会显示应用窗口并激活前台，导致主窗口响应全局快捷键。
+- **修复**：修改 watchdog 脚本，使用 `open -j -g -a iterate.app` 以隐藏模式启动应用（`-j` 隐藏启动，`-g` 不激活前台）。
+- **回归检查**：R-2026-030（手动验证：杀死 iterate 后自动重启，主窗口不显示）
+- **状态**：fixed
 - **日期**：2026-01-16
+- **经验**：macOS 的 `open` 命令支持 `-j`（隐藏启动）和 `-g`（后台启动）参数，适合需要后台运行的 GUI 应用。
