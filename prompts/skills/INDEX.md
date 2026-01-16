@@ -41,6 +41,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [canvas-design](canvas-design/SKILL.md) | Canvas、绘图、图形 | Canvas 设计 |
 | [algorithmic-art](algorithmic-art/SKILL.md) | 算法艺术、生成艺术 | 算法艺术创作 |
 | [end-session](end-session/SKILL.md) | 结束当前对话、结束对话、end session | 结束对话并记录 |
+| [init-project](init-project/SKILL.md) | 初始化项目、init、初始化上下文 | 智能生成项目上下文 |
 
 ## 使用规则
 
