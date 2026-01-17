@@ -8,11 +8,41 @@ description: 多 Agent 工作流编排器。触发词：编排、orchestrate、�
 **模板分类**: Action
 **成熟度**: L5 (Higher Order)
 
-基于"线程理论"的多 Agent 工作流编排系统，实现：
-- **更长的线程** - 子代理持续自主执行
-- **更厚的线程** - 自动获取多维度信息
-- **更多的线程** - N 个 Agent 并行执行
-- **更少的人工介入点** - 只在最终审查
+基于"线程理论"和 **CCC 框架（Clarify/Create/Check）** 的多 Agent 工作流编排系统。
+
+## 理论基础
+
+### 线程四维度 × CCC 框架
+
+| 维度 | CCC 映射 | 实现方式 |
+|------|----------|----------|
+| **更长的线程** | 减少重复 Clarify | 子代理持续执行，不需每步解释 |
+| **更厚的线程** | 增强 AI 的 Clarify | 自动读取项目上下文、规则、文档 |
+| **更多的线程** | 扩大 Create 规模 | N 个 Agent 并行执行不同任务 |
+| **更少的介入** | 自动化 Check | 只在 Check 失败时人工介入 |
+
+### 子代理 CCC 循环
+
+每个子代理执行完整的 CCC 循环：
+
+```
+1. Clarify（理解）
+   - 读取任务描述
+   - 读取项目 Rules（.windsurfrules）
+   - 读取相关 Skills
+   - 理解上下文
+
+2. Create（构建）
+   - 执行 plan Skill
+   - 执行 implement Skill
+   - 生成代码/文档
+
+3. Check（审查）
+   - 执行 review Skill
+   - 运行 validate/run-tests
+   - 自我检查是否符合规范
+   - 只有 Check 失败才需人工介入
+```
 
 ## 核心概念
 
