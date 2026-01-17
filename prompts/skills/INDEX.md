@@ -42,6 +42,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [algorithmic-art](algorithmic-art/SKILL.md) | 算法艺术、生成艺术 | 算法艺术创作 |
 | [end-session](end-session/SKILL.md) | 结束当前对话、结束对话、end session | 结束对话并记录 |
 | [init-project](init-project/SKILL.md) | 初始化项目、init、初始化上下文 | 智能生成项目上下文 |
+| [podcast-article](podcast-article/SKILL.md) | 播客、公众号、文章工作流、语音转文字、Opus、Typeless | 播客和公众号文章工作流 |
 
 ## 使用规则
 
