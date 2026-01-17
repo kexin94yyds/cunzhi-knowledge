@@ -27,17 +27,7 @@ description: 播客和公众号文章工作流。将语音转文字内容分步�
 - 使用层级结构（一、二、三... + 小标题 + 要点）
 - 保留原稿的核心内容
 
-**格式示例**：
-```markdown
-### 一、核心观点的冲突：传统教育 vs. 理想教育
-
-* **传统教育的弊端：**
-    - **枯燥的模式：** 机械地打开书本、背诵知识点...
-    - **提线木偶：** 家长与传统理念束缚孩子...
-
-* **理想教育的本质：**
-    - **激发天性：** 老师的角色应从"教授"转变为"引导"...
-```
+**范例**：参见 [example-structured.md](references/example-structured.md)
 
 **等待用户确认结构是否 OK。**
 
@@ -56,6 +46,8 @@ description: 播客和公众号文章工作流。将语音转文字内容分步�
 - 开场引入：用一个画面/场景切入
 - 中间展开：每个观点用故事或例子支撑
 - 结尾收束：用问题或金句收尾
+
+**范例**：参见 [example-podcast.md](references/example-podcast.md)
 
 **等待用户确认播客稿是否 OK。**
 
@@ -76,9 +68,21 @@ description: 播客和公众号文章工作流。将语音转文字内容分步�
 - 小标题清晰，分割线分隔章节
 - 比播客稿更完整、更深入
 
+**范例**：参见 [example-article.md](references/example-article.md)
+
 ---
 
-## 输出文件
+## 范例文件
+
+| 文件 | 说明 |
+|------|------|
+| [example-structured.md](references/example-structured.md) | 结构化原文稿范例 |
+| [example-podcast.md](references/example-podcast.md) | 播客稿范例 |
+| [example-article.md](references/example-article.md) | 公众号文章范例 |
+
+---
+
+## 输出文件命名
 
 | 文件 | 说明 |
 |------|------|
@@ -94,3 +98,4 @@ description: 播客和公众号文章工作流。将语音转文字内容分步�
 2. **保持原稿风格**：不要过度改写用户的表达
 3. **结构先行**：先确认结构，再写内容
 4. **公众号 = 播客稿 + 结构化原文稿**：融合两者的优点
+5. **模仿范例风格**：但不要完全拘泥，根据内容灵活调整
