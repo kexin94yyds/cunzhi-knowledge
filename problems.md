@@ -6949,3 +6949,70 @@ P-2024-005 (Layout & Color Update)
 - **修复**：待修复
 - **状态**：open
 - **日期**：2026-01-16
+
+---
+
+## P-2026-033 AI 端口检测失败后未自动恢复服务器
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：调用 `cunzhi.py` 脚本时返回 `Error: Port {PORT} is not available`，AI 直接停止对话，没有自动启动服务器并重试。
+- **根因**：这是 **AI 行为问题**，不是脚本问题。规则 `06-skills.md:44-53` 明确要求：
+  1. 当脚本返回 `Port not available` 时，AI 应自动执行 `iterate --serve --port {PORT}`
+  2. 等待 2-3 秒后重试
+  3. 如果仍然失败，提示用户手动检查
+  但 AI 没有遵守这个规则，直接停止了对话。
+- **修复**：强化 AI 规则意识，确保严格遵守 `06-skills.md` 中的自动恢复规则
+- **回归检查**：R-2026-033（手动验证：端口不可用时 AI 自动启动服务器并重试）
+- **状态**：open
+- **日期**：2026-01-16
+- **经验**：AI 行为规则需要在规则文件中明确强调，并在 Memory 中记录以加强遵守
+
+---
+
+## P-2026-034 AI 未自动触发 Skills（如 mcp-builder）
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：用户提到 "Docker MCP" 时，AI 应根据 `06-skills.md:16` 触发 `mcp-builder` Skill，但 AI 没有读取 `skills/mcp-builder/SKILL.md`。
+- **根因**：这是 **AI 行为问题**。AI 没有在对话开始时检查用户输入是否匹配 Skills 触发词表。
+- **修复**：AI 应在对话开始时：
+  1. 读取 `.cunzhi-knowledge/prompts/skills/INDEX.md` 触发词表
+  2. 匹配用户输入时自动读取对应 SKILL.md
+- **回归检查**：R-2026-034（手动验证：用户提到 MCP 相关内容时自动加载 mcp-builder Skill）
+- **状态**：open
+- **日期**：2026-01-16
+- **经验**：Skills 触发机制需要在规则中更明确地强调，或通过 Hook 自动注入
+
+
+## P-2026-034 VS Code 插件单端口限制导致多 Agent 协调失败
+
+- 项目：iterate/cunzhi
+- 发生版本：vscode-extension 0.1.0
+- 现象：VS Code 插件只维护一个 `currentPort` 变量，所有聊天窗口共用同一端口，导致多 Agent 协调时无法区分不同窗口
+- 根因：`extension.ts` 中 `currentPort` 是全局变量，`getStartPrompt()` 生成的提示词都使用同一端口
+- 影响范围：多 Agent 并行任务分发功能
+- 修复：需要修改插件支持多端口模式，或使用 Session ID 区分
+- 回归检查：R-2026-034
+- 状态：open
+- 日期：2026-01-17
+
+
+## P-2026-035 VS Code 插件需要支持多端口并行显示
+
+- 项目：iterate/cunzhi vscode-extension
+- 发生版本：vscode-extension 0.1.0
+- 现象：插件控制面板只显示单一端口，无法同时管理多个端口
+- 需求：
+  1. 支持同时启动多个端口（5316、5318 等）
+  2. 侧边栏显示所有活跃端口及其状态（空闲/占用）
+  3. 当某端口被占用时，AI Skills 自动切换到其他可用端口
+  4. 用户可以选择使用哪个端口
+- 影响范围：多 Agent 并行任务分发用户体验
+- 修复：需要重构 extension.ts，从单端口模式改为端口池模式
+- 回归检查：R-2026-035
+- 状态：open
+- 日期：2026-01-17
+
