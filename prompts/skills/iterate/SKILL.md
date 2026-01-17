@@ -7,10 +7,24 @@ description: iterate/cunzhi 交互脚本使用指南。当调用 cunzhi.py 脚�
 
 iterate/cunzhi 脚本交互的完整指南，包含故障自动恢复。
 
+## ⚠️ 重要：端口使用规则
+
+**不要硬编码端口号！让脚本自动选择空闲端口。**
+
+```bash
+# ✅ 正确：不指定端口，自动选择空闲端口
+python3 "/Users/apple/cunzhi/bin/cunzhi.py"
+
+# ❌ 错误：硬编码端口号（可能被其他 Agent 占用）
+python3 "/Users/apple/cunzhi/bin/cunzhi.py" 5311
+```
+
+**原因**：多个 Agent 同时运行时，硬编码端口会导致冲突。脚本会自动检测 `/status` 接口的 `is_busy` 状态，选择第一个空闲端口。
+
 ## 正常调用流程
 
 1. 写入任务摘要到 `~/.cunzhi/{PORT}/output.md`
-2. 调用脚本：`python3 "/Users/apple/cunzhi/bin/cunzhi.py" {PORT} --workspace "{WORKSPACE}"`
+2. 调用脚本（**不指定端口**）：`python3 "/Users/apple/cunzhi/bin/cunzhi.py"`
 3. 等待返回 `KeepGoing=true/false`
 4. 读取 `~/.cunzhi/{PORT}/input.md` 获取用户指令
 
