@@ -25,6 +25,7 @@
 | R-2026-022 | P-2026-022 | iterate Checkpoint restore 覆盖包含 untracked | 手工检查 |
 | R-2026-023 | P-2026-023 | iterate Checkpoint 创建后应留存（不应 pop 掉） | 手工检查 |
 | R-2026-027 | P-2026-027 | cunzhi.py 无限等待不超时 | 手工检查 |
+| R-2026-036 | P-2026-036 | iterate 弹窗白屏修复验证 | 手工检查 |
 
 ---
 
@@ -5322,3 +5323,21 @@ P-2026-002
   9. **预期结果**：窗口 B 正常恢复
 - **关联 P-ID**：P-2026-031
 - **日期**：2026-01-16
+
+---
+
+## R-2026-036 iterate 弹窗白屏修复验证
+
+- **类型**：手工检查
+- **描述**：验证 iterate 弹窗不再出现白屏问题，前端资源正确嵌入到二进制文件中。
+- **检查步骤**：
+  1. 确认 `dist/` 目录有完整内容：`ls -la dist/`
+  2. 重新构建应用：`pnpm run build && cargo tauri build`
+  3. 验证前端资源已嵌入二进制：`strings target/release/bundle/macos/iterate.app/Contents/MacOS/iterate | grep index.html`
+  4. 安装并启动应用：`sudo cp -R target/release/bundle/macos/iterate.app /Applications/ && open /Applications/iterate.app`
+  5. 调用 cunzhi 脚本触发弹窗：`python3 bin/cunzhi.py 5311`
+- **预期结果**：
+  - 弹窗正常显示 UI 内容，不是白屏
+  - `strings` 命令能找到 `index.html` 字符串
+- **关联 P-ID**：P-2026-036
+- **日期**：2026-01-17

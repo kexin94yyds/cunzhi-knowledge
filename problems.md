@@ -7016,3 +7016,48 @@ P-2024-005 (Layout & Color Update)
 - 状态：open
 - 日期：2026-01-17
 
+## P-2026-034: VS Code 扩展端口扫描 UI 不更新
+
+### 现象
+- 控制面板一直显示"正在扫描端口 5310-5330..."
+- 底部状态栏显示端口已启动
+- `scanActivePorts()` 函数被调用但 UI 不更新
+
+### 根因分析
+1. `scanActivePorts()` 并行扫描 40 个端口，每个端口超时 1 秒，导致扫描时间过长
+2. 初始 HTML 显示"正在扫描端口"，在扫描完成前一直卡在这个状态
+3. 启动服务后未立即将端口添加到 `activePorts` 列表
+
+### 修复方案（2026-01-17）
+1. 降低超时时间：1000ms → 300ms
+2. 缩小扫描范围：40 个端口 → 10 个端口
+3. 启动服务成功后立即添加到 `activePorts`
+4. 修改初始 HTML 显示为"暂无活跃端口"
+
+### 状态
+fixed（待验证）
+
+---
+
+## P-2026-036 iterate 弹窗白屏问题（重新构建后修复）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：0.4.0
+- 现象：弹窗显示为纯白色，无任何 UI 内容
+- 根因分析：
+  1. **误判**：最初怀疑是 `/Applications/iterate.app/Contents/Resources/` 目录缺少前端资源
+  2. **实际情况**：Tauri 2.x 将前端资源嵌入到二进制文件本身（通过 `tauri::generate_context!()` 宏），而不是放在 Resources 目录。Resources 目录只有 `icon.icns` 是正常行为
+  3. **真正原因**：可能是构建时 `dist/` 目录为空或过期，导致嵌入的前端资源不完整
+- 修复：
+  1. 重新构建前端：`pnpm run build`
+  2. 重新构建 Tauri 应用：`cargo tauri build`
+  3. 安装新版本：`sudo cp -R target/release/bundle/macos/iterate.app /Applications/`
+- 验证方法：`strings iterate | grep index.html` 确认前端资源已嵌入二进制
+- 回归检查：R-2026-036
+- 状态：verified
+- 日期：2026-01-17
+- 经验：
+  - Tauri 2.x 的前端资源嵌入机制与 Tauri 1.x 不同
+  - 白屏问题首先检查 `dist/` 目录是否有完整内容
+  - 使用 `strings` 命令可验证二进制是否包含前端资源
