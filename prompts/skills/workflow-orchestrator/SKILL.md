@@ -96,7 +96,6 @@ pai custom: plan → implement → run-tests → review
 
 ## 子代理任务模板
 
-```markdown
 ## 子代理任务 {task_id}
 
 **工作流**: {workflow_name}
@@ -105,15 +104,20 @@ pai custom: plan → implement → run-tests → review
 
 ### 执行步骤
 1. 执行 `{current_skill}` Skill
-2. 完成后调用 `cunzhi_coordinator.py complete` 报告
+2. 完成后报告并调用 `cunzhi_coordinator.py complete`
 3. 如有下一阶段，自动领取继续
+
+### ⚠️ 重要：端口使用规则
+**子代理必须让脚本自动选择端口，不要硬编码端口号！**
+
+- ✅ 正确：`python3 cunzhi.py`（不指定端口）
+- ❌ 错误：`python3 cunzhi.py 5311`（硬编码端口）
 
 ### 上下文
 - 项目路径: {workspace}
 - 相关文件: {files}
 
 *你是子代理，请执行以上任务*：
-```
 
 ## 主代理执行流程
 
