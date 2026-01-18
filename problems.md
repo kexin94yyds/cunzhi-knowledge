@@ -7061,3 +7061,37 @@ fixed（待验证）
   - Tauri 2.x 的前端资源嵌入机制与 Tauri 1.x 不同
   - 白屏问题首先检查 `dist/` 目录是否有完整内容
   - 使用 `strings` 命令可验证二进制是否包含前端资源
+
+## P-2026-037 iterate 弹窗再次白屏问题（git 冲突导致构建失败）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：0.5.2
+- 现象：弹窗显示为纯白色，无任何 UI 内容（再次出现）
+- 根因分析：
+  1. **直接原因**：`src/frontend/components/common/TerminalView.vue` 存在 git 冲突标记
+  2. **构建失败**：冲突标记导致 `pnpm run build` 失败，`dist/` 目录内容不完整
+  3. **深层原因**：多次 git 操作导致冲突未完全清理
+  4. **更新问题**：`cargo tauri build --no-bundle` 不会更新 bundle，导致应用更新失败
+- 修复：
+  1. 清理 `TerminalView.vue` 中的 git 冲突标记
+  2. 删除 `dist/` 目录重新构建：`rm -rf dist && pnpm run build`
+  3. 重新构建 Tauri 应用：`cargo tauri build --no-bundle`
+  4. **关键步骤**：直接替换二进制文件而不是复制 bundle
+     ```bash
+     sudo cp target/release/iterate /Applications/iterate.app/Contents/MacOS/iterate
+     sudo codesign --force --deep --sign - /Applications/iterate.app
+     ```
+- 脚本改进：
+  1. `update.sh` 和 `update-fast.sh` 添加 git 冲突检查
+  2. 优先使用快速二进制替换，避免依赖过期的 bundle
+  3. 自动检测二进制文件是否更新，智能选择更新方式
+- 回归检查：R-2026-037
+- 状态：verified
+- 日期：2026-01-18
+- 经验：
+  - **git 冲突检查**：构建前必须检查 `grep -r "<<<<<<" src/frontend/`
+  - **快速更新**：直接替换二进制文件比复制整个 bundle 更可靠
+  - **bundle 问题**：`cargo tauri build --no-bundle` 不会更新 `target/release/bundle/`
+  - **验证方法**：`strings /Applications/iterate.app/Contents/MacOS/iterate | grep "index-xxx.css"` 检查前端资源是否嵌入
+  - **脚本优化**：更新脚本应优先使用快速替换，减少用户手动操作
