@@ -7086,6 +7086,8 @@ fixed（待验证）
   1. `update.sh` 和 `update-fast.sh` 添加 git 冲突检查
   2. 优先使用快速二进制替换，避免依赖过期的 bundle
   3. 自动检测二进制文件是否更新，智能选择更新方式
+- 补充（2026-01-18）：
+  - `update.sh` / `update-fast.sh` 允许在 **无 bundle** 情况下，只要 `/Applications/iterate.app` 存在就进行快速替换
 - 回归检查：R-2026-037
 - 状态：verified
 - 日期：2026-01-18
