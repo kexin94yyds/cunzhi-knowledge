@@ -112,7 +112,7 @@ Codex 自主执行以下检查：
 当完成"三件套"（problems → patterns → regressions）后，自动触发 Codex 审查：
 
 **触发条件**：
-- `problems.md` 中有状态为 `fixed` 的问题
+- `problems.md` 中有状态为 `verified` 的问题（三件套已完成）
 - 对应的 `regressions.md` 和 `patterns.md` 已更新
 
 **自动审查内容**：
@@ -151,26 +151,28 @@ ${CUNZHI_SUMMARY}
 
 **审查通过时**：
 1. 输出 **LGTM**
-2. 生成 unified diff，将 `problems.md` 中对应 Problem 的状态从 `fixed` 变更为 `audited (Codex已审计)`
+2. 生成 unified diff，将 `problems.md` 中对应 Problem 的状态从 `verified` 变更为 `audited (Codex已审计)`
 3. 调用 zhi 请求用户确认
 4. 确认后执行应用并完成 Git 同步
 
 **发现隐患时**：
 1. 给出具体修复建议
-2. 状态保持 `fixed`，等待修复后再次审查
+2. 状态保持 `verified`，等待修复后再次审查
 
 ### 状态流转
 
 ```
-open → fixed → audited (Codex已审计) → verified
+open → fixed → verified → audited (Codex已审计)
 ```
 
 | 状态 | 说明 |
 |------|------|
 | `open` | 问题已记录，待修复 |
-| `fixed` | 代码已修复，待审查 |
-| `audited` | Codex 审查通过 |
-| `verified` | 回归测试通过，问题关闭 |
+| `fixed` | 代码已修复，待验证 |
+| `verified` | 回归测试通过，三件套完成 |
+| `audited` | Codex 审查通过（最终状态） |
+
+**注意**：Codex 审查是在三件套完成（`verified`）之后的额外步骤，不打断原有流程。
 
 ---
 
