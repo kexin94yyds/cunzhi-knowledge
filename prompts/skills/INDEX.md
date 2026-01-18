@@ -10,6 +10,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
 | [batch-task](batch-task/SKILL.md) | pai、派发、子代理、批量任务 | 子代理任务分配 |
 | [workflow-orchestrator](workflow-orchestrator/SKILL.md) | 编排、orchestrate、工作流、自动化、多线程 | 多 Agent 工作流编排 |
+| [ralph-loop](ralph-loop/SKILL.md) | ralph、自主循环、autonomous、直到完成、循环执行 | Ralph Wiggum 自主循环模式 |
 | [plan](plan/SKILL.md) | 计划、规划、plan | 任务实施计划 |
 | [build](build/SKILL.md) | 构建、编译、build | 项目构建流程 |
 | [deploy](deploy/SKILL.md) | 部署、发布、deploy | 部署发布流程 |
