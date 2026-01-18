@@ -107,15 +107,33 @@ Codex 自主执行以下检查：
 5. 用户逐个处理问题
 ```
 
-### 自动触发（可选）
+### 自动触发：三件套完成后
 
-在 iterate 完成后自动触发 Codex 审查：
+当完成"三件套"（problems → patterns → regressions）后，自动触发 Codex 审查：
 
-```bash
-# 在 cunzhi_hooks.py 的 PostRun 中添加
-if task_completed:
-    trigger_codex_audit()
+**触发条件**：
+- `problems.md` 中有状态为 `fixed` 的问题
+- 对应的 `regressions.md` 和 `patterns.md` 已更新
+
+**自动审查内容**：
 ```
+## 任务
+我们刚刚完成了代码修改和"寸止"三件套记录。请针对以下改动进行严格审计：
+
+1. **逻辑漏洞**：代码实现是否隐藏了边界 case 或并发风险？
+2. **规范符合度**：改动是否符合项目既有风格？
+3. **沉淀准确性**：三件套记录是否精准、深刻，有无遗漏？
+
+## 改动上下文
+${GIT_DIFF}
+
+## "寸止"三件套摘要
+${CUNZHI_SUMMARY}
+```
+
+**审查完成后**：
+1. 审查通过 → 状态变为 `audited`，提醒用户
+2. 发现问题 → 汇总问题列表，等待用户处理
 
 ---
 
@@ -131,8 +149,28 @@ if task_completed:
 
 ### 闭环行为
 
-- 如果改动完美：输出 **LGTM** + 状态更新 diff
-- 如果发现隐患：给出具体修复建议
+**审查通过时**：
+1. 输出 **LGTM**
+2. 生成 unified diff，将 `problems.md` 中对应 Problem 的状态从 `fixed` 变更为 `audited (Codex已审计)`
+3. 调用 zhi 请求用户确认
+4. 确认后执行应用并完成 Git 同步
+
+**发现隐患时**：
+1. 给出具体修复建议
+2. 状态保持 `fixed`，等待修复后再次审查
+
+### 状态流转
+
+```
+open → fixed → audited (Codex已审计) → verified
+```
+
+| 状态 | 说明 |
+|------|------|
+| `open` | 问题已记录，待修复 |
+| `fixed` | 代码已修复，待审查 |
+| `audited` | Codex 审查通过 |
+| `verified` | 回归测试通过，问题关闭 |
 
 ---
 
