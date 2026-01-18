@@ -45,19 +45,20 @@
 | PAT-2025-001 | macOS 应用精准焦点唤回模式 | 使用 PID 识别切换焦点 |
 | PAT-2025-002 | 全局快捷键的运行时热切换 | 状态同步链与动态注册 |
 | PAT-2025-003 | Tauri 应用动态快捷键同步 | 后端持久化与前端分层处理 |
-| PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
-| PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
-| PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
+| PAT-2025-004 | Electron 全部导出功能 | JSZip + IPC 读取图片 |
 | PAT-2026-002 | Tauri 跨平台窗口 API 适配 | 使用 cfg 保护非移动端 API |
 | PAT-2026-003 | Web Bridge 结构化图片转发 | 统一 DataURL 到 Base64 的转换处理 |
+| PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
+| PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
+| PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
 
 ---
 
 ## PAT-2026-023 Git stash Checkpoint 创建应保留条目
 
-- **场景**：实现“Checkpoint 面板创建检查点并可随时 Restore”的功能时，需要既保存快照，又不影响当前工作区。
+- **场景**：实现"Checkpoint 面板创建检查点并可随时 Restore"的功能时，需要既保存快照，又不影响当前工作区。
 - **问题**：若在 `git stash push` 后使用 `git stash pop`，会在成功应用后把 stash 条目从列表移除，导致 UI 面板刷新看不到刚创建的检查点（误以为没保存）。
 - **模式描述**：
   1. **保存快照**：`git stash push --include-untracked -m iterate-checkpoint:<ts> | <name>`。
@@ -1369,34 +1370,84 @@ macOS 应用图标可以通过简单的复制粘贴方式设置：
 - `.icns` 是 macOS 原生图标格式，包含多种分辨率
 - 修改后可能需要清除图标缓存才能看到更新
 
-## PAT-2025-001: macOS 应用图标设置经验
+---
+
+## PAT-2025-002: Electron 全部导出功能（含图片）
 
 ### 问题场景
-为 SwiftUI macOS 应用设置自定义图标
+Electron 应用需要导出多个模式的数据为 Markdown 文件，并将图片一起打包为 ZIP。
 
 ### 解决方案
-macOS 应用图标可以通过简单的复制粘贴方式设置：
 
-1. **准备图标文件**：准备 `.icns` 格式的图标文件（可以从其他应用复制，或使用工具生成）
+#### 1. 前端添加 JSZip
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+```
 
-2. **放置位置**：将图标文件放到 `YourApp.app/Contents/Resources/AppIcon.icns`
+#### 2. 导出函数结构
+```javascript
+async function exportAllModes() {
+  const allModes = await getAllModes();
+  const files = [];
+  const imageFiles = [];
+  
+  for (const mode of allModes) {
+    const words = await getWordsByMode(mode.id);
+    const mdContent = generateModeMarkdown(mode, words, imageFiles);
+    files.push({ name: `${mode.name}.md`, content: mdContent });
+  }
+  
+  await exportAsZipWithImages(files, imageFiles, timestamp);
+}
+```
 
-3. **Info.plist 配置**：确保 `Info.plist` 中引用了图标：
-   ```xml
-   <key>CFBundleIconFile</key>
-   <string>AppIcon</string>
-   ```
+#### 3. IPC 读取图片文件
+**preload.js:**
+```javascript
+export: {
+  readImageFile: (fileName) => ipcRenderer.invoke('export-read-image-file', fileName)
+}
+```
 
-4. **Finder 快捷方式**：
-   - 选中任意应用，按 `Cmd+I` 打开"显示简介"窗口
-   - 点击左上角的应用图标（会出现蓝色选中框），按 `Cmd+C` 复制
-   - 打开目标应用的"显示简介"窗口
-   - 点击左上角的图标位置，按 `Cmd+V` 粘贴即可替换图标
+**main.js:**
+```javascript
+ipcMain.handle('export-read-image-file', async (event, fileName) => {
+  const imagePath = path.join(getImagesDir(), fileName);
+  if (fs.existsSync(imagePath)) {
+    return fs.readFileSync(imagePath).toString('base64');
+  }
+  return null;
+});
+```
+
+#### 4. ZIP 打包含图片
+```javascript
+async function exportAsZipWithImages(files, imageFiles, timestamp) {
+  const zip = new JSZip();
+  const folder = zip.folder(`RI_导出_${timestamp}`);
+  
+  // 添加 Markdown 文件
+  for (const file of files) {
+    folder.file(file.name, file.content);
+  }
+  
+  // 添加图片到 images/ 子文件夹
+  const imagesFolder = folder.folder('images');
+  for (const img of imageFiles) {
+    const base64 = await window.electronAPI.export.readImageFile(img.fileName);
+    if (base64) imagesFolder.file(img.fileName, base64, { base64: true });
+  }
+  
+  const blob = await zip.generateAsync({ type: 'blob' });
+  // 下载 blob...
+}
+```
 
 ### 关键点
-- macOS 图标机制非常灵活，支持直接复制粘贴到"显示简介"窗口左上角的图标位置
-- `.icns` 是 macOS 原生图标格式，包含多种分辨率
-- 修改后可能需要清除图标缓存才能看到更新
+- JSZip 支持 `{ base64: true }` 选项直接添加 base64 编码的二进制文件
+- 图片路径在 Markdown 中使用相对路径 `images/filename.png`
+- IPC 通道需要在 preload.js 白名单中注册
+- 备选方案：无 JSZip 时逐个下载文件
 
 ---
 
