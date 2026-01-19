@@ -13,6 +13,7 @@ Bug 标记为 `verified` 前，**必须同时满足**：
 7. 通过最终 `寸止` 
 8. **三件套完成后询问 Codex 审查**：在完成"三件套"沉淀并标记为 `verified` 后，AI 应主动询问用户是否需要调用 Codex Skill 进行审查。用户选择"是"后才启动审查。
 9. **闭环审计自动化**：在 Codex 审计返回 `LGTM` 且包含针对 `.cunzhi-knowledge/problems.md` 的 Diff 时，AI 助手应当先通过 `zhi` 请求用户确认；确认后再自动应用该改动并执行 Git 同步（add/commit/push），将状态推进至 `audited (Codex已审计)`。
+10. **审查结果回传**：若执行 Codex 审查，完成后必须调用 `zhi` 以结构化格式回传结论与问题清单。
 
 ### 回归检查强制要求
 - **P-ID 与 R-ID 一一对应**
