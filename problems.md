@@ -7097,3 +7097,65 @@ fixed（待验证）
   - **bundle 问题**：`cargo tauri build --no-bundle` 不会更新 `target/release/bundle/`
   - **验证方法**：`strings /Applications/iterate.app/Contents/MacOS/iterate | grep "index-xxx.css"` 检查前端资源是否嵌入
   - **脚本优化**：更新脚本应优先使用快速替换，减少用户手动操作
+
+
+## P-2026-038 状态流转定义冲突（fixed/verified 含义不一致）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`rules/03-workflows.md` 将 `fixed` 定义为“代码已修复且三件套已沉淀”，而 `prompts/skills/audit-with-codex/SKILL.md` 将 `fixed` 定义为“代码已修复待验证”，导致状态语义冲突
+- 根因分析：状态定义更新未在所有规则与技能文件中同步
+- 修复：统一 `fixed/verified` 的含义并同步到所有相关规则与技能文件
+- 影响范围：Bug 修复流程、Codex 审计流程
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-039 三件套顺序不一致（patterns/regressions 顺序混乱）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`audit-with-codex` 中写为 problems → patterns → regressions，而全局与 `settle` 规定为 problems → regressions → patterns
+- 根因分析：新增 Codex 审查说明时沿用了旧顺序
+- 修复：将 `audit-with-codex` 的三件套顺序改为 problems → regressions → patterns 并与全局规则一致
+- 影响范围：三件套沉淀流程一致性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-040 ralph-loop 与全局 zhi 规则冲突（不打扰用户 vs 必须 zhi）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`ralph-loop` 规定“期间不打扰用户、全部完成后才调用 zhi”，但全局规则要求“任何对话都要调用 zhi”且“每一步改动后必须调用 zhi”
+- 根因分析：新增 ralph-loop 未对齐全局交互约束
+- 修复：在 `ralph-loop` 增补每个任务完成后调用 zhi 汇报并确认继续，或在全局规则中明确豁免（建议前者）
+- 影响范围：自主循环技能、全局对话控制
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-041 debug 与全局 zhi 规则冲突（仅关键节点汇报）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`debug` 规定“只在关键节点汇报”，与全局“每步改动后必须调用 zhi”冲突
+- 根因分析：调试流程未显式继承全局汇报要求
+- 修复：在 `debug` 中补充“每轮改动后仍需 zhi 汇报/确认”或在全局规则中明确调试场景例外
+- 影响范围：调试技能与全局流程一致性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-042 ralph-loop 触发词覆盖不足（缺少 ralph-loop 字面）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：触发词未包含 `ralph-loop` 或 `/ralph-loop`，可能导致用户按命令格式调用时未命中
+- 根因分析：触发词列表未覆盖命令式短语
+- 修复：补充触发词 `ralph-loop` 与 `/ralph-loop`
+- 影响范围：技能触发准确性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
