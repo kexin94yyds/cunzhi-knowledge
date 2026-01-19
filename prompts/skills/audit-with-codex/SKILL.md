@@ -123,14 +123,19 @@ Codex 自主执行以下检查：
 ### Codex CLI 调用方式
 
 ```bash
-# 后台执行审查，完成后通过 cunzhi.py 回调
-(codex exec "审查任务描述" && \
- cat > ~/.cunzhi/{回调端口}/output.md <<'MD'
-## Codex 审查结果
-{审查结果}
+# 在可见终端运行审查，完成后调用空闲端口
+codex exec "审查任务描述" && \
+cat > ~/.cunzhi/{空闲端口}/output.md <<'MD'
+## Codex 审查完成
+审查已完成，请查看结果。
 MD
- python3 /Users/apple/cunzhi/bin/cunzhi.py {回调端口} --workspace {项目路径}) &
+python3 /Users/apple/cunzhi/bin/cunzhi.py {空闲端口} --workspace {项目路径}
 ```
+
+**关键点**：
+- **不使用后台运行**（不加 `&`），让 Codex 在终端可见
+- **使用空闲端口**（如 5313），不占用主代理端口
+- **主代理继续对话**，互不干扰
 
 ### 审查任务模板
 
