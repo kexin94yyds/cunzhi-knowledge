@@ -107,14 +107,14 @@
 
 **状态流转**：
 ```
-open → fixed → verified → audited（可选）
+open → fixed → verified → audited（必经）
 ```
 
 **约束**：
 - 未完成三件套前，禁止视为"问题已解决"
 - 禁止跳过 `fixed` 直接到 `verified`
 - 三者 ID 后缀必须关联
-- Codex 审查是可选步骤，不打断原有流程
+- Codex 审查是必经步骤，审查通过后才能标记为 `audited`
 </workflows>
 
 <tools>
