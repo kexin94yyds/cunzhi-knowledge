@@ -107,15 +107,18 @@ Codex 自主执行以下检查：
 5. 用户逐个处理问题
 ```
 
-### 自动触发：三件套完成后
+### 三件套完成后询问
 
-当完成"三件套"（problems → patterns → regressions）后，自动触发 Codex 审查：
+当完成"三件套"（problems → patterns → regressions）后，**AI 应主动询问**：
 
-**触发条件**：
-- `problems.md` 中有状态为 `verified` 的问题（三件套已完成）
-- 对应的 `regressions.md` 和 `patterns.md` 已更新
+```
+三件套已完成，是否需要调用 Codex Skill 进行审查？
+- 是：启动 Codex 后台审查
+- 否：跳过审查，保持 verified 状态
+```
 
-**自动审查内容**：
+**用户选择"是"后**，Codex 执行以下审查：
+
 ```
 ## 任务
 我们刚刚完成了代码修改和"寸止"三件套记录。请针对以下改动进行严格审计：
