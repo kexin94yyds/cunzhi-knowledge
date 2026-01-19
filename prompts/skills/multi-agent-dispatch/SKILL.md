@@ -93,16 +93,16 @@ dispatch: 审查 bin/ 目录下的 Python 脚本
 
 **AI 执行**：
 
-1. **分析**：bin/ 目录有 5 个 Python 文件，拆分成 2 个子任务
+1. **分析**：bin/ 目录有 Python 文件，拆分成 2 个子任务
 
 2. **生成子任务**：
    - 子任务1：审查 codex_loop.py, cunzhi.py
-   - 子任务2：审查 cunzhi_coordinator.py, cunzhi_hooks.py, cunzhi_utils.py
+   - 子任务2：审查 cunzhi_hooks.py, cunzhi_utils.py, cunzhi-server.py
 
 3. **并发调用**：
    ```bash
    codex exec -o /tmp/review1.md "Review codex_loop.py and cunzhi.py for code quality" &
-   codex exec -o /tmp/review2.md "Review cunzhi_coordinator.py, cunzhi_hooks.py, cunzhi_utils.py" &
+   codex exec -o /tmp/review2.md "Review cunzhi_hooks.py, cunzhi_utils.py, cunzhi-server.py" &
    wait
    ```
 
@@ -115,9 +115,9 @@ dispatch: 审查 bin/ 目录下的 Python 脚本
    | 子任务 | 文件 | 问题数 |
    |--------|------|--------|
    | 1 | codex_loop.py, cunzhi.py | 3 |
-   | 2 | cunzhi_coordinator.py 等 | 5 |
+   | 2 | cunzhi_hooks.py 等 | 2 |
    
-   **总计**：8 个问题
+   **总计**：5 个问题
    ```
 
 ### 示例 2：并发执行不同类型任务

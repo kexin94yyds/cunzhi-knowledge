@@ -156,17 +156,22 @@ python3 /Users/apple/cunzhi/bin/cunzhi.py {空闲端口} --workspace {项目路�
 
 ### 审查任务模板
 
-**⚠️ 重要：审查前必须读取 patterns.md 作为上下文**
+**⚠️ 重要：审查前必须读取项目上下文**
 
 ```bash
-# 1. 先读取项目的 patterns.md 了解设计决策
-cat {项目路径}/.cunzhi-knowledge/patterns.md
+# 1. 读取项目概述（.cunzhi-memory/context.md）
+cat {项目路径}/.cunzhi-memory/context.md
 
-# 2. 然后执行审查，将 patterns 作为上下文
+# 2. 读取设计决策（.cunzhi-knowledge/patterns.md）
+cat {项目路径}/.cunzhi-knowledge/patterns.md | head -200
+
+# 3. 执行审查，将上下文注入
 codex exec "
-## 上下文
-以下是项目的设计模式和已知决策，审查时需要参考：
-$(cat {项目路径}/.cunzhi-knowledge/patterns.md | head -200)
+## 项目概述
+$(cat {项目路径}/.cunzhi-memory/context.md 2>/dev/null || echo '无项目概述')
+
+## 设计决策
+$(cat {项目路径}/.cunzhi-knowledge/patterns.md 2>/dev/null | head -200 || echo '无设计决策')
 
 ## 审查任务
 审查 {项目路径} 的最近提交，检查：
@@ -181,7 +186,8 @@ $(cat {项目路径}/.cunzhi-knowledge/patterns.md | head -200)
 ```
 
 **关键点**：
-- **必须先读取 patterns.md**，避免误报已知的设计决策
+- **必须先读取 context.md**，了解项目概述和技术栈
+- **必须读取 patterns.md**，避免误报已知的设计决策
 - 如果某行为在 patterns 中有记录，则不是问题
 
 **审查完成后**：
