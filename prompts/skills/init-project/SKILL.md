@@ -1,13 +1,43 @@
 ---
 name: init-project
-description: 初始化项目上下文。分析项目结构、技术栈、代码风格，生成详细的 context.md。触发词：初始化项目、init、初始化上下文。
+description: 初始化项目上下文。使用 codex exec 自动分析项目并生成 context.md。触发词：初始化项目、init、初始化上下文。
 ---
 
 # Init Project Skill
 
-当用户说"初始化项目"时，AI 应该智能分析项目并生成详细的 `.cunzhi-memory/context.md`。
+当用户说"初始化项目"时，**优先使用 codex exec 自动生成** `.cunzhi-memory/context.md`。
 
-## 执行流程
+## ⚠️ 推荐方式：codex exec 自动生成
+
+```bash
+# 1. 确保 .cunzhi-memory 目录存在
+mkdir -p {项目路径}/.cunzhi-memory
+
+# 2. 使用 codex exec 自动分析并生成
+codex exec "Analyze this project and create a context.md file. Include:
+1) Project overview (from README or config files)
+2) Tech stack with versions (from package.json/Cargo.toml)
+3) Key directories with descriptions
+4) Common commands (from package.json scripts)
+5) Code conventions (from lint/format configs)
+6) Architecture overview
+
+Write the result to {项目路径}/.cunzhi-memory/context.md in Chinese."
+
+# 3. 验证生成结果
+cat {项目路径}/.cunzhi-memory/context.md
+```
+
+**优点**：
+- 自动分析，无需手动编写
+- 结果更准确（Codex 会读取实际配置文件）
+- 速度更快
+
+---
+
+## 备选方式：AI 手动分析
+
+如果 codex exec 不可用，AI 可以手动执行以下步骤：
 
 1. **分析项目结构**
    - 读取 `package.json`、`Cargo.toml`、`pyproject.toml` 等配置文件
