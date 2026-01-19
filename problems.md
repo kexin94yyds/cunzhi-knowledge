@@ -87,103 +87,6 @@
 - 状态：verified
 - 日期：2025-12-30
 
-## P-2025-001 磁盘空间不足导致最新数据丢失
-
-- 项目：RI (Replace-Information)
-- 仓库：/Users/apple/信息置换起/RI
-- 发生版本：2.1.1
-- 现象：用户退出应用后再次打开，发现最新数据全部丢失。
-- 根因：系统磁盘空间完全耗尽（ENOSPC），导致 ElectronStore 在保存 `config.json` 时写入失败，且 IndexedDB 事务无法提交。
-- 修复：
-  1. 实现自动备份机制：应用启动时及运行期间每 30 分钟备份一次 `config.json` 和 `IndexedDB` 目录。
-  2. 限制备份数量：保留最近 10 次备份以平衡安全与空间占用。
-  3. 暴露备份 API：允许通过 `window.electronAPI.backup` 进行手动备份、查看列表及恢复。
-- 回归检查：R-2025-001
-- 状态：verified
-- 日期：2025-12-31
-
-## P-2025-005 全局快捷键开关失效及系统快捷键冲突
-
-- 项目：iterate (CunZhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v1.2.0
-- 现象：
-  1. 点击快捷键开关图标，状态虽变但快捷键在窗口聚焦时仍生效。
-  2. `Tab`/`Shift+Tab` 拦截了系统级组合键（如 `Cmd+Tab`），导致无法切换应用。
-  3. 修改代码后由于缺失 `@tauri-apps/api/event` 中的 `listen` 导入，导致前端无法接收状态变更。
-- 根因：
-  1. 仅注销了全局插件快捷键，未禁用前端 `document` 级别的本地监听器。
-  2. 键盘事件处理器缺乏对修饰键（Cmd/Alt/Ctrl）的排除逻辑。
-  3. `AppContent.vue` 中未导入 `listen` 函数，导致异步状态同步失败。
-- 修复：
-  1. 在 `AppContent.vue` 的 `handleGlobalKeydown` 中增加 `globalShortcutEnabled` 校验。
-  2. 优化 `Tab`/`Shift+Tab` 拦截逻辑，明确排除带修饰键的情况。
-  3. 补齐 `listen` 导入，确保 `global-shortcut-state-changed` 事件能被正确处理。
-  4. 移除 `PopupHeader.vue` 中冗余的“已禁”文本，优化 UI。
-- 回归检查：R-2025-005
-- 状态：verified
-- 日期：2025-12-30
-
----
-
-## P-2025-004 全局快捷键无法临时禁用
-
-- 项目：iterate (CunZhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v1.2.0
-- 现象：用户希望在某些场景下临时关闭全局快捷键（如 `Shift+Tab`），避免冲突，但目前只能通过系统设置或修改配置文件实现，操作不便。
-- 根因：缺乏快捷键状态的运行时管理机制和 UI 快速切换入口。
-- 修复：
-  1. 后端：在 `ShortcutConfig` 和 `AppState` 中增加 `global_enabled` 状态。
-  2. 逻辑：重构前端快捷键注册逻辑，支持动态监听状态变化并执行 `register/unregister`。
-  3. UI：在弹窗头部（`PopupHeader`）增加闪电图标按钮，支持一键切换。
-- 回归检查：R-2025-004
-- 状态：fixed
-- 日期：2025-12-29
-
----
-
-## P-2025-003 上下文追加项无法按需禁用
-
-- 项目：iterate (CunZhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v1.2.0
-- 现象：弹窗中的“上下文追加”项（如“是否生成总结性Markdown文档”）总是会追加内容到输入框，用户无法在弹窗中临时选择不追加某一项。
-- 根因：数据结构 `CustomPrompt` 缺少启用状态标志（`is_active`），且前端 UI 只提供了模板状态切换（Switch），没有提供项级别的开启/关闭控制。
-- 修复：
-  1. 后端：在 `CustomPrompt` 结构体中添加 `is_active` 字段，并新增 `update_conditional_prompt_active` 命令。
-  2. 前端：在弹窗 UI 的上下文追加区域，为每项添加 Checkbox 勾选框；只有 `is_active` 为 true 的项才会参与内容追加。
-  3. 设置：在自定义 Prompt 设置页面增加“是否启用”开关。
-- 回归检查：R-2025-003
-- 状态：fixed
-- 日期：2025-12-29
-
----
-## P-2026-002: Web 导入 JSON 后标题无法更新（刷新后回到旧值）
-
-- 项目：Monoshot
-- 仓库：/Users/apple/monoshot
-- 发生版本：N/A
-- 现象：Web 端导入 iOS 导出的 JSON 后，页面上短暂显示新标题；但 Cmd+R 刷新后标题回到旧值/空值，且右上角出现 Synced...（刷新触发云端数据合并）。
-- 根因：待确认。疑点包括：云端文档 `$id` 与本地 `screenshot.id` 不一致（iOS 端可能用 `ID.unique()`，业务 id 存在 doc 的 `id/screenshotId` 字段），导致 `updateDocument` 404 且刷新时 `fetchFromCloud` 用 `$id` 合并覆盖；或云端字段名并非 `title` 导致读取为空；或 Appwrite 权限/规则导致更新失败，云端仍是旧值/空值。
-- 修复：未完成。计划：统一云端与业务 id 映射（优先让 `fetchFromCloud` 使用业务 id 字段或 iOS 写入时使用业务 id 作为 documentId），核对 Appwrite attributes 与字段名，确保 update 返回 200，并在 merge 时避免空值覆盖本地。
-- 回归检查：R-2026-002
-- 状态：open
-- 日期：2026-01-08
-- 排查：在 `fetchFromCloud` 打印 `doc.$id`/`doc.title`/`Object.keys(doc)`；比对单条截图的本地 id 与云端 id/title；在 Appwrite Console 查看 collection attributes、document `$id` 与 title 字段真实值。
-
-## P-2026-021 Web 导入后新分类 Tab 刷新丢失（仅本地模式）
-
-- 项目：Monoshot
-- 仓库：/Users/apple/monoshot
-- 发生版本：N/A
-- 现象：Web 端导入 JSON 后，顶部分类筛选按钮（Tabs）会出现新的分类（例如 coding/creating 等）；但页面刷新（Cmd+R）后，这些新分类按钮消失。截图条目数量不变、图片仍在。
-- 根因：`ENABLE_CLOUD_SYNC = false` 的本地模式下，`loadScreenshots()` 只执行了 `setScreenshots(localData)`，没有基于 `localData` 调用 `updateCategoriesFromData()` 重建 `categories` state。导致分类 Tabs 只存在于内存中，刷新后回到 `DEFAULT_CATEGORIES`。
-- 修复：在 `monoshot-vault/App.tsx` 的 `loadScreenshots()` 本地分支补上 `updateCategoriesFromData(localData)`，使分类 Tabs 在刷新后能从 IndexedDB 数据恢复。
-- 回归检查：R-2026-021
-- 状态：verified
-- 日期：2026-01-12
-
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)
@@ -7289,6 +7192,7 @@ fixed（待验证）
 ---
 
 ## P-2026-044 .cunzhi-knowledge submodule commit 与 superproject 不一致
+
 - **项目**：iterate
 - **仓库**：https://github.com/kexin94yyds/iterate
 - **发生版本**：当前版本
@@ -7301,20 +7205,52 @@ fixed（待验证）
 - **状态**：fixed
 - **日期**：2026-01-19
 
-### 修复
-1. 修正变量名：`currentState?.request?.project_path` → `currentRequest?.project_path`
-2. 改用相对路径：`/files?project_path=...`
+---
 
-### 回归检查
-R-2026-013
+## P-2026-045 Windsurf 插件未更新导致 .windsurfrules 仍使用旧格式
 
-### 关联 commit
-c053fc3
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：0.1.4
+- **现象**：VSCode 插件代码已更新为使用 `iterate --bridge`，但 Windsurf 生成的 `.windsurfrules` 仍然使用 `python3 cunzhi.py`
+- **根因**：
+  1. Windsurf 使用独立的插件目录 `~/.windsurf/extensions/`
+  2. 插件打包安装只更新了 `~/.vscode/extensions/`，未更新 Windsurf 目录
+  3. Windsurf 的插件版本是 1月17日安装的旧版本
+- **修复**：
+  1. 手动复制编译后的代码到 Windsurf 插件目录：
+     ```bash
+     cp -r /Users/apple/cunzhi/vscode-extension/out ~/.windsurf/extensions/kexin.iterate-0.1.4/
+     ```
+  2. 重启 Windsurf 加载新代码
+- **回归检查**：R-2026-045
+- **状态**：verified
+- **日期**：2026-01-19
+- **经验**：
+  - Windsurf 和 VSCode 使用不同的插件目录
+  - 更新插件时需要同时更新两个目录
+  - 或者使用 `windsurf --install-extension` 命令安装
 
 ---
 
-## P-2026-022 macOS watchdog timeout (watchdogd 93s no checkins) 与 USB 网络/外设驱动可疑
-- 现象: 机器卡死后重启，panic 为 watchdog timeout。
-- 线索: backtrace 含 AppleARMWatchdogTimer/AppleInterruptControllerV3；panicked task 为 kernel_task；last started kext 为 com.apple.driver.usb.cdc.ncm（USB 网络/手机共享/扩展坞）。Sleep/Wake 时间戳存在。
-- 判断: 更像系统级卡死/外设驱动阻塞，而非单纯应用内存不足。
-- 建议: 断开外设/手机共享复现对比；更换端口/线材/直连避免 hub；升级系统；若持续复现运行 Apple Diagnostics。
+## P-2026-046 iterate --bridge 读取 output.md 时遇到空文件
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：b916ad0
+- **现象**：AI 使用 Windsurf `write_to_file` 写入 `~/.cunzhi/{PORT}/output.md` 后立即调用 `iterate --bridge`，GUI 显示默认消息"任务完成，请确认是否继续？"而非写入的内容
+- **根因**：
+  1. Windsurf 的 `write_to_file` 工具可能异步执行
+  2. `iterate --bridge` 直接读取文件，无重试机制
+  3. 文件写入未完成时读取到空内容
+- **修复**：
+  1. 在 `cli.rs` 中添加 `read_output_with_retry` 函数
+  2. 最多重试 3 次，每次间隔 200ms
+  3. 更新 rules `00-global.md`，明确规定必须用 `cat heredoc` 写入（作为备选方案）
+- **回归检查**：R-2026-046
+- **状态**：fixed
+- **日期**：2026-01-19
+- **经验**：
+  - IDE 工具（如 `write_to_file`）可能异步执行，与 `run_command` 存在竞态条件
+  - 读取外部写入的文件时应增加重试机制
+  - 规则层面也应明确推荐使用同步写入方式（`cat heredoc`）

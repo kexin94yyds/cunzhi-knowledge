@@ -29,7 +29,7 @@
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
 - **ralph-loop 例外**：若用户明确选择“整单完成后汇报”，允许按该节奏汇报，但必须在启动前通过 `zhi` 确认
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
-- **iterate Skill 自动恢复**：当调用 `cunzhi.py` 脚本返回 `Port not available` 时，必须自动执行 `iterate --serve --port {PORT}` 启动服务器，等待 2-3 秒后重试，而不是让用户手动启动
+- **iterate Skill 自动恢复**：当调用 `iterate --bridge` 返回 `Port not available` 时，必须自动执行 `iterate --serve --port {PORT}` 启动服务器，等待 2-3 秒后重试
 </core_principles>
 
 <shortcuts>
@@ -131,12 +131,12 @@ open → fixed → verified → audited（必经）
 - ❌ 禁止仅输出文字 "zhi"，必须真正调用命令
 - ⚠️ **调用方式**：使用 `run_command` 工具执行：
   ```bash
-  python3 "/Users/apple/cunzhi/bin/cunzhi.py" {PORT}
+  iterate --bridge --port {PORT} --workspace "/项目路径"
   ```
 - **文件交互模式**（Infinite WF 风格）：
   1. AI 将任务摘要写入 `~/.cunzhi/{PORT}/output.md`
-  2. AI 调用脚本: `python3 cunzhi.py {PORT}`
-  3. 脚本弹出 iterate GUI 显示内容
+  2. AI 调用: `iterate --bridge --port {PORT}`
+  3. iterate 弹出 GUI 显示内容
   4. 用户输入后，结果写入 `~/.cunzhi/{PORT}/input.md`
   5. AI 读取 `input.md` 获取用户指令
 - **返回格式**：

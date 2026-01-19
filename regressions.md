@@ -26,6 +26,8 @@
 | R-2026-023 | P-2026-023 | iterate Checkpoint 创建后应留存（不应 pop 掉） | 手工检查 |
 | R-2026-027 | P-2026-027 | cunzhi.py 无限等待不超时 | 手工检查 |
 | R-2026-036 | P-2026-036 | iterate 弹窗白屏修复验证 | 手工检查 |
+| R-2026-045 | P-2026-045 | Windsurf 插件更新验证 | 手工检查 |
+| R-2026-046 | P-2026-046 | iterate --bridge output.md 读取重试机制验证 | 手工检查 |
 
 ---
 
@@ -5357,3 +5359,46 @@ P-2026-002
   - `strings` 命令能找到 `index.html` 字符串
 - **关联 P-ID**：P-2026-036
 - **日期**：2026-01-17
+
+---
+
+## R-2026-045 Windsurf 插件更新验证
+
+- **类型**：手工检查
+- **描述**：验证 Windsurf 插件更新后，`.windsurfrules` 正确使用 `iterate --bridge` 格式。
+- **检查步骤**：
+  1. 更新 Windsurf 插件代码：
+     ```bash
+     cp -r /Users/apple/cunzhi/vscode-extension/out ~/.windsurf/extensions/kexin.iterate-0.1.4/
+     ```
+  2. 重启 Windsurf
+  3. 打开任意项目，等待插件启动服务
+  4. 检查 `.windsurfrules` 内容：`cat .windsurfrules | head -15`
+- **预期结果**：
+  - `.windsurfrules` 包含 `iterate --bridge --port {PORT}` 而不是 `python3 cunzhi.py`
+  - 规则文件标题为"如何调用 iterate"而不是"如何调用 cunzhi 脚本"
+- **关联 P-ID**：P-2026-045
+- **日期**：2026-01-19
+
+---
+
+## R-2026-046 iterate --bridge output.md 读取重试机制验证
+
+- **类型**：手工检查
+- **描述**：验证 `iterate --bridge` 在读取 output.md 时，如果文件为空会重试，确保能正确读取 AI 写入的内容。
+- **检查步骤**：
+  1. 确保 iterate 服务运行中：`iterate --serve --port 5310`
+  2. 使用 Windsurf `write_to_file` 写入 output.md（或手动模拟）：
+     ```bash
+     echo "## 测试内容" > ~/.cunzhi/5310/output.md
+     ```
+  3. 立即调用 bridge：
+     ```bash
+     iterate --bridge --port 5310 --workspace "/Users/apple/cunzhi"
+     ```
+  4. 观察 iterate GUI 弹窗
+- **预期结果**：
+  - GUI 显示 "## 测试内容"，而不是默认消息 "任务完成，请确认是否继续？"
+  - 即使存在轻微延迟，重试机制也能正确读取内容
+- **关联 P-ID**：P-2026-046
+- **日期**：2026-01-19
