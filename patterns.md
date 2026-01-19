@@ -1980,3 +1980,86 @@ fetch('/files?project_path=...')
   - 任何需要窗口独立配置的应用
 - **关联 P-ID**：P-2026-031
 - **日期**：2026-01-16
+
+---
+
+## PAT-2026-032: codex exec 自动生成项目上下文
+
+- **场景**：新项目首次打开时，需要生成 `.cunzhi-memory/context.md` 描述项目概况。
+- **问题特征**：
+  1. AI 手动分析耗时且可能遗漏
+  2. 需要读取多个配置文件（package.json、Cargo.toml 等）
+- **模式描述**：
+  1. **codex exec 生成基础框架**：自动分析项目结构、技术栈、常用命令
+  2. **AI 润色补充**：添加项目特色描述、精确版本号、当前进度
+  3. **自动生效**：下次对话自动加载 context.md 到上下文
+- **代码示例**：
+  ```bash
+  codex exec "Analyze this project and create a context.md file. Include:
+  1) Project overview
+  2) Tech stack with versions
+  3) Key directories
+  4) Common commands
+  Write the result to {项目路径}/.cunzhi-memory/context.md in Chinese."
+  ```
+- **优点**：
+  - 快速生成基础框架
+  - Codex 会读取实际配置文件，结果更准确
+- **关联 Skill**：init-project
+- **日期**：2026-01-19
+
+---
+
+## PAT-2026-033: Codex 审查前读取项目上下文
+
+- **场景**：使用 Codex 审查代码时，需要了解项目的设计决策，避免误报。
+- **问题特征**：
+  1. Codex 不了解项目背景，可能将故意设计报告为问题
+  2. 例如：故意保留 stash、故意阻塞端口等
+- **模式描述**：
+  1. **审查前读取 context.md**：了解项目概述和技术栈
+  2. **审查前读取 patterns.md**：了解已知的设计决策
+  3. **注入上下文**：将上下文作为审查提示词的一部分
+- **代码示例**：
+  ```bash
+  codex exec "
+  ## 项目概述
+  $(cat .cunzhi-memory/context.md)
+  
+  ## 设计决策
+  $(cat .cunzhi-knowledge/patterns.md | head -200)
+  
+  ## 审查任务
+  审查最近提交...
+  "
+  ```
+- **效果**：避免误报已知的设计决策
+- **关联 Skill**：audit-with-codex
+- **日期**：2026-01-19
+
+---
+
+## PAT-2026-034: 同窗口 codex exec 并发替代多窗口子代理
+
+- **场景**：需要并发执行多个子任务时，选择执行方式。
+- **问题特征**：
+  1. 多窗口子代理需要用户手动领取任务
+  2. 协调复杂，容易出错
+- **模式描述**：
+  1. **使用 codex exec 并发**：同一窗口内并发调用
+  2. **输出到文件**：`codex exec -o /tmp/task1.md "..." &`
+  3. **等待完成**：`wait`
+  4. **收集结果**：读取输出文件
+- **代码示例**：
+  ```bash
+  codex exec -o /tmp/review1.md "Review file1.py" &
+  codex exec -o /tmp/review2.md "Review file2.py" &
+  wait
+  cat /tmp/review1.md /tmp/review2.md
+  ```
+- **优点**：
+  - 无需其他聊天窗口
+  - 无需用户手动领取
+  - AI 主导，自动收集结果
+- **关联 Skill**：multi-agent-dispatch
+- **日期**：2026-01-19
