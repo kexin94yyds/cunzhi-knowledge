@@ -1,6 +1,6 @@
 ---
 name: ralph-loop
-description: Ralph Wiggum 自主循环模式。AI 持续执行任务直到全部完成，期间不打扰用户。触发词：ralph、自主循环、autonomous、直到完成、循环执行。
+description: Ralph Wiggum 自主循环模式。AI 持续执行任务直到全部完成，按用户确认的节奏汇报（默认整单完成后）。触发词：ralph、ralph-loop、/ralph-loop、自主循环、autonomous、直到完成、循环执行。
 ---
 
 # /ralph-loop
@@ -59,8 +59,15 @@ description: Ralph Wiggum 自主循环模式。AI 持续执行任务直到全部
 - 所有任务 `passes: true`
 - 达到最大迭代次数（默认 10）
 - 遇到无法自动解决的问题
+- 用户选择暂停或终止
 
 ## 使用方法
+
+### 汇报节奏（必须确认）
+
+启动前通过 zhi 询问用户选择：
+- 整单完成后汇报（默认）
+- 每个子任务完成后汇报
 
 ### 触发方式
 
@@ -118,6 +125,7 @@ pai ralph: 重构支付模块
 
 ```python
 def ralph_loop(tasks, max_iterations=10):
+    report_mode = call_zhi("请选择 Ralph-loop 汇报节奏：整单完成 / 每个子任务")
     iteration = 0
     
     while iteration < max_iterations:
@@ -141,8 +149,12 @@ def ralph_loop(tasks, max_iterations=10):
         # 4. 保存进度
         save_tasks(tasks)
         git_commit(f"ralph: {task['id']}")
+        
+        # 5. 按节奏汇报
+        if report_mode == "每个子任务" and not call_zhi(f"{task['id']} 已完成，是否继续下一任务？"):
+            break
     
-    # 5. 完成后通知用户
+    # 6. 完成后通知用户
     call_zhi("Ralph 循环完成，请审查结果")
 ```
 
@@ -152,8 +164,8 @@ def ralph_loop(tasks, max_iterations=10):
 
 | 普通模式 | Ralph 模式 |
 |----------|-----------|
-| 每步调用 zhi | 全部完成后才调用 zhi |
-| 用户逐步审查 | 用户最终审查 |
+| 每步调用 zhi | 按用户选择（默认整单完成后） |
+| 用户逐步审查 | 用户阶段性或最终审查 |
 | 适合探索性任务 | 适合明确的任务清单 |
 
 ### 何时使用 Ralph 模式
@@ -170,6 +182,7 @@ def ralph_loop(tasks, max_iterations=10):
 2. **Git 提交**：每个任务完成后提交，便于回滚
 3. **进度记录**：`progress.txt` 记录所有操作
 4. **失败中断**：连续 3 次失败自动停止并通知用户
+5. **节奏确认**：启动前通过 zhi 明确汇报节奏
 
 ## 示例
 
@@ -185,9 +198,10 @@ ralph: 修复以下问题
 
 AI 执行：
 1. 创建 `ralph-tasks.json`
-2. 循环执行每个修复
-3. 每个修复后运行测试
-4. 全部通过后调用 zhi 通知
+2. 通过 zhi 确认汇报节奏（默认整单完成后）
+3. 循环执行每个修复
+4. 每个修复后运行测试
+5. 按选择的节奏汇报结果
 
 ### 示例 2：功能开发
 
@@ -202,9 +216,10 @@ pai ralph: 实现暗黑模式
 
 AI 执行：
 1. 拆分为 4 个子任务
-2. 按顺序实现每个
-3. 每步运行 `bun test`
-4. 全部完成后通知
+2. 通过 zhi 确认汇报节奏（默认整单完成后）
+3. 按顺序实现每个
+4. 每步运行 `bun test`
+5. 按选择的节奏汇报结果
 
 ## 参考
 
