@@ -98,10 +98,21 @@
    - 记录可复用的解决模式
    - 关联到对应的 P-ID
 
+6. **询问 Codex 审查**（可选）
+   - 三件套完成后，AI 必须主动询问：「是否需要调用 Codex Skill 进行审查？」
+   - 用户选择"是" → 调用 `audit-with-codex` Skill，状态变为 `audited`
+   - 用户选择"否" → 保持 `verified` 状态
+
+**状态流转**：
+```
+open → fixed → verified → audited（可选）
+```
+
 **约束**：
 - 未完成三件套前，禁止视为"问题已解决"
 - 禁止跳过 `fixed` 直接到 `verified`
 - 三者 ID 后缀必须关联
+- Codex 审查是可选步骤，不打断原有流程
 </workflows>
 
 <tools>
