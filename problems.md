@@ -7173,3 +7173,33 @@ fixed（待验证）
 - **回归检查**：R-2026-034
 - **状态**：open
 - **日期**：2026-01-19
+
+---
+
+## P-2026-043 Git worktree 被误识别为 submodule
+
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：`git submodule status` 报错 `fatal: no submodule mapping found in .gitmodules for path 'ios-bridge-dev'`
+- **根因**：`ios-bridge-dev` 是一个 git worktree（`.git` 文件指向 `.git/worktrees/ios-bridge-dev`），但被 Git index 误认为 submodule
+- **修复**：`git rm --cached ios-bridge-dev` 从 index 中移除
+- **回归检查**：R-2026-043
+- **状态**：fixed
+- **日期**：2026-01-19
+
+---
+
+## P-2026-044 .cunzhi-knowledge submodule commit 与 superproject 不一致
+
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：`git submodule status` 显示 `.cunzhi-knowledge` 前有 `+` 号，表示 checkout 的 commit 与 superproject 记录不一致
+- **根因**：submodule 有 6 个未推送的 commits，superproject 未更新引用
+- **修复**：
+  1. 推送 submodule：`cd .cunzhi-knowledge && git push origin main`
+  2. 更新 superproject 引用：`git add .cunzhi-knowledge`
+- **回归检查**：R-2026-044
+- **状态**：fixed
+- **日期**：2026-01-19
