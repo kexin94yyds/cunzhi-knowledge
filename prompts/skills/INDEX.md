@@ -17,14 +17,14 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [commit-push-pr](commit-push-pr/SKILL.md) | 提交、推送、PR、commit | Git 提交流程 |
 | [fix-lint](fix-lint/SKILL.md) | lint、格式化、eslint | 代码格式修复 |
 | [implement](implement/SKILL.md) | 实现、开发、implement | 功能实现流程 |
-| [review](review/SKILL.md) | 审查、review、代码审查 | 代码审查流程 |
+| [review](review/SKILL.md) | review、代码审查、PR审查 | 代码审查流程 |
+| [audit-with-codex](audit-with-codex/SKILL.md) | 审查、audit、codex、审计 | Codex 自动审查 |
 | [run-tests](run-tests/SKILL.md) | 测试、test、运行测试 | 测试执行流程 |
 | [settle](settle/SKILL.md) | 沉淀、三件套、settle | 问题沉淀流程 |
 | [sync-knowledge](sync-knowledge/SKILL.md) | 同步、sync、知识库 | 知识库同步 |
 | [validate](validate/SKILL.md) | 验证、校验、validate | 验证检查流程 |
 | [patch](patch/SKILL.md) | patch、补丁 | 补丁应用流程 |
 | [prime](prime/SKILL.md) | prime、准备 | 项目准备流程 |
-| [audit-with-codex](audit-with-codex/SKILL.md) | audit、codex、审计 | Codex 审计流程 |
 | [hooks](hooks/SKILL.md) | hooks、钩子、PreRun、PostRun | iterate Hooks 机制设计 |
 | [docx](docx/SKILL.md) | Word、文档、.docx | 文档创建、编辑、批注 |
 | [pdf](pdf/SKILL.md) | PDF、表单、合并、拆分 | PDF 处理工具包 |
