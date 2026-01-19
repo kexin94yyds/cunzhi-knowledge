@@ -7204,3 +7204,53 @@ fixed（待验证）
 - **回归检查**：R-2026-044
 - **状态**：fixed
 - **日期**：2026-01-19
+
+---
+
+## P-2026-045 Windsurf 插件未更新导致 .windsurfrules 仍使用旧格式
+
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：0.1.4
+- **现象**：VSCode 插件代码已更新为使用 `iterate --bridge`，但 Windsurf 生成的 `.windsurfrules` 仍然使用 `python3 cunzhi.py`
+- **根因**：
+  1. Windsurf 使用独立的插件目录 `~/.windsurf/extensions/`
+  2. 插件打包安装只更新了 `~/.vscode/extensions/`，未更新 Windsurf 目录
+  3. Windsurf 的插件版本是 1月17日安装的旧版本
+- **修复**：
+  1. 手动复制编译后的代码到 Windsurf 插件目录：
+     ```bash
+     cp -r /Users/apple/cunzhi/vscode-extension/out ~/.windsurf/extensions/kexin.iterate-0.1.4/
+     ```
+  2. 重启 Windsurf 加载新代码
+- **回归检查**：R-2026-045
+- **状态**：verified
+- **日期**：2026-01-19
+- **经验**：
+  - Windsurf 和 VSCode 使用不同的插件目录
+  - 更新插件时需要同时更新两个目录
+  - 或者使用 `windsurf --install-extension` 命令安装
+
+---
+
+## P-2026-046 iterate --bridge 读取 output.md 时遇到空文件
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：b916ad0
+- **现象**：AI 使用 Windsurf `write_to_file` 写入 `~/.cunzhi/{PORT}/output.md` 后立即调用 `iterate --bridge`，GUI 显示默认消息"任务完成，请确认是否继续？"而非写入的内容
+- **根因**：
+  1. Windsurf 的 `write_to_file` 工具可能异步执行
+  2. `iterate --bridge` 直接读取文件，无重试机制
+  3. 文件写入未完成时读取到空内容
+- **修复**：
+  1. 在 `cli.rs` 中添加 `read_output_with_retry` 函数
+  2. 最多重试 3 次，每次间隔 200ms
+  3. 更新 rules `00-global.md`，明确规定必须用 `cat heredoc` 写入（作为备选方案）
+- **回归检查**：R-2026-046
+- **状态**：fixed
+- **日期**：2026-01-19
+- **经验**：
+  - IDE 工具（如 `write_to_file`）可能异步执行，与 `run_command` 存在竞态条件
+  - 读取外部写入的文件时应增加重试机制
+  - 规则层面也应明确推荐使用同步写入方式（`cat heredoc`）

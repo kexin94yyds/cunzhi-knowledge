@@ -43,7 +43,7 @@ trigger: always_on
 
 **这是强制规则，AI 必须严格遵守，不得跳过或忽略！**
 
-当调用 `cunzhi.py` 脚本返回 `Error: Port {PORT} is not available` 时：
+当调用 `iterate --bridge` 返回 `Error: Port {PORT} is not available` 时：
 
 1. **立即自动启动服务器**（非阻塞）：
    ```bash
