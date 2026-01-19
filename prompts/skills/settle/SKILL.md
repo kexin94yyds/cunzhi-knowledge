@@ -47,6 +47,20 @@ problems.md → regressions.md → patterns.md
 
 **P-ID 与 R-ID 必须一一对应**
 
+## 三件套完成后询问 Codex 审查
+
+**三件套全部完成后，AI 必须主动询问**：
+
+```
+✓ 三件套沉淀完成，已同步到 GitHub
+
+是否需要调用 Codex Skill 进行审查？
+- 是：启动 Codex 后台审查
+- 否：跳过审查，保持 verified 状态
+```
+
+用户选择"是"后，调用 `audit-with-codex` Skill 执行审查。
+
 ## 示例输出
 
 ```
@@ -60,4 +74,8 @@ problems.md → regressions.md → patterns.md
 🚀 已自动推送到 GitHub
 
 ✓ 三件套沉淀完成，已同步到 GitHub
+
+是否需要调用 Codex Skill 进行审查？
+- 是：启动 Codex 后台审查
+- 否：跳过审查
 ```
