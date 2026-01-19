@@ -156,14 +156,33 @@ python3 /Users/apple/cunzhi/bin/cunzhi.py {空闲端口} --workspace {项目路�
 
 ### 审查任务模板
 
-```
+**⚠️ 重要：审查前必须读取 patterns.md 作为上下文**
+
+```bash
+# 1. 先读取项目的 patterns.md 了解设计决策
+cat {项目路径}/.cunzhi-knowledge/patterns.md
+
+# 2. 然后执行审查，将 patterns 作为上下文
+codex exec "
+## 上下文
+以下是项目的设计模式和已知决策，审查时需要参考：
+$(cat {项目路径}/.cunzhi-knowledge/patterns.md | head -200)
+
+## 审查任务
 审查 {项目路径} 的最近提交，检查：
 1. 逻辑漏洞：边界 case、并发风险、空值处理
 2. 规范符合度：代码风格、命名规范
 3. 三件套准确性：problems/patterns/regressions 记录是否完整
 
+**注意**：如果某个行为在 patterns.md 中有记录（如故意保留 stash、故意阻塞等），则不应报告为问题。
+
 输出 JSON 格式结果，包含 success、review_summary、issues 字段。
+"
 ```
+
+**关键点**：
+- **必须先读取 patterns.md**，避免误报已知的设计决策
+- 如果某行为在 patterns 中有记录，则不是问题
 
 **审查完成后**：
 1. 审查通过 → 状态变为 `audited`，通过 iterate 弹窗通知用户
