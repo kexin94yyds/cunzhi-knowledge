@@ -1,6 +1,6 @@
 ---
 name: multi-agent-dispatch
-description: 多子代理并发任务分配。AI 拆分复杂任务，并发调用 codex exec，收集结果并审查。触发词：dispatch、分配、并发、多子代理。
+description: 多子代理并发任务分配。AI 拆分复杂任务，并发调用 codex exec，收集结果并审查。触发词：pai、派发、dispatch、分配、并发、多子代理。
 ---
 
 # 多子代理并发任务分配

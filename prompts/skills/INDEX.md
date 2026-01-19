@@ -8,7 +8,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 |-------|--------|------|
 | [iterate](iterate/SKILL.md) | iterate、cunzhi、寸止、端口不可用、服务器未启动 | 脚本交互与故障恢复 |
 | [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
-| [batch-task](batch-task/SKILL.md) | pai、派发、子代理、批量任务 | 子代理任务分配 |
+| [multi-agent-dispatch](multi-agent-dispatch/SKILL.md) | pai、派发、dispatch、分配、并发、多子代理 | 同窗口 codex exec 并发 |
 | [workflow-orchestrator](workflow-orchestrator/SKILL.md) | 编排、orchestrate、工作流、自动化、多线程 | 多 Agent 工作流编排 |
 | [ralph-loop](ralph-loop/SKILL.md) | ralph、自主循环、autonomous、直到完成、循环执行 | Ralph Wiggum 自主循环模式 |
 | [plan](plan/SKILL.md) | 计划、规划、plan | 任务实施计划 |
