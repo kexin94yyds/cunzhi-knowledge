@@ -1,6 +1,6 @@
 ---
 name: audit-with-codex
-description: Codex 后台审查流程。触发词：audit、codex、审计、审查。支持后台批量审查模式，审查完成后汇总所有问题。
+description: Codex 后台审查流程。触发词：cha、审查、audit、codex、审计。支持后台批量审查模式，审查完成后汇总所有问题。
 ---
 
 # Codex 审计 Skill
