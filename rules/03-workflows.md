@@ -3,7 +3,7 @@
 ## Bug 修复流程（IMPORTANT）
 
 ### 修复完成的必要条件
-Bug 标记为"已修复"前，**必须同时满足**：
+Bug 标记为 `verified` 前，**必须同时满足**：
 1. 创建回归检查，覆盖原始失败场景
 2. 回归检查在当前版本实际通过
 3. 问题原因、修复方式沉淀到 `.cunzhi-knowledge/problems.md`
@@ -23,7 +23,7 @@ Bug 标记为"已修复"前，**必须同时满足**：
 ### 状态枚举
 - **open** → **fixed** → **verified** → **audited**（可选）
 - **open**：问题已记录，待修复
-- **fixed**：代码已修复，且三件套已沉淀（顺序：`problems` → `regressions` → `patterns`）
+- **fixed**：代码已修复，待验证
 - **verified**：回归检查已通过，三件套完成
 - **audited**：Codex 审查通过（可选的最终状态）
 - 禁止跳过 `fixed` 直接到 `verified`

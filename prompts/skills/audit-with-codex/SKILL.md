@@ -109,7 +109,7 @@ Codex 自主执行以下检查：
 
 ### 三件套完成后询问
 
-当完成"三件套"（problems → patterns → regressions）后，**AI 应主动询问**：
+当完成"三件套"（problems → regressions → patterns）后，**AI 应主动询问**：
 
 ```
 三件套已完成，是否需要调用 Codex Skill 进行审查？
