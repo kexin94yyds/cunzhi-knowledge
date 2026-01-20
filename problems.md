@@ -7289,7 +7289,6 @@ fixed（待验证）
 ---
 
 ## P-2026-044 .cunzhi-knowledge submodule commit 与 superproject 不一致
-
 - **项目**：iterate
 - **仓库**：https://github.com/kexin94yyds/iterate
 - **发生版本**：当前版本
@@ -7301,3 +7300,21 @@ fixed（待验证）
 - **回归检查**：R-2026-044
 - **状态**：fixed
 - **日期**：2026-01-19
+
+### 修复
+1. 修正变量名：`currentState?.request?.project_path` → `currentRequest?.project_path`
+2. 改用相对路径：`/files?project_path=...`
+
+### 回归检查
+R-2026-013
+
+### 关联 commit
+c053fc3
+
+---
+
+## P-2026-022 macOS watchdog timeout (watchdogd 93s no checkins) 与 USB 网络/外设驱动可疑
+- 现象: 机器卡死后重启，panic 为 watchdog timeout。
+- 线索: backtrace 含 AppleARMWatchdogTimer/AppleInterruptControllerV3；panicked task 为 kernel_task；last started kext 为 com.apple.driver.usb.cdc.ncm（USB 网络/手机共享/扩展坞）。Sleep/Wake 时间戳存在。
+- 判断: 更像系统级卡死/外设驱动阻塞，而非单纯应用内存不足。
+- 建议: 断开外设/手机共享复现对比；更换端口/线材/直连避免 hub；升级系统；若持续复现运行 Apple Diagnostics。
