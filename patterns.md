@@ -55,6 +55,7 @@
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
 | PAT-2026-024 | 派生 UI 状态需从权威数据重建（避免刷新丢失） | 派生状态仅展示 + 加载链路重建 |
 | PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
+| PAT-2026-047 | Vue3 + markdown-it + Mermaid 集成 | highlight 拦截 + 异步渲染 + 主题适配 |
 
 ---
 
@@ -2171,3 +2172,37 @@ fetch('/files?project_path=...')
   - 总等待时间不宜过长（< 1 秒）
 - **关联 P-ID**：P-2026-046
 - **日期**：2026-01-19
+
+---
+
+## PAT-2026-047: Vue3 + markdown-it + Mermaid 图表集成模式
+
+- **场景**：在 Vue3 + Tauri 应用中，需要在 Markdown 内容中渲染 Mermaid 图表。
+- **技术栈**：Vue3 + markdown-it + mermaid + highlight.js
+- **模式描述**：
+  1. **markdown-it highlight 函数拦截**：在 `highlight` 回调中检测 `lang === 'mermaid'`，返回特殊容器：
+     ```typescript
+     if (lang === 'mermaid') {
+       const id = `mermaid-${Date.now()}-${counter++}`
+       return `<div class="mermaid-container"><pre class="mermaid" id="${id}">${str}</pre></div>`
+     }
+     ```
+  2. **异步渲染**：在 `onMounted`、`onUpdated` 和 `watch` 中调用 `mermaid.run()`：
+     ```typescript
+     async function renderMermaidDiagrams() {
+       await nextTick()
+       const elements = document.querySelectorAll('.mermaid:not([data-processed])')
+       if (elements.length > 0) {
+         mermaid.initialize({ startOnLoad: false, theme: currentTheme === 'light' ? 'default' : 'dark' })
+         await mermaid.run({ nodes: elements })
+       }
+     }
+     ```
+  3. **主题适配**：根据当前主题动态设置 `mermaid.initialize({ theme: ... })`
+  4. **容器样式**：添加 `.mermaid-container` 样式处理边框、背景和居中
+- **关键依赖**：`pnpm add mermaid`
+- **注意事项**：
+  - `startOnLoad: false` 避免自动渲染冲突
+  - 使用 `:not([data-processed])` 选择器避免重复渲染
+  - mermaid 会自动添加 `data-processed` 属性
+- **日期**：2026-01-21

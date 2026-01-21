@@ -10,6 +10,36 @@ trigger: always_on
 - **FORBIDDEN**: Do NOT output the literal string "zhi" without calling the tool
 - The tool call is mandatory - outputting text alone has no effect
 
+## zhi 调用优化（⚠️ 重要）
+
+**使用 `iterate --bridge` 模式**（Rust 原生，比 Python 更快）。
+
+```bash
+# ✅ 推荐：clear 清屏 + 写入 + iterate --bridge
+clear && printf '%s\n' '## 标题' '' '内容' > ~/.cunzhi/5312/output.md && /Applications/iterate.app/Contents/MacOS/iterate --bridge --port 5312 --workspace "/Users/apple/cunzhi"
+```
+
+**关键点**：
+- `clear` 清屏，避免终端累积显示之前的输出
+- `--bridge` 模式是 Rust 原生，比 Python 脚本更快
+- 写入和调用可以用 `&&` 连接成一行
+
+## output.md 格式规范
+
+写入 `~/.cunzhi/{PORT}/output.md` 时，**必须使用标准 Markdown 格式**以确保正确渲染：
+
+| 元素 | 正确格式 | 错误格式 |
+|------|----------|----------|
+| 表格 | `\| 列1 \| 列2 \|` + `\|---\|---\|` 分隔行 | ASCII 艺术 `┌─┐│└─┘` |
+| 列表 | `- 项目` 或 `1. 项目` | 手动缩进 |
+| 标题 | `#` `##` `###` | 手动加粗 |
+| 加粗 | `**文字**` | 大写或下划线 |
+
+**禁止**：
+- ❌ 使用 ASCII 艺术表格（`┌─┐│└─┘` 等字符）
+- ❌ 把需要渲染的 Markdown 放在代码块 ``` 里
+- ❌ 使用非标准表格格式（缺少 `|---|---|` 分隔行）
+
 ## 用户偏好 (Preferences)
 - **❌ 不要生成总结性 Markdown 文档**：除非用户明确要求，否则不主动生成任务总结文档。
 - **❌ 不要生成测试脚本**：除非用户明确要求，否则不主动编写测试代码。

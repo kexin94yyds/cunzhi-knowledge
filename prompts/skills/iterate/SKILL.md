@@ -1,30 +1,30 @@
 ---
 name: iterate
-description: iterate/cunzhi 交互脚本使用指南。当调用 cunzhi.py 脚本失败、端口不可用、服务器未启动时触发。提供自动启动服务器、端口检测、故障恢复的完整流程。触发词：iterate、cunzhi、寸止、端口不可用、KeepGoing=false、服务器未启动。
+description: iterate --bridge 交互指南。当调用 iterate --bridge 失败、端口不可用、服务器未启动时触发。提供自动启动服务器、端口检测、故障恢复的完整流程。触发词：iterate、cunzhi、寸止、端口不可用、KeepGoing=false、服务器未启动。
 ---
 
 # iterate Skill
 
-iterate/cunzhi 脚本交互的完整指南，包含故障自动恢复。
+iterate --bridge 模式交互指南（Rust 原生，比 Python 更快）。
 
-## ⚠️ 重要：端口使用规则
+## ⚠️ 重要：使用 --bridge 模式
 
-**不要硬编码端口号！让脚本自动选择空闲端口。**
+**推荐使用 `iterate --bridge` 替代 Python 脚本。**
 
 ```bash
-# ✅ 正确：不指定端口，自动选择空闲端口
-python3 "/Users/apple/cunzhi/bin/cunzhi.py"
-
-# ❌ 错误：硬编码端口号（可能被其他 Agent 占用）
-python3 "/Users/apple/cunzhi/bin/cunzhi.py" 5311
+# ✅ 推荐：使用 --bridge 模式（Rust 原生，更快）
+clear && printf '%s\n' '## 标题' '' '内容' > ~/.cunzhi/5312/output.md && /Applications/iterate.app/Contents/MacOS/iterate --bridge --port 5312 --workspace "/Users/apple/cunzhi"
 ```
 
-**原因**：多个 Agent 同时运行时，硬编码端口会导致冲突。脚本会自动检测 `/status` 接口的 `is_busy` 状态，选择第一个空闲端口。
+**优势**：
+- Rust 原生，启动更快
+- 无需 Python 依赖
+- 更少的进程开销
 
 ## 正常调用流程
 
 1. 写入任务摘要到 `~/.cunzhi/{PORT}/output.md`
-2. 调用脚本（**不指定端口**）：`python3 "/Users/apple/cunzhi/bin/cunzhi.py"`
+2. 调用 `iterate --bridge --port {PORT} --workspace "/项目路径"`
 3. 等待返回 `KeepGoing=true/false`
 4. 读取 `~/.cunzhi/{PORT}/input.md` 获取用户指令
 
