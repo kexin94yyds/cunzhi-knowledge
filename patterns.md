@@ -24,6 +24,7 @@
 | PAT-2024-020 | MCP Agent 规范格式 | 工具+约束+反模式 |
 | PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
 | PAT-2026-010 | 主 ID 提取优先级策略 | 标题优先 + 文本顺序兜底 |
+| PAT-2026-023 | Git stash Checkpoint 创建应保留条目 | stash push 后用 apply（不 pop）+ 可靠获取新 stash 引用 |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
@@ -44,11 +45,29 @@
 | PAT-2025-001 | macOS 应用精准焦点唤回模式 | 使用 PID 识别切换焦点 |
 | PAT-2025-002 | 全局快捷键的运行时热切换 | 状态同步链与动态注册 |
 | PAT-2025-003 | Tauri 应用动态快捷键同步 | 后端持久化与前端分层处理 |
-| PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
-| PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
+| PAT-2025-004 | Electron 全部导出功能 | JSZip + IPC 读取图片 |
 | PAT-2026-002 | Tauri 跨平台窗口 API 适配 | 使用 cfg 保护非移动端 API |
 | PAT-2026-003 | Web Bridge 结构化图片转发 | 统一 DataURL 到 Base64 的转换处理 |
+| PAT-2026-005 | macOS Swift 全局热键监听 | NSEvent.addGlobalMonitorForEvents + 辅助功能权限 |
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
+| PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
+| PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
+| PAT-2026-024 | 派生 UI 状态需从权威数据重建（避免刷新丢失） | 派生状态仅展示 + 加载链路重建 |
+| PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
+
+---
+
+## PAT-2026-023 Git stash Checkpoint 创建应保留条目
+
+- **场景**：实现"Checkpoint 面板创建检查点并可随时 Restore"的功能时，需要既保存快照，又不影响当前工作区。
+- **问题**：若在 `git stash push` 后使用 `git stash pop`，会在成功应用后把 stash 条目从列表移除，导致 UI 面板刷新看不到刚创建的检查点（误以为没保存）。
+- **模式描述**：
+  1. **保存快照**：`git stash push --include-untracked -m iterate-checkpoint:<ts> | <name>`。
+  2. **保持工作区不变**：使用 `git stash apply --index <ref>`（而不是 `pop`）。
+  3. **可靠获取新条目引用**：优先读取 `git stash list -1 --format=%gd|%s` 并校验 message，必要时全量搜索 message，避免误指向旧 stash。
+  4. **验证闭环**：创建后刷新列表仍可见；再制造第二次改动后 Restore 能回到创建时状态。
+- **关联问题**：P-2026-023
+- **日期**：2026-01-13
 
 ### 📱 iOS 移动开发
 | ID | 名称 | 核心要点 |
@@ -78,6 +97,7 @@
 | PAT-2025-004 | 上下文追加项的精细化控制 | 两级控制与 UI 状态联动 |
 | PAT-2026-999 | 知识库三件套沉淀模式 | P -> R -> PAT 顺序与关联 |
 | PAT-2026-009 | DOM 外部点击关闭监听器的生命周期管理 | 单例 handler + show/hide 对称解绑 |
+| PAT-2026-026 | YouTube DOM/多语言/AB 实验下的“入口不稳定”处理模式 | 结构化数据源优先 + 多策略降级 + 无字幕提示 |
 
 ---
 
@@ -129,6 +149,19 @@
 
 ---
 
+## PAT-2026-015 智能实验工作流集成模式
+
+- **场景**: 在安全评估系统中添加"进入实验流程"入口，实现从安全评估到实验执行的无缝跳转。
+- **模式描述**:
+  1. **UI 重命名统一**: 将"安全预警/安全中心"统一重命名为"智能实验"，建立业务流程一致性。
+  2. **回调函数传递**: 通过组件属性层层传递导航回调（App.tsx → MSDS.tsx），确保跨组件跳转能力。
+  3. **多入口按钮**: 在不同评估结果页面（药剂兼容性、实验自评）都添加"进入实验流程"按钮，提供统一入口。
+  4. **状态管理集成**: 利用现有的 ModuleType 枚举和 setActiveModule 状态管理，无缝集成到现有导航系统。
+- **关联问题**: P-2026-015
+- **日期**: 2026-01-15
+
+---
+
 ## PAT-2026-009 DOM 外部点击关闭监听器的生命周期管理
 
 - **场景**：页面侧边面板（如“笔记与高亮”）需要“点击面板外关闭”，同时面板内部存在输入框等交互元素（如搜索框），点击内部元素不应触发关闭。
@@ -139,6 +172,22 @@
   4. **跨 iframe 同步**：如果内容渲染在 iframe 内，需要同时对 iframe 文档绑定/解绑同一个 handler。
 - **关联问题**：P-2026-009
 - **日期**：2026-01-07
+
+---
+
+## PAT-2026-026 YouTube DOM/多语言/AB 实验下的“入口不稳定”处理模式
+
+- **场景**：第三方站点（如 YouTube）会因语言、地区、账号实验组导致 DOM/按钮文案/布局变化，出现“同功能入口不稳定”。
+- **问题**：依赖 UI 文案或固定选择器（如 `Show transcript`/`更多操作`）时，跨环境易失败。
+- **模式**：
+  1. **不要把 UI 入口当作唯一事实来源**：优先使用结构化数据源（如 `ytInitialPlayerResponse`）或可直接请求的接口。
+  2. **多策略降级**：
+     - A 路径：点击 transcript 入口并解析 transcript DOM
+     - B 路径：从 captionTracks 拉取 timedtext 并解析
+     - C 路径：明确提示“视频无字幕轨道”，而不是模糊失败
+  3. **多语言兼容**：选择器优先依赖稳定属性/结构；文案匹配只作为辅助。
+  4. **时序鲁棒性**：对异步渲染增加等待/重试，避免过早 fallback。
+- **收益**：减少“换浏览器/换语言/换视频就坏”的假故障，提升可解释性与稳定性。
 
 ## PAT-2026-004 多窗口 Bridge 状态过滤模式
 
@@ -1322,34 +1371,84 @@ macOS 应用图标可以通过简单的复制粘贴方式设置：
 - `.icns` 是 macOS 原生图标格式，包含多种分辨率
 - 修改后可能需要清除图标缓存才能看到更新
 
-## PAT-2025-001: macOS 应用图标设置经验
+---
+
+## PAT-2025-002: Electron 全部导出功能（含图片）
 
 ### 问题场景
-为 SwiftUI macOS 应用设置自定义图标
+Electron 应用需要导出多个模式的数据为 Markdown 文件，并将图片一起打包为 ZIP。
 
 ### 解决方案
-macOS 应用图标可以通过简单的复制粘贴方式设置：
 
-1. **准备图标文件**：准备 `.icns` 格式的图标文件（可以从其他应用复制，或使用工具生成）
+#### 1. 前端添加 JSZip
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+```
 
-2. **放置位置**：将图标文件放到 `YourApp.app/Contents/Resources/AppIcon.icns`
+#### 2. 导出函数结构
+```javascript
+async function exportAllModes() {
+  const allModes = await getAllModes();
+  const files = [];
+  const imageFiles = [];
+  
+  for (const mode of allModes) {
+    const words = await getWordsByMode(mode.id);
+    const mdContent = generateModeMarkdown(mode, words, imageFiles);
+    files.push({ name: `${mode.name}.md`, content: mdContent });
+  }
+  
+  await exportAsZipWithImages(files, imageFiles, timestamp);
+}
+```
 
-3. **Info.plist 配置**：确保 `Info.plist` 中引用了图标：
-   ```xml
-   <key>CFBundleIconFile</key>
-   <string>AppIcon</string>
-   ```
+#### 3. IPC 读取图片文件
+**preload.js:**
+```javascript
+export: {
+  readImageFile: (fileName) => ipcRenderer.invoke('export-read-image-file', fileName)
+}
+```
 
-4. **Finder 快捷方式**：
-   - 选中任意应用，按 `Cmd+I` 打开"显示简介"窗口
-   - 点击左上角的应用图标（会出现蓝色选中框），按 `Cmd+C` 复制
-   - 打开目标应用的"显示简介"窗口
-   - 点击左上角的图标位置，按 `Cmd+V` 粘贴即可替换图标
+**main.js:**
+```javascript
+ipcMain.handle('export-read-image-file', async (event, fileName) => {
+  const imagePath = path.join(getImagesDir(), fileName);
+  if (fs.existsSync(imagePath)) {
+    return fs.readFileSync(imagePath).toString('base64');
+  }
+  return null;
+});
+```
+
+#### 4. ZIP 打包含图片
+```javascript
+async function exportAsZipWithImages(files, imageFiles, timestamp) {
+  const zip = new JSZip();
+  const folder = zip.folder(`RI_导出_${timestamp}`);
+  
+  // 添加 Markdown 文件
+  for (const file of files) {
+    folder.file(file.name, file.content);
+  }
+  
+  // 添加图片到 images/ 子文件夹
+  const imagesFolder = folder.folder('images');
+  for (const img of imageFiles) {
+    const base64 = await window.electronAPI.export.readImageFile(img.fileName);
+    if (base64) imagesFolder.file(img.fileName, base64, { base64: true });
+  }
+  
+  const blob = await zip.generateAsync({ type: 'blob' });
+  // 下载 blob...
+}
+```
 
 ### 关键点
-- macOS 图标机制非常灵活，支持直接复制粘贴到"显示简介"窗口左上角的图标位置
-- `.icns` 是 macOS 原生图标格式，包含多种分辨率
-- 修改后可能需要清除图标缓存才能看到更新
+- JSZip 支持 `{ base64: true }` 选项直接添加 base64 编码的二进制文件
+- 图片路径在 Markdown 中使用相对路径 `images/filename.png`
+- IPC 通道需要在 preload.js 白名单中注册
+- 备选方案：无 JSZip 时逐个下载文件
 
 ---
 
@@ -1713,6 +1812,33 @@ fetch('/files?project_path=...')
 - **关联问题**：P-2026-021
 - **日期**：2026-01-11
 
+## PAT-2026-022 Git stash Checkpoint 恢复强覆盖（含 untracked）
+
+- **场景**：用 `git stash` 实现 IDE Checkpoint（保存/恢复），需要恢复时尽量接近“回到检查点状态”，且避免误删无关新文件。
+- **问题特征**：
+  1. 恢复前使用 `git clean -fd` 会删除所有未跟踪文件，导致新文件丢失。
+  2. `git stash show --name-only` 默认不包含 untracked 文件，导致恢复覆盖范围不完整。
+- **模式描述**：
+  1. **列出检查点涉及文件（含 untracked）**：
+     - `git stash show -u <stash> --name-only`
+  2. **恢复前只处理“检查点涉及的文件”**（强覆盖）：
+     - 已跟踪文件：`git checkout -- <file>`（丢弃该文件当前修改）
+     - 未跟踪文件：仅删除该文件/目录（不做全局 clean）
+  3. **应用检查点**：`git stash apply <stash>`
+- **关联问题**：P-2026-022
+- **日期**：2026-01-13
+ 
+## PAT-2026-024 派生 UI 状态需从权威数据重建（避免刷新丢失）
+
+- **场景**：UI 有“派生状态”（例如分类 Tabs、筛选项、统计信息），这些派生状态在运行时会被临时更新（例如导入时通过 `setState` 追加），但刷新后会回到默认值。
+- **模式描述**：
+  1. **明确权威数据源**：确定持久化的权威数据（例如 IndexedDB 中的 `screenshots`）。
+  2. **派生状态不做唯一来源**：派生状态（例如 `categories`）可以用于 UI 展示，但不能作为唯一事实来源。
+  3. **在加载链路中重建**：在应用启动/刷新时的加载函数中（例如 `loadScreenshots()`），在 `setScreenshots(...)` 后基于权威数据调用“重建函数”（例如 `updateCategoriesFromData(localData)`）。
+  4. **覆盖所有数据路径**：如果存在“本地模式/云同步模式”等分支，必须确保每个分支都执行派生状态重建，否则会出现只在某分支复现的刷新丢失。
+- **关联问题**：P-2026-021
+- **日期**：2026-01-12
+
 ---
 
 ## PAT-2025-003 播客音频转 9:16 竖屏视频工作流
@@ -1744,3 +1870,238 @@ fetch('/files?project_path=...')
 - **日期**：2026-01-21
 
 ---
+
+## PAT-2026-001: 处理被忽略的重要配置文件上传
+
+- **场景**：需要将某些本被 `.gitignore` 排除的文件（如 `migrations/`, `config/` 下的特定包）同步到远程仓库。
+- **模式**：
+  1. **诊断**：当 `git add` 无反应或报错时，先用 `git check-ignore -v <path>` 确认是否被忽略。
+  2. **执行**：使用 `git add -f <path>` 强制覆盖忽略规则。
+  3. **记录**：在提交信息中明确标注 `(forced)` 以提醒后续维护者。
+- **关联 P-ID**：P-2026-001
+
+---
+
+## PAT-2026-027: 用户交互脚本的超时策略
+
+- **场景**：脚本需要等待用户在 GUI 中响应，用户可能几分钟甚至更长时间后才回来操作。
+- **问题特征**：
+  1. 设置固定超时（如 5 分钟）会导致用户离开后回来时脚本已中断
+  2. 无限等待可能导致脚本在 GUI 崩溃时永远挂起
+- **模式描述**：
+  1. **优先使用无限等待**：对于用户交互场景，`timeout=None` 通常是更好的选择
+  2. **提供手动终止方式**：确保用户可以通过 Ctrl+C 或 GUI 按钮终止等待
+  3. **资源占用极低**：空闲的 HTTP 连接和 subprocess 几乎不消耗 CPU，内存占用也很小
+  4. **降级方案**：如果担心 GUI 崩溃，可以设置较长超时（如 1 小时）而非无限
+- **适用场景**：
+  - AI 对话中的用户确认弹窗
+  - 需要用户输入的命令行工具
+  - 任何"等待人类响应"的阻塞式脚本
+- **关联 P-ID**：P-2026-027
+- **日期**：2026-01-16
+
+---
+
+## PAT-2026-028: Web 端与桌面端功能同步的完整性检查
+
+- **场景**：将桌面端功能（如 Tauri 应用）同步到 Web 端（如手机浏览器访问的 bridge 页面）时，容易遗漏业务逻辑。
+- **问题特征**：
+  1. UI 元素同步了，但业务逻辑（如条件性内容追加）没有同步
+  2. 桌面端依赖 Tauri API（如 `invoke`），Web 端需要替代实现
+  3. 数据流不同：桌面端直接调用后端，Web 端通过 WebSocket 中转
+- **模式描述**：
+  1. **功能清单对照**：同步前列出所有功能点，逐一检查 Web 端实现
+  2. **数据流追踪**：从用户操作到最终提交，确保每个环节都有对应实现
+  3. **本地状态同步**：Web 端需要维护本地状态副本（如 `customPrompts.current_state`）
+  4. **提交前处理**：确保提交时的数据处理逻辑（如追加内容）与桌面端一致
+- **适用场景**：
+  - Tauri/Electron 应用的 Web 版本
+  - 移动端 WebView 与原生应用的功能对齐
+  - 任何跨平台功能同步
+- **关联 P-ID**：P-2026-028
+- **日期**：2026-01-16
+
+---
+
+## PAT-2026-029: macOS GUI 应用的高可用守护模式
+
+- **场景**：GUI 应用（如 Tauri/Electron）作为后台服务运行，需要崩溃后自动恢复。
+- **问题特征**：
+  1. launchd 的 `KeepAlive` 对 GUI 应用效果有限（`open` 命令立即返回）
+  2. 直接运行二进制可能缺少必要的 GUI 环境
+  3. 需要监控特定端口或进程状态
+- **模式描述**：
+  1. **Watchdog 脚本**：创建独立的监控脚本，定期检查服务状态
+  2. **端口检测**：使用 `lsof -i :PORT | grep LISTEN` 检查服务是否可用
+  3. **使用 open 命令**：通过 `open -a App.app` 启动 GUI 应用，确保正确的环境
+  4. **launchd 守护 watchdog**：让 launchd 管理 watchdog 脚本而非直接管理应用
+  5. **日志记录**：watchdog 记录启动/重启事件，便于排查问题
+- **配置示例**：
+  ```xml
+  <!-- ~/Library/LaunchAgents/com.app.watchdog.plist -->
+  <key>ProgramArguments</key>
+  <array><string>/path/to/watchdog.sh</string></array>
+  <key>KeepAlive</key><true/>
+  <key>RunAtLoad</key><true/>
+  ```
+- **适用场景**：
+  - Tauri/Electron 应用作为本地服务
+  - 需要通过 Cloudflare Tunnel 暴露的本地服务
+  - 任何需要高可用的 macOS GUI 应用
+- **关联 P-ID**：P-2026-029
+- **日期**：2026-01-16
+
+---
+
+## PAT-2026-030: Tauri 应用全局快捷键的状态感知注册
+
+- **场景**：Tauri 应用需要注册全局快捷键，但只在特定状态下（如弹窗显示时）才需要响应。
+- **问题特征**：
+  1. 全局快捷键在应用启动时注册，后台运行时仍然响应，干扰其他应用
+  2. 用户在其他应用中使用相同快捷键时被意外拦截
+- **模式描述**：
+  1. **状态感知注册**：使用 Vue 的 `watch` 监听状态变化，动态注册/注销快捷键
+  2. **条件初始化**：`onMounted` 中检查状态，只在需要时才注册
+  3. **清理保证**：`onUnmounted` 中确保注销快捷键
+- **代码示例**：
+  ```typescript
+  // 监听状态变化
+  watch(() => props.showPopup, async (newValue) => {
+    if (newValue) {
+      await register('Shift+Tab', handler)
+    } else {
+      await unregister('Shift+Tab')
+    }
+  })
+  
+  // 初始化时检查状态
+  onMounted(async () => {
+    if (props.showPopup) {
+      await register('Shift+Tab', handler)
+    }
+  })
+  ```
+- **适用场景**：
+  - 弹窗/对话框专用快捷键
+  - 模式切换快捷键
+  - 任何需要条件响应的全局快捷键
+- **关联 P-ID**：P-2026-030
+- **日期**：2026-01-16
+
+---
+
+## PAT-2026-031: 多窗口应用的状态隔离设计
+
+- **场景**：Tauri/Electron 多窗口应用中，某些状态需要窗口级别隔离，而非全局共享。
+- **问题特征**：
+  1. 在窗口 A 中修改设置，窗口 B 也受影响
+  2. 用户期望每个窗口独立管理自己的状态
+- **模式描述**：
+  1. **识别隔离需求**：快捷键启用、窗口大小、主题等通常需要窗口隔离
+  2. **前端本地状态**：使用 Vue `ref` 而非后端全局状态
+  3. **避免事件广播**：不使用 `app.emit()` 广播状态变化
+  4. **全局资源同步**：如全局快捷键，需要在状态变化时同步注册/注销
+- **代码示例**：
+  ```typescript
+  // 窗口级别状态
+  const localEnabled = ref(true)
+  
+  function handleToggle(enabled: boolean) {
+    localEnabled.value = enabled
+    // 同步全局资源
+    if (enabled) {
+      await register('Shift+Tab', handler)
+    } else {
+      await unregister('Shift+Tab')
+    }
+  }
+  ```
+- **适用场景**：
+  - 多窗口 IDE 插件
+  - 多项目管理工具
+  - 任何需要窗口独立配置的应用
+- **关联 P-ID**：P-2026-031
+- **日期**：2026-01-16
+
+---
+
+## PAT-2026-032: codex exec 自动生成项目上下文
+
+- **场景**：新项目首次打开时，需要生成 `.cunzhi-memory/context.md` 描述项目概况。
+- **问题特征**：
+  1. AI 手动分析耗时且可能遗漏
+  2. 需要读取多个配置文件（package.json、Cargo.toml 等）
+- **模式描述**：
+  1. **codex exec 生成基础框架**：自动分析项目结构、技术栈、常用命令
+  2. **AI 润色补充**：添加项目特色描述、精确版本号、当前进度
+  3. **自动生效**：下次对话自动加载 context.md 到上下文
+- **代码示例**：
+  ```bash
+  codex exec "Analyze this project and create a context.md file. Include:
+  1) Project overview
+  2) Tech stack with versions
+  3) Key directories
+  4) Common commands
+  Write the result to {项目路径}/.cunzhi-memory/context.md in Chinese."
+  ```
+- **优点**：
+  - 快速生成基础框架
+  - Codex 会读取实际配置文件，结果更准确
+- **关联 Skill**：init-project
+- **日期**：2026-01-19
+
+---
+
+## PAT-2026-033: Codex 审查前读取项目上下文
+
+- **场景**：使用 Codex 审查代码时，需要了解项目的设计决策，避免误报。
+- **问题特征**：
+  1. Codex 不了解项目背景，可能将故意设计报告为问题
+  2. 例如：故意保留 stash、故意阻塞端口等
+- **模式描述**：
+  1. **审查前读取 context.md**：了解项目概述和技术栈
+  2. **审查前读取 patterns.md**：了解已知的设计决策
+  3. **注入上下文**：将上下文作为审查提示词的一部分
+- **代码示例**：
+  ```bash
+  codex exec "
+  ## 项目概述
+  $(cat .cunzhi-memory/context.md)
+  
+  ## 设计决策
+  $(cat .cunzhi-knowledge/patterns.md | head -200)
+  
+  ## 审查任务
+  审查最近提交...
+  "
+  ```
+- **效果**：避免误报已知的设计决策
+- **关联 Skill**：audit-with-codex
+- **日期**：2026-01-19
+
+---
+
+## PAT-2026-034: 同窗口 codex exec 并发替代多窗口子代理
+
+- **场景**：需要并发执行多个子任务时，选择执行方式。
+- **问题特征**：
+  1. 多窗口子代理需要用户手动领取任务
+  2. 协调复杂，容易出错
+- **模式描述**：
+  1. **使用 codex exec 并发**：同一窗口内并发调用
+  2. **输出到文件**：`codex exec -o /tmp/task1.md "..." &`
+  3. **等待完成**：`wait`
+  4. **收集结果**：读取输出文件
+- **代码示例**：
+  ```bash
+  codex exec -o /tmp/review1.md "Review file1.py" &
+  codex exec -o /tmp/review2.md "Review file2.py" &
+  wait
+  cat /tmp/review1.md /tmp/review2.md
+  ```
+- **优点**：
+  - 无需其他聊天窗口
+  - 无需用户手动领取
+  - AI 主导，自动收集结果
+- **关联 Skill**：multi-agent-dispatch
+- **日期**：2026-01-19

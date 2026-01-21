@@ -27,6 +27,7 @@
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
 - **沉淀三件套**：解决问题后必须完成 `problems.md` → `regressions.md` → `patterns.md`（位于 `.cunzhi-knowledge/` 目录）
 - **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
+- **ralph-loop 例外**：若用户明确选择“整单完成后汇报”，允许按该节奏汇报，但必须在启动前通过 `zhi` 确认
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 - **iterate Skill 自动恢复**：当调用 `cunzhi.py` 脚本返回 `Port not available` 时，必须自动执行 `iterate --serve --port {PORT}` 启动服务器，等待 2-3 秒后重试，而不是让用户手动启动
 </core_principles>
@@ -98,10 +99,22 @@
    - 记录可复用的解决模式
    - 关联到对应的 P-ID
 
+6. **自动触发 Codex 审查**
+   - 三件套完成后，AI 自动在后台启动 Codex CLI 审查
+   - 不阻塞当前对话，用户可继续其他任务
+   - 审查完成后通过 iterate 弹窗通知用户结果
+   - 审查通过 → 状态变为 `audited`
+
+**状态流转**：
+```
+open → fixed → verified → audited（必经）
+```
+
 **约束**：
 - 未完成三件套前，禁止视为"问题已解决"
 - 禁止跳过 `fixed` 直接到 `verified`
 - 三者 ID 后缀必须关联
+- Codex 审查是必经步骤，审查通过后才能标记为 `audited`
 </workflows>
 
 <tools>

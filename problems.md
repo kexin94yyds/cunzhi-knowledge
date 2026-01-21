@@ -87,6 +87,103 @@
 - 状态：verified
 - 日期：2025-12-30
 
+## P-2025-001 磁盘空间不足导致最新数据丢失
+
+- 项目：RI (Replace-Information)
+- 仓库：/Users/apple/信息置换起/RI
+- 发生版本：2.1.1
+- 现象：用户退出应用后再次打开，发现最新数据全部丢失。
+- 根因：系统磁盘空间完全耗尽（ENOSPC），导致 ElectronStore 在保存 `config.json` 时写入失败，且 IndexedDB 事务无法提交。
+- 修复：
+  1. 实现自动备份机制：应用启动时及运行期间每 30 分钟备份一次 `config.json` 和 `IndexedDB` 目录。
+  2. 限制备份数量：保留最近 10 次备份以平衡安全与空间占用。
+  3. 暴露备份 API：允许通过 `window.electronAPI.backup` 进行手动备份、查看列表及恢复。
+- 回归检查：R-2025-001
+- 状态：verified
+- 日期：2025-12-31
+
+## P-2025-005 全局快捷键开关失效及系统快捷键冲突
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：
+  1. 点击快捷键开关图标，状态虽变但快捷键在窗口聚焦时仍生效。
+  2. `Tab`/`Shift+Tab` 拦截了系统级组合键（如 `Cmd+Tab`），导致无法切换应用。
+  3. 修改代码后由于缺失 `@tauri-apps/api/event` 中的 `listen` 导入，导致前端无法接收状态变更。
+- 根因：
+  1. 仅注销了全局插件快捷键，未禁用前端 `document` 级别的本地监听器。
+  2. 键盘事件处理器缺乏对修饰键（Cmd/Alt/Ctrl）的排除逻辑。
+  3. `AppContent.vue` 中未导入 `listen` 函数，导致异步状态同步失败。
+- 修复：
+  1. 在 `AppContent.vue` 的 `handleGlobalKeydown` 中增加 `globalShortcutEnabled` 校验。
+  2. 优化 `Tab`/`Shift+Tab` 拦截逻辑，明确排除带修饰键的情况。
+  3. 补齐 `listen` 导入，确保 `global-shortcut-state-changed` 事件能被正确处理。
+  4. 移除 `PopupHeader.vue` 中冗余的“已禁”文本，优化 UI。
+- 回归检查：R-2025-005
+- 状态：verified
+- 日期：2025-12-30
+
+---
+
+## P-2025-004 全局快捷键无法临时禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：用户希望在某些场景下临时关闭全局快捷键（如 `Shift+Tab`），避免冲突，但目前只能通过系统设置或修改配置文件实现，操作不便。
+- 根因：缺乏快捷键状态的运行时管理机制和 UI 快速切换入口。
+- 修复：
+  1. 后端：在 `ShortcutConfig` 和 `AppState` 中增加 `global_enabled` 状态。
+  2. 逻辑：重构前端快捷键注册逻辑，支持动态监听状态变化并执行 `register/unregister`。
+  3. UI：在弹窗头部（`PopupHeader`）增加闪电图标按钮，支持一键切换。
+- 回归检查：R-2025-004
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+
+## P-2025-003 上下文追加项无法按需禁用
+
+- 项目：iterate (CunZhi)
+- 仓库：/Users/apple/cunzhi
+- 发生版本：v1.2.0
+- 现象：弹窗中的“上下文追加”项（如“是否生成总结性Markdown文档”）总是会追加内容到输入框，用户无法在弹窗中临时选择不追加某一项。
+- 根因：数据结构 `CustomPrompt` 缺少启用状态标志（`is_active`），且前端 UI 只提供了模板状态切换（Switch），没有提供项级别的开启/关闭控制。
+- 修复：
+  1. 后端：在 `CustomPrompt` 结构体中添加 `is_active` 字段，并新增 `update_conditional_prompt_active` 命令。
+  2. 前端：在弹窗 UI 的上下文追加区域，为每项添加 Checkbox 勾选框；只有 `is_active` 为 true 的项才会参与内容追加。
+  3. 设置：在自定义 Prompt 设置页面增加“是否启用”开关。
+- 回归检查：R-2025-003
+- 状态：fixed
+- 日期：2025-12-29
+
+---
+## P-2026-002: Web 导入 JSON 后标题无法更新（刷新后回到旧值）
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：N/A
+- 现象：Web 端导入 iOS 导出的 JSON 后，页面上短暂显示新标题；但 Cmd+R 刷新后标题回到旧值/空值，且右上角出现 Synced...（刷新触发云端数据合并）。
+- 根因：待确认。疑点包括：云端文档 `$id` 与本地 `screenshot.id` 不一致（iOS 端可能用 `ID.unique()`，业务 id 存在 doc 的 `id/screenshotId` 字段），导致 `updateDocument` 404 且刷新时 `fetchFromCloud` 用 `$id` 合并覆盖；或云端字段名并非 `title` 导致读取为空；或 Appwrite 权限/规则导致更新失败，云端仍是旧值/空值。
+- 修复：未完成。计划：统一云端与业务 id 映射（优先让 `fetchFromCloud` 使用业务 id 字段或 iOS 写入时使用业务 id 作为 documentId），核对 Appwrite attributes 与字段名，确保 update 返回 200，并在 merge 时避免空值覆盖本地。
+- 回归检查：R-2026-002
+- 状态：open
+- 日期：2026-01-08
+- 排查：在 `fetchFromCloud` 打印 `doc.$id`/`doc.title`/`Object.keys(doc)`；比对单条截图的本地 id 与云端 id/title；在 Appwrite Console 查看 collection attributes、document `$id` 与 title 字段真实值。
+
+## P-2026-021 Web 导入后新分类 Tab 刷新丢失（仅本地模式）
+
+- 项目：Monoshot
+- 仓库：/Users/apple/monoshot
+- 发生版本：N/A
+- 现象：Web 端导入 JSON 后，顶部分类筛选按钮（Tabs）会出现新的分类（例如 coding/creating 等）；但页面刷新（Cmd+R）后，这些新分类按钮消失。截图条目数量不变、图片仍在。
+- 根因：`ENABLE_CLOUD_SYNC = false` 的本地模式下，`loadScreenshots()` 只执行了 `setScreenshots(localData)`，没有基于 `localData` 调用 `updateCategoriesFromData()` 重建 `categories` state。导致分类 Tabs 只存在于内存中，刷新后回到 `DEFAULT_CATEGORIES`。
+- 修复：在 `monoshot-vault/App.tsx` 的 `loadScreenshots()` 本地分支补上 `updateCategoriesFromData(localData)`，使分类 Tabs 在刷新后能从 IndexedDB 数据恢复。
+- 回归检查：R-2026-021
+- 状态：verified
+- 日期：2026-01-12
+
 ## P-2024-007 笔记窗口 Cmd+B 加粗时画面跳动
 
 - 项目：RI (Replace-Information)
@@ -6738,3 +6835,486 @@ P-2024-005 (Layout & Color Update)
 - 状态：open
 - 日期：2025-01-12
 
+---
+
+## P-2026-022 iterate Checkpoint 恢复误删未跟踪文件 / 未包含 untracked 文件
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：`19ccc35` 之前
+- 现象：
+  1. 点击 Checkpoint 的“恢复”后，新建文件可能丢失（例如测试文件恢复后消失）。
+  2. Checkpoint 面板显示“恢复成功”，但实际新文件没有回到检查点时的内容。
+- 根因：
+  1. 恢复逻辑中使用 `git clean -fd` 会删除所有未跟踪文件。
+  2. `git stash show --name-only` 默认不包含 untracked 文件，导致“检查点涉及文件列表”不完整。
+- 修复：
+  1. 文件列表改为 `git stash show -u --name-only`，包含 untracked。
+  2. 恢复前仅对“检查点涉及文件”做强覆盖处理：
+     - 已跟踪文件：`git checkout -- <file>`
+     - 未跟踪文件：仅删除该文件/目录
+     - 然后 `git stash apply <stash>`
+  3. 回归测试通过：版本1→自动检查点→版本2→恢复回版本1。
+- 回归检查：R-2026-022
+- 状态：verified
+- 日期：2026-01-13
+
+---
+
+## P-2026-023 iterate Checkpoint 创建后不留存（stash pop 导致面板看不到）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：v0.5.0（修复前）
+- 现象：
+  1. 在 Checkpoint 面板创建检查点后，刷新面板可能看不到新检查点（看起来像“没有保存成功”）。
+  2. Restore 在 UI 上显示成功，但用户无法稳定通过面板回到预期检查点（因为检查点本身可能已被移除）。
+- 根因：Rust 侧 `create_checkpoint` 在 `git stash push` 后使用了 `git stash pop --index`，`pop` 会在成功应用后把 stash 条目从列表移除，导致面板 `list_checkpoints` 无法列出刚创建的检查点。
+- 修复：
+  1. `git stash pop --index` 改为 `git stash apply --index`，确保检查点留在 stash 列表中可被后续 Restore。
+  2. 获取检查点引用方式改为优先读取 `git stash list -1 --format=%gd|%s` 并校验 message，必要时全量搜索，避免误指向已有 stash。
+- 回归检查：R-2026-023
+- 状态：verified
+- 日期：2026-01-13
+
+## P-2026-001: 迁移配置文件上传失败
+
+- **现象**：用户反馈之前的 AI 声称已上传配置包，但 GitHub 仓库中实际不存在。
+- **根因**：
+  1. `migrations/` 目录被 `.gitignore` 忽略，之前的 AI 未使用 `-f` 强制添加。
+  2. 源文件 `windsurf_migration.zip` 在用户桌面和项目根目录均不存在（可能未实际执行打包）。
+- **影响范围**：影响用户将 Windsurf 配置迁移到新电脑。
+- **修复方案**：
+  1. 重新在本地收集 `settings.json` 和 `keybindings.json`。
+  2. 使用 `zip` 重新打包。
+  3. 使用 `git add -f` 强制添加被忽略的文件并成功推送。
+- **状态**：fixed
+
+---
+
+## P-2026-024 iterate 跨平台（Windows/Mac）同步未先规划导致不兼容与高成本反复碰壁
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：2026-01-14（提交 `d4a2e30` 前后的 Windows VSCode 扩展同步）
+- 现象：
+  1. 将 macOS 侧的 VSCode 扩展/控制面板逻辑“直接搬运”到 Windows 版本后，出现大量不兼容点（路径、命令、进程管理等），导致不断试错和返工。
+  2. 启动服务/端口相关问题在 Windows 上更容易出现（spawn/路径/防火墙/权限/依赖），在未提前拆解差异点的情况下，调试路径变长。
+  3. 由于缺少前置计划与检查清单，AI/人类都更容易“哪里报错改哪里”，形成连锁问题，消耗大量时间与成本。
+- 根因：
+  1. **跨平台差异未前置抽象**：macOS 与 Windows 在 shell、路径、可执行文件、进程管理等方面差异显著，但核心流程相同（启动服务→健康检查→端口文件→生成规则→复制开头语→交互）。未先把“核心流程”和“平台适配层”拆开，导致迁移时混乱。
+  2. **缺少迁移计划**：未在动手前列出“必改点清单”（path/python 命令/taskkill/pkill/环境变量展开/健康检查/日志/防火墙/依赖 WebView2 等），导致碰壁式推进。
+- 修复：
+  1. 先对齐“底层不变的流程”，再逐项替换平台差异点（Windows: `%USERNAME%` 展开、`python`、`taskkill`、exe 路径、shell/权限）。
+  2. 补齐 Windows 专用排查章节与诊断脚本，缩短后续定位路径。
+  3. 输出可复用的“跨平台同步前计划模板”，确保下一次迁移按框架推进。
+- 回归检查：R-2026-024（待创建）
+- 状态：verified
+- 日期：2026-01-14
+
+---
+
+## P-2026-025 Slash-Command-Prompter 菜单搜索框输入时菜单关闭
+
+- 项目：Slash-Command-Prompter
+- 现象：斜杠菜单弹出后，点击菜单内搜索框输入，菜单与光标立即消失，无法继续搜索。
+- 根因：菜单隐藏逻辑对菜单内输入事件生效，导致失焦/输入时被误关闭。
+- 修复：为菜单内输入聚焦增加保护，菜单内部聚焦时不执行隐藏；主动关闭场景使用强制关闭。
+- 状态：fixed
+- 日期：2026-01-15
+
+---
+
+## P-2026-026 YouTube 转录：语言需英文 + 依赖 CC/字幕轨道
+
+- **项目**：YouTube-Transcript（视频转 epub）
+- **仓库**：https://github.com/kexin94yyds/YouTube-Transcript
+- **发生版本**：2026-01-15（具体 commit 由你补）
+- **现象**：同一个插件在某些视频/环境下无法自动获取 Transcript/字幕；将 YouTube 显示语言设为英文是出现 `Show transcript` 的必要条件之一，且视频需要存在 CC（字幕轨道）才可能获取字幕。
+- **根因**：插件主要依赖 YouTube 页面上的 Transcript UI/DOM（`Show transcript` 面板）。该入口受 YouTube 的语言/地区/AB 实验布局影响；同时若视频本身无字幕轨道（无 CC），则无可用字幕来源。
+- **修复**：
+  - **短期规避**：将 YouTube 显示语言设置为英文；仅对存在 CC 的视频使用转录（无 CC 时明确提示无字幕来源）。
+  - **长期方案（可选）**：当 Transcript UI 不存在时，改为从 `ytInitialPlayerResponse.captions.captionTracks` 直接拉取 timedtext 并解析（减少对 UI 的依赖）。
+- **回归检查**：R-2026-026
+- **状态**：open（如果你暂时只记录现象）
+- **日期**：2026-01-15
+
+---
+
+## P-2026-027 cunzhi.py 等待用户响应 5 分钟后超时
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16 之前
+- **现象**：调用 `cunzhi.py` 脚本后，如果用户几分钟内没有响应，脚本返回 `KeepGoing=false` 和 `Error: 请求失败: timed out`，导致 AI 对话被迫中断。
+- **根因**：
+  1. `cunzhi.py:199` 的 HTTP 连接设置了 `timeout=300`（5分钟）
+  2. `cunzhi-server.py:92` 的 subprocess 也设置了 `timeout=300`（5分钟）
+  - 用户离开几分钟后回来，连接已超时断开。
+- **修复**：将两处超时配置改为 `timeout=None`（无限等待），让脚本一直等待用户响应。
+- **回归检查**：R-2026-027（手动验证：等待超过 5 分钟后响应，不再超时）
+- **关联 P-ID**：P-2026-030
+- **日期**：2026-01-16
+
+---
+
+## P-2026-028 Web 端（手机）上下文追加功能失效
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：通过手机访问 `iterate.tobooks.xin` 时，开启上下文追加开关后提交消息，追加内容没有被添加到用户输入中。
+- **根因**：`bridge_test.html` 的 `sendAction` 函数在提交时只发送了输入框的原始值，没有调用 `generateConditionalContent()` 追加条件性内容。
+- **修复**：
+  1. 在 `toggleCondition` 中同步更新本地 `customPrompts` 数据的 `current_state`
+  2. 添加 `generateConditionalContent()` 函数生成条件性内容
+  3. 在 `sendAction` 提交时自动追加上下文内容到 `user_input`
+- **回归检查**：R-2026-028（手动验证：手机端开启上下文追加后提交，内容正确追加）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：Web 端与桌面端功能同步时，需要确保所有业务逻辑（如条件性内容追加）都被正确实现，不能只同步 UI。
+
+---
+
+## P-2026-029 iterate 8080 服务崩溃后无法自动恢复
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：iterate 应用崩溃后，8080 端口的 Bridge Server 停止服务，导致手机端通过 Cloudflare Tunnel 访问时出现 502 Bad Gateway。
+- **根因**：iterate 是 GUI 应用，崩溃后没有自动重启机制。Cloudflare Tunnel 只是转发请求，源服务不可用时返回 502。
+- **修复**：
+  1. 创建 `bin/iterate-watchdog.sh` 监控脚本，每 10 秒检查 8080 端口
+  2. 配置 launchd 守护进程 `com.iterate.serve`，开机自启并保持 watchdog 运行
+  3. 服务崩溃后 watchdog 自动调用 `open -a iterate.app` 重启
+- **回归检查**：R-2026-029（手动验证：杀死 iterate 进程后 15 秒内自动恢复）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：GUI 应用作为后台服务时，需要额外的监控机制确保高可用；launchd 的 KeepAlive 对 GUI 应用效果有限，watchdog 脚本更可靠。
+
+---
+
+## P-2026-030 iterate watchdog 自动启动后 Shift+Tab 会呼出主页
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：配置 watchdog 自动启动 iterate 后，每次按下 Shift+Tab 快捷键都会呼出 iterate 主页窗口，妨碍正常操作。
+- **根因**：
+  1. `Shift+Tab` 全局快捷键在应用启动时就注册，无论 MCP 弹窗是否显示
+  2. 隐藏模式启动后，点击 Dock 图标无法打开主页（缺少 Reopen 事件处理）
+- **修复**：
+  1. 修改 watchdog 脚本，使用 `open -j -g -a iterate.app` 以隐藏模式启动
+  2. 修改 `AppContent.vue`，只在 MCP 弹窗显示时注册 `Shift+Tab` 快捷键，弹窗关闭时注销
+  3. 修改 `builder.rs`，添加 macOS `RunEvent::Reopen` 事件处理，点击 Dock 图标时显示主窗口
+- **回归检查**：R-2026-030（手动验证：后台运行时 Shift+Tab 不触发，点击 Dock 可打开主页）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：
+  1. 全局快捷键应根据应用状态动态注册/注销，避免后台运行时干扰其他应用
+  2. Tauri 应用隐藏启动时需处理 `RunEvent::Reopen` 事件，让用户可通过 Dock 图标打开窗口
+
+---
+
+## P-2026-031 iterate 快捷键禁用功能影响所有窗口
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：在一个 iterate 窗口中禁用快捷键后，所有其他窗口的快捷键也被禁用；禁用后 `Shift+Tab` 仍能呼出窗口。
+- **根因**：
+  1. 快捷键启用状态存储在后端 `AppState` 中，是全局共享的
+  2. 禁用快捷键只禁用了窗口内键盘事件处理，没有注销 `Shift+Tab` 全局快捷键
+- **修复**：
+  1. 将快捷键状态改为前端组件级别的本地状态（`localShortcutEnabled`）
+  2. 禁用时同时调用 `unregisterShortcuts()` 注销全局快捷键
+  3. 启用时调用 `registerShortcuts()` 重新注册
+- **回归检查**：R-2026-031（手动验证：禁用窗口 A 不影响窗口 B，禁用后 Shift+Tab 不呼出窗口）
+- **状态**：verified
+- **日期**：2026-01-16
+- **经验**：多窗口应用的状态管理应考虑窗口隔离，全局快捷键的注册/注销应与 UI 状态同步。
+
+---
+
+## P-2026-032 iterate 窗口最小化后自动弹出
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：将 iterate 弹窗最小化后，过一会儿窗口会自动弹出来。
+- **根因**：待调查
+- **修复**：待修复
+- **状态**：open
+- **日期**：2026-01-16
+
+---
+
+## P-2026-033 AI 端口检测失败后未自动恢复服务器
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：调用 `cunzhi.py` 脚本时返回 `Error: Port {PORT} is not available`，AI 直接停止对话，没有自动启动服务器并重试。
+- **根因**：这是 **AI 行为问题**，不是脚本问题。规则 `06-skills.md:44-53` 明确要求：
+  1. 当脚本返回 `Port not available` 时，AI 应自动执行 `iterate --serve --port {PORT}`
+  2. 等待 2-3 秒后重试
+  3. 如果仍然失败，提示用户手动检查
+  但 AI 没有遵守这个规则，直接停止了对话。
+- **修复**：强化 AI 规则意识，确保严格遵守 `06-skills.md` 中的自动恢复规则
+- **回归检查**：R-2026-033（手动验证：端口不可用时 AI 自动启动服务器并重试）
+- **状态**：open
+- **日期**：2026-01-16
+- **经验**：AI 行为规则需要在规则文件中明确强调，并在 Memory 中记录以加强遵守
+
+---
+
+## P-2026-034 AI 未自动触发 Skills（如 mcp-builder）
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：2026-01-16
+- **现象**：用户提到 "Docker MCP" 时，AI 应根据 `06-skills.md:16` 触发 `mcp-builder` Skill，但 AI 没有读取 `skills/mcp-builder/SKILL.md`。
+- **根因**：这是 **AI 行为问题**。AI 没有在对话开始时检查用户输入是否匹配 Skills 触发词表。
+- **修复**：AI 应在对话开始时：
+  1. 读取 `.cunzhi-knowledge/prompts/skills/INDEX.md` 触发词表
+  2. 匹配用户输入时自动读取对应 SKILL.md
+- **回归检查**：R-2026-034（手动验证：用户提到 MCP 相关内容时自动加载 mcp-builder Skill）
+- **状态**：open
+- **日期**：2026-01-16
+- **经验**：Skills 触发机制需要在规则中更明确地强调，或通过 Hook 自动注入
+
+
+## P-2026-034 VS Code 插件单端口限制导致多 Agent 协调失败
+
+- 项目：iterate/cunzhi
+- 发生版本：vscode-extension 0.1.0
+- 现象：VS Code 插件只维护一个 `currentPort` 变量，所有聊天窗口共用同一端口，导致多 Agent 协调时无法区分不同窗口
+- 根因：`extension.ts` 中 `currentPort` 是全局变量，`getStartPrompt()` 生成的提示词都使用同一端口
+- 影响范围：多 Agent 并行任务分发功能
+- 修复：需要修改插件支持多端口模式，或使用 Session ID 区分
+- 回归检查：R-2026-034
+- 状态：open
+- 日期：2026-01-17
+
+
+## P-2026-035 VS Code 插件需要支持多端口并行显示
+
+- 项目：iterate/cunzhi vscode-extension
+- 发生版本：vscode-extension 0.1.0
+- 现象：插件控制面板只显示单一端口，无法同时管理多个端口
+- 需求：
+  1. 支持同时启动多个端口（5316、5318 等）
+  2. 侧边栏显示所有活跃端口及其状态（空闲/占用）
+  3. 当某端口被占用时，AI Skills 自动切换到其他可用端口
+  4. 用户可以选择使用哪个端口
+- 影响范围：多 Agent 并行任务分发用户体验
+- 修复：需要重构 extension.ts，从单端口模式改为端口池模式
+- 回归检查：R-2026-035
+- 状态：open
+- 日期：2026-01-17
+
+## P-2026-034: VS Code 扩展端口扫描 UI 不更新
+
+### 现象
+- 控制面板一直显示"正在扫描端口 5310-5330..."
+- 底部状态栏显示端口已启动
+- `scanActivePorts()` 函数被调用但 UI 不更新
+
+### 根因分析
+1. `scanActivePorts()` 并行扫描 40 个端口，每个端口超时 1 秒，导致扫描时间过长
+2. 初始 HTML 显示"正在扫描端口"，在扫描完成前一直卡在这个状态
+3. 启动服务后未立即将端口添加到 `activePorts` 列表
+
+### 修复方案（2026-01-17）
+1. 降低超时时间：1000ms → 300ms
+2. 缩小扫描范围：40 个端口 → 10 个端口
+3. 启动服务成功后立即添加到 `activePorts`
+4. 修改初始 HTML 显示为"暂无活跃端口"
+
+### 状态
+fixed（待验证）
+
+---
+
+## P-2026-036 iterate 弹窗白屏问题（重新构建后修复）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：0.4.0
+- 现象：弹窗显示为纯白色，无任何 UI 内容
+- 根因分析：
+  1. **误判**：最初怀疑是 `/Applications/iterate.app/Contents/Resources/` 目录缺少前端资源
+  2. **实际情况**：Tauri 2.x 将前端资源嵌入到二进制文件本身（通过 `tauri::generate_context!()` 宏），而不是放在 Resources 目录。Resources 目录只有 `icon.icns` 是正常行为
+  3. **真正原因**：可能是构建时 `dist/` 目录为空或过期，导致嵌入的前端资源不完整
+- 修复：
+  1. 重新构建前端：`pnpm run build`
+  2. 重新构建 Tauri 应用：`cargo tauri build`
+  3. 安装新版本：`sudo cp -R target/release/bundle/macos/iterate.app /Applications/`
+- 验证方法：`strings iterate | grep index.html` 确认前端资源已嵌入二进制
+- 回归检查：R-2026-036
+- 状态：verified
+- 日期：2026-01-17
+- 经验：
+  - Tauri 2.x 的前端资源嵌入机制与 Tauri 1.x 不同
+  - 白屏问题首先检查 `dist/` 目录是否有完整内容
+  - 使用 `strings` 命令可验证二进制是否包含前端资源
+
+## P-2026-037 iterate 弹窗再次白屏问题（git 冲突导致构建失败）
+
+- 项目：iterate (cunzhi)
+- 仓库：https://github.com/kexin94yyds/iterate
+- 发生版本：0.5.2
+- 现象：弹窗显示为纯白色，无任何 UI 内容（再次出现）
+- 根因分析：
+  1. **直接原因**：`src/frontend/components/common/TerminalView.vue` 存在 git 冲突标记
+  2. **构建失败**：冲突标记导致 `pnpm run build` 失败，`dist/` 目录内容不完整
+  3. **深层原因**：多次 git 操作导致冲突未完全清理
+  4. **更新问题**：`cargo tauri build --no-bundle` 不会更新 bundle，导致应用更新失败
+- 修复：
+  1. 清理 `TerminalView.vue` 中的 git 冲突标记
+  2. 删除 `dist/` 目录重新构建：`rm -rf dist && pnpm run build`
+  3. 重新构建 Tauri 应用：`cargo tauri build --no-bundle`
+  4. **关键步骤**：直接替换二进制文件而不是复制 bundle
+     ```bash
+     sudo cp target/release/iterate /Applications/iterate.app/Contents/MacOS/iterate
+     sudo codesign --force --deep --sign - /Applications/iterate.app
+     ```
+- 脚本改进：
+  1. `update.sh` 和 `update-fast.sh` 添加 git 冲突检查
+  2. 优先使用快速二进制替换，避免依赖过期的 bundle
+  3. 自动检测二进制文件是否更新，智能选择更新方式
+- 补充（2026-01-18）：
+  - `update.sh` / `update-fast.sh` 允许在 **无 bundle** 情况下，只要 `/Applications/iterate.app` 存在就进行快速替换
+- 回归检查：R-2026-037
+- 状态：verified
+- 日期：2026-01-18
+- 经验：
+  - **git 冲突检查**：构建前必须检查 `grep -r "<<<<<<" src/frontend/`
+  - **快速更新**：直接替换二进制文件比复制整个 bundle 更可靠
+  - **bundle 问题**：`cargo tauri build --no-bundle` 不会更新 `target/release/bundle/`
+  - **验证方法**：`strings /Applications/iterate.app/Contents/MacOS/iterate | grep "index-xxx.css"` 检查前端资源是否嵌入
+  - **脚本优化**：更新脚本应优先使用快速替换，减少用户手动操作
+
+
+## P-2026-038 状态流转定义冲突（fixed/verified 含义不一致）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`rules/03-workflows.md` 将 `fixed` 定义为“代码已修复且三件套已沉淀”，而 `prompts/skills/audit-with-codex/SKILL.md` 将 `fixed` 定义为“代码已修复待验证”，导致状态语义冲突
+- 根因分析：状态定义更新未在所有规则与技能文件中同步
+- 修复：统一 `fixed/verified` 的含义并同步到所有相关规则与技能文件
+- 影响范围：Bug 修复流程、Codex 审计流程
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-039 三件套顺序不一致（patterns/regressions 顺序混乱）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`audit-with-codex` 中写为 problems → patterns → regressions，而全局与 `settle` 规定为 problems → regressions → patterns
+- 根因分析：新增 Codex 审查说明时沿用了旧顺序
+- 修复：将 `audit-with-codex` 的三件套顺序改为 problems → regressions → patterns 并与全局规则一致
+- 影响范围：三件套沉淀流程一致性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-040 ralph-loop 与全局 zhi 规则冲突（不打扰用户 vs 必须 zhi）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`ralph-loop` 规定“期间不打扰用户、全部完成后才调用 zhi”，但全局规则要求“任何对话都要调用 zhi”且“每一步改动后必须调用 zhi”
+- 根因分析：新增 ralph-loop 未对齐全局交互约束
+- 修复：在 `ralph-loop` 增补每个任务完成后调用 zhi 汇报并确认继续，或在全局规则中明确豁免（建议前者）
+- 影响范围：自主循环技能、全局对话控制
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-041 debug 与全局 zhi 规则冲突（仅关键节点汇报）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：`debug` 规定“只在关键节点汇报”，与全局“每步改动后必须调用 zhi”冲突
+- 根因分析：调试流程未显式继承全局汇报要求
+- 修复：在 `debug` 中补充“每轮改动后仍需 zhi 汇报/确认”或在全局规则中明确调试场景例外
+- 影响范围：调试技能与全局流程一致性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+## P-2026-042 ralph-loop 触发词覆盖不足（缺少 ralph-loop 字面）
+
+- 项目：iterate/cunzhi
+- 仓库：https://github.com/kexin94yyds/cunzhi-knowledge
+- 现象：触发词未包含 `ralph-loop` 或 `/ralph-loop`，可能导致用户按命令格式调用时未命中
+- 根因分析：触发词列表未覆盖命令式短语
+- 修复：补充触发词 `ralph-loop` 与 `/ralph-loop`
+- 影响范围：技能触发准确性
+- 回归检查：待定
+- 状态：open
+- 日期：2026-01-19
+
+
+## P-2026-034 Codex 子代理与主代理终端输出混合
+
+- **项目**：iterate
+- **发生版本**：ef34531
+- **现象**：用 `&` 后台启动 `codex_loop.py` 时，Codex 的输出仍然显示在主代理的终端，导致输出混乱
+- **根因**：后台进程的 stdout/stderr 仍然连接到当前终端
+- **影响范围**：多子代理协作场景
+- **修复方案**：
+  1. 重定向输出到文件：`> /dev/null 2>&1`
+  2. 或使用 `osascript` 打开新终端窗口
+- **修复**：使用 `codex exec -o <output_file>` 将结果输出到文件，避免终端混合
+- **回归检查**：R-2026-034
+- **状态**：verified
+- **日期**：2026-01-19
+
+---
+
+## P-2026-043 Git worktree 被误识别为 submodule
+
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：`git submodule status` 报错 `fatal: no submodule mapping found in .gitmodules for path 'ios-bridge-dev'`
+- **根因**：`ios-bridge-dev` 是一个 git worktree（`.git` 文件指向 `.git/worktrees/ios-bridge-dev`），但被 Git index 误认为 submodule
+- **修复**：`git rm --cached ios-bridge-dev` 从 index 中移除
+- **回归检查**：R-2026-043
+- **状态**：fixed
+- **日期**：2026-01-19
+
+---
+
+## P-2026-044 .cunzhi-knowledge submodule commit 与 superproject 不一致
+- **项目**：iterate
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：`git submodule status` 显示 `.cunzhi-knowledge` 前有 `+` 号，表示 checkout 的 commit 与 superproject 记录不一致
+- **根因**：submodule 有 6 个未推送的 commits，superproject 未更新引用
+- **修复**：
+  1. 推送 submodule：`cd .cunzhi-knowledge && git push origin main`
+  2. 更新 superproject 引用：`git add .cunzhi-knowledge`
+- **回归检查**：R-2026-044
+- **状态**：fixed
+- **日期**：2026-01-19
+
+### 修复
+1. 修正变量名：`currentState?.request?.project_path` → `currentRequest?.project_path`
+2. 改用相对路径：`/files?project_path=...`
+
+### 回归检查
+R-2026-013
+
+### 关联 commit
+c053fc3
+
+---
+
+## P-2026-022 macOS watchdog timeout (watchdogd 93s no checkins) 与 USB 网络/外设驱动可疑
+- 现象: 机器卡死后重启，panic 为 watchdog timeout。
+- 线索: backtrace 含 AppleARMWatchdogTimer/AppleInterruptControllerV3；panicked task 为 kernel_task；last started kext 为 com.apple.driver.usb.cdc.ncm（USB 网络/手机共享/扩展坞）。Sleep/Wake 时间戳存在。
+- 判断: 更像系统级卡死/外设驱动阻塞，而非单纯应用内存不足。
+- 建议: 断开外设/手机共享复现对比；更换端口/线材/直连避免 hub；升级系统；若持续复现运行 Apple Diagnostics。

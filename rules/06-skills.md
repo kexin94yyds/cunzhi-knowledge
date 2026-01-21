@@ -39,23 +39,36 @@ trigger: always_on
 → 按需加载：reference/node_mcp_server.md 或 reference/python_mcp_server.md
 ```
 
-## iterate Skill 自动恢复（重要）
+## iterate Skill 自动恢复（⚠️ 最高优先级）
+
+**这是强制规则，AI 必须严格遵守，不得跳过或忽略！**
 
 当调用 `cunzhi.py` 脚本返回 `Error: Port {PORT} is not available` 时：
 
-1. **自动启动服务器**（非阻塞）：
+1. **立即自动启动服务器**（非阻塞）：
    ```bash
    iterate --serve --port {PORT}
    ```
+   或使用完整路径：
+   ```bash
+   /Applications/iterate.app/Contents/MacOS/iterate --serve --port {PORT}
+   ```
 
-2. **等待 2-3 秒**后重新调用脚本
+2. **等待 3 秒**后重新调用脚本
 
-3. 如果仍然失败，提示用户手动检查
+3. 如果仍然失败，**再次尝试**（最多 3 次）
+
+4. 3 次都失败后，提示用户手动检查
+
+**❌ 禁止行为**：
+- 禁止在端口不可用时直接停止对话
+- 禁止让用户手动启动服务器（除非 3 次自动恢复都失败）
+- 禁止输出 "KeepGoing=false" 后不做任何恢复尝试
 
 **端口约定**：
 | 环境 | 端口 |
 |------|------|
-| Windsurf | 5315 |
+| Windsurf | 5312 |
 | VS Code | 5314 |
 | Cursor | 5316 |
 
