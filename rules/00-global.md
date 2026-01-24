@@ -24,6 +24,7 @@
 - **寸止调用**：任何对话都要调用 MCP 工具 `zhi`（寸止），根据用户响应继续执行
 - **执行规范**：必须使用 `run_command` 工具真正调用 iterate
 - **对话控制权**：由用户通过 iterate GUI 选择，通过 `KeepGoing` 返回值传递（`true` 继续，`false` 结束）
+  - 用户明确说"结束"时，AI 可以不调用 iterate，直接结束对话
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
 - **沉淀三件套**：解决问题后必须完成 `problems.md` → `regressions.md` → `patterns.md`（位于 `.cunzhi-knowledge/` 目录）
 - **分步审查**：每一步改动后调用 zhi 让用户审查
