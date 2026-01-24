@@ -22,11 +22,11 @@
 
 - **协作关系**：AI 是协作者，不是工具
 - **寸止调用**：任何对话都要调用 MCP 工具 `zhi`（寸止），根据用户响应继续执行
-- **禁止替代**：不得仅输出文字 "zhi"，必须真正调用工具
-- **对话终止权**：**AI 永远不能主动判断任务完成或切断对话**
+- **执行规范**：必须使用 `run_command` 工具真正调用 iterate
+- **对话控制权**：由 `KeepGoing` 返回值决定对话是否继续（`true` 继续，`false` 结束）
 - **收尾确认**：任何准备收尾/结束前必须先调用 `zhi`（寸止）让用户明确选择继续或结束（除非用户已明确说结束）
 - **沉淀三件套**：解决问题后必须完成 `problems.md` → `regressions.md` → `patterns.md`（位于 `.cunzhi-knowledge/` 目录）
-- **分步审查**：每一步改动后必须调用 `zhi` 通知用户进行功能审查，严禁连续执行多个改动步骤而不汇报
+- **分步审查**：每一步改动后调用 zhi 让用户审查
 - **ralph-loop 例外**：若用户明确选择“整单完成后汇报”，允许按该节奏汇报，但必须在启动前通过 `zhi` 确认
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 - **iterate Skill 自动恢复**：当调用 `iterate --bridge` 返回 `Port not available` 时，必须自动执行 `iterate --serve --port {PORT}` 启动服务器，等待 2-3 秒后重试
@@ -66,7 +66,7 @@
 - 总结可复用经验 → 写入 `.cunzhi-knowledge/patterns.md`（PAT-YYYY-NNN）
 - 创建回归检查 → 写入 `.cunzhi-knowledge/regressions.md`（R-YYYY-NNN）
 - 重要对话记录 → 写入 `.cunzhi-knowledge/conversations/YYYY-MM-DD.md`
-- **禁止在 memory 存放 problems.md**
+- **problems.md 存放位置**：统一存放于 `.cunzhi-knowledge/`
 
 ### Conversation 自动记录
 - 每次调用 `zhi` → 自动追加到 `conversations/YYYY-MM-DD.md`
@@ -111,13 +111,11 @@ open → fixed → verified → audited（必经）
 ```
 
 **约束**：
-- 未完成三件套前，禁止视为"问题已解决"
-- 禁止跳过 `fixed` 直接到 `verified`
+- 三件套完成后方可视为“问题已解决”
+- 状态必须按 `open → fixed → verified` 顺序流转
 - 三者 ID 后缀必须关联
 - Codex 审查是必经步骤，审查通过后才能标记为 `audited`
 </workflows>
-
-<tools>
 
 ### 工具分层架构
 
@@ -128,7 +126,7 @@ open → fixed → verified → audited（必经）
 **L0: zhi (寸止)** - 顶层协调者（run_command 模式）
 - 所有对话必经，控制任务流程
 - 显示消息、接收输入、确认/授权/反问/终止
-- ❌ 禁止仅输出文字 "zhi"，必须真正调用命令
+- ✅ 必须使用 `run_command` 工具真正调用 iterate
 - ⚠️ **调用方式**：使用 `run_command` 工具执行（单行命令）：
   ```bash
   clear && printf '%s\n' '## 标题' '' '内容' > ~/.cunzhi/{PORT}/output.md && iterate --bridge --port {PORT} --workspace "/项目路径"
