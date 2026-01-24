@@ -30,6 +30,10 @@
 - **ralph-loop 例外**：若用户明确选择“整单完成后汇报”，允许按该节奏汇报，但必须在启动前通过 `zhi` 确认
 - **提示词库**：`.cunzhi-knowledge/prompts/` 是技能库，按需调用参考 README.md
 - **iterate Skill 自动恢复**：当调用 `iterate --bridge` 返回 `Port not available` 时，必须自动执行 `iterate --serve --port {PORT}` 启动服务器，等待 2-3 秒后重试
+- **Token 效率**：像管理内存一样管理上下文
+  - 精简输入：只读取与当前任务最相关的 2-3 个文件
+  - 日志过滤：只保留失败信息，过滤成功的测试日志
+  - 确定性分配：每个循环开始时优先注入关键文档（README/Spec）
 </core_principles>
 
 <shortcuts>
