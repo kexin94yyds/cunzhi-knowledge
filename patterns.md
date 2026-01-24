@@ -53,9 +53,7 @@
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
 | PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
-| PAT-2026-024 | 派生 UI 状态需从权威数据重建（避免刷新丢失） | 派生状态仅展示 + 加载链路重建 |
 | PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
-| PAT-2026-047 | Vue3 + markdown-it + Mermaid 集成 | highlight 拦截 + 异步渲染 + 主题适配 |
 
 ---
 
@@ -1829,47 +1827,6 @@ fetch('/files?project_path=...')
   3. **应用检查点**：`git stash apply <stash>`
 - **关联问题**：P-2026-022
 - **日期**：2026-01-13
- 
-## PAT-2026-024 派生 UI 状态需从权威数据重建（避免刷新丢失）
-
-- **场景**：UI 有“派生状态”（例如分类 Tabs、筛选项、统计信息），这些派生状态在运行时会被临时更新（例如导入时通过 `setState` 追加），但刷新后会回到默认值。
-- **模式描述**：
-  1. **明确权威数据源**：确定持久化的权威数据（例如 IndexedDB 中的 `screenshots`）。
-  2. **派生状态不做唯一来源**：派生状态（例如 `categories`）可以用于 UI 展示，但不能作为唯一事实来源。
-  3. **在加载链路中重建**：在应用启动/刷新时的加载函数中（例如 `loadScreenshots()`），在 `setScreenshots(...)` 后基于权威数据调用“重建函数”（例如 `updateCategoriesFromData(localData)`）。
-  4. **覆盖所有数据路径**：如果存在“本地模式/云同步模式”等分支，必须确保每个分支都执行派生状态重建，否则会出现只在某分支复现的刷新丢失。
-- **关联问题**：P-2026-021
-- **日期**：2026-01-12
-
----
-
-## PAT-2025-003 播客音频转 9:16 竖屏视频工作流
-
-- **适用场景**：将播客音频文件转换为适合短视频平台的 9:16 竖屏视频
-- **核心组件**：
-  1. **音频处理**：支持 mp3/wav/m4a 格式
-  2. **封面处理**：自动将封面图适配为 9:16 比例，高斯模糊背景填充
-  3. **波形可视化**：生成动态音频波形叠加在视频底部
-  4. **视频合成**：FFmpeg 合成最终视频文件
-
-- **技术要点**：
-  - FFmpeg 本地二进制文件优先，系统 ffmpeg 降级
-  - 波形参数：青色 (0x00CED1)，高度 150px，Y 位置 1400
-  - 视频规格：1080x1920，30fps，H.264 编码，AAC 音频
-  - 封面处理：`boxblur=20:5` 高斯模糊 + 居中叠加
-
-- **工作流程**：
-  1. 音频文件放入 `input/audio/` 目录
-  2. 封面图片放入 `input/cover/` 目录（支持自动匹配同名文件）
-  3. 运行 `python3 main.py [音频文件名]` 或批量处理
-  4. 输出视频保存在 `output/final/` 目录
-
-- **成功案例**：
-  - 《定义决定了你的命运》：14分43秒，输出 150MB
-  - 《定义》：13分20秒，输出 131MB
-
-- **项目地址**：`/Users/apple/播客工作流`
-- **日期**：2026-01-21
 
 ---
 
@@ -2172,37 +2129,3 @@ fetch('/files?project_path=...')
   - 总等待时间不宜过长（< 1 秒）
 - **关联 P-ID**：P-2026-046
 - **日期**：2026-01-19
-
----
-
-## PAT-2026-047: Vue3 + markdown-it + Mermaid 图表集成模式
-
-- **场景**：在 Vue3 + Tauri 应用中，需要在 Markdown 内容中渲染 Mermaid 图表。
-- **技术栈**：Vue3 + markdown-it + mermaid + highlight.js
-- **模式描述**：
-  1. **markdown-it highlight 函数拦截**：在 `highlight` 回调中检测 `lang === 'mermaid'`，返回特殊容器：
-     ```typescript
-     if (lang === 'mermaid') {
-       const id = `mermaid-${Date.now()}-${counter++}`
-       return `<div class="mermaid-container"><pre class="mermaid" id="${id}">${str}</pre></div>`
-     }
-     ```
-  2. **异步渲染**：在 `onMounted`、`onUpdated` 和 `watch` 中调用 `mermaid.run()`：
-     ```typescript
-     async function renderMermaidDiagrams() {
-       await nextTick()
-       const elements = document.querySelectorAll('.mermaid:not([data-processed])')
-       if (elements.length > 0) {
-         mermaid.initialize({ startOnLoad: false, theme: currentTheme === 'light' ? 'default' : 'dark' })
-         await mermaid.run({ nodes: elements })
-       }
-     }
-     ```
-  3. **主题适配**：根据当前主题动态设置 `mermaid.initialize({ theme: ... })`
-  4. **容器样式**：添加 `.mermaid-container` 样式处理边框、背景和居中
-- **关键依赖**：`pnpm add mermaid`
-- **注意事项**：
-  - `startOnLoad: false` 避免自动渲染冲突
-  - 使用 `:not([data-processed])` 选择器避免重复渲染
-  - mermaid 会自动添加 `data-processed` 属性
-- **日期**：2026-01-21

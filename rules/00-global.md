@@ -129,16 +129,15 @@ open → fixed → verified → audited（必经）
 - 所有对话必经，控制任务流程
 - 显示消息、接收输入、确认/授权/反问/终止
 - ❌ 禁止仅输出文字 "zhi"，必须真正调用命令
-- ⚠️ **调用方式**：使用 `run_command` 工具执行：
+- ⚠️ **调用方式**：使用 `run_command` 工具执行（单行命令）：
   ```bash
-  iterate --bridge --port {PORT} --workspace "/项目路径"
+  clear && printf '%s\n' '## 标题' '' '内容' > ~/.cunzhi/{PORT}/output.md && iterate --bridge --port {PORT} --workspace "/项目路径"
   ```
 - **文件交互模式**（Infinite WF 风格）：
-  1. AI 将任务摘要写入 `~/.cunzhi/{PORT}/output.md`
-  2. AI 调用: `iterate --bridge --port {PORT}`
-  3. iterate 弹出 GUI 显示内容
-  4. 用户输入后，结果写入 `~/.cunzhi/{PORT}/input.md`
-  5. AI 读取 `input.md` 获取用户指令
+  1. AI 使用 `clear && printf ... > output.md && iterate --bridge` 一条命令完成清屏、写入、调用
+  2. iterate 弹出 GUI 显示 output.md 内容
+  3. 用户输入后，结果写入 `~/.cunzhi/{PORT}/input.md`
+  4. AI 读取 `input.md` 获取用户指令
 - **返回格式**：
   - `KeepGoing=true` + `input_file: /path/to/input.md` → 继续对话
   - `KeepGoing=false` → 结束对话
