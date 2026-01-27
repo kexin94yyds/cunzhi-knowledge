@@ -25,7 +25,6 @@
 | PAT-2024-021 | ji 统一管理 memory/knowledge | 单一入口，action 区分 |
 | PAT-2026-010 | 主 ID 提取优先级策略 | 标题优先 + 文本顺序兜底 |
 | PAT-2026-023 | Git stash Checkpoint 创建应保留条目 | stash push 后用 apply（不 pop）+ 可靠获取新 stash 引用 |
-| PAT-2026-046 | 文件读取重试机制 | 应对异步写入竞态，重试 3 次，间隔 200ms |
 
 ### 🛡️ 安全与防护
 | ID | 名称 | 核心要点 |
@@ -34,9 +33,6 @@
 | PAT-2024-017 | AI 防注入安全 | Lethal Trifecta 三要素 |
 | PAT-2026-001 | 知识库目录的 .gitignore 保护与自动检测 | 例外保护 + 运行时风险检测 |
 | PAT-2026-021 | Shell heredoc 安全写入模式 | 使用带引号的定界符避免 Shell 注入与展开 |
-| PAT-2026-047 | 洋葱式安全防御模式 | 多层隔离控制爆炸半径 |
-| PAT-2026-048 | Token 效率优化原则 | 精简输入 + 日志过滤 + 确定性分配 |
-| PAT-2026-049 | 积极指令原则 | 正向指令替代负向禁止 |
 
 ### 📱 桌面应用 (Electron/Tauri)
 
@@ -56,6 +52,7 @@
 | PAT-2026-006 | 多进程架构下的 Bridge 状态同步与指令转发 | 主进程中转 + 状态上报 + 指令轮询 |
 | PAT-2026-007 | Tauri 命令式多进程端口管理 | Rust 管理 Python 进程 + 端口自动发现 + 残留清理 |
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
+| PAT-2026-024 | 派生 UI 状态需从权威数据重建（避免刷新丢失） | 派生状态仅展示 + 加载链路重建 |
 | PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
 
 ---
@@ -1830,6 +1827,47 @@ fetch('/files?project_path=...')
   3. **应用检查点**：`git stash apply <stash>`
 - **关联问题**：P-2026-022
 - **日期**：2026-01-13
+ 
+## PAT-2026-024 派生 UI 状态需从权威数据重建（避免刷新丢失）
+
+- **场景**：UI 有“派生状态”（例如分类 Tabs、筛选项、统计信息），这些派生状态在运行时会被临时更新（例如导入时通过 `setState` 追加），但刷新后会回到默认值。
+- **模式描述**：
+  1. **明确权威数据源**：确定持久化的权威数据（例如 IndexedDB 中的 `screenshots`）。
+  2. **派生状态不做唯一来源**：派生状态（例如 `categories`）可以用于 UI 展示，但不能作为唯一事实来源。
+  3. **在加载链路中重建**：在应用启动/刷新时的加载函数中（例如 `loadScreenshots()`），在 `setScreenshots(...)` 后基于权威数据调用“重建函数”（例如 `updateCategoriesFromData(localData)`）。
+  4. **覆盖所有数据路径**：如果存在“本地模式/云同步模式”等分支，必须确保每个分支都执行派生状态重建，否则会出现只在某分支复现的刷新丢失。
+- **关联问题**：P-2026-021
+- **日期**：2026-01-12
+
+---
+
+## PAT-2025-003 播客音频转 9:16 竖屏视频工作流
+
+- **适用场景**：将播客音频文件转换为适合短视频平台的 9:16 竖屏视频
+- **核心组件**：
+  1. **音频处理**：支持 mp3/wav/m4a 格式
+  2. **封面处理**：自动将封面图适配为 9:16 比例，高斯模糊背景填充
+  3. **波形可视化**：生成动态音频波形叠加在视频底部
+  4. **视频合成**：FFmpeg 合成最终视频文件
+
+- **技术要点**：
+  - FFmpeg 本地二进制文件优先，系统 ffmpeg 降级
+  - 波形参数：青色 (0x00CED1)，高度 150px，Y 位置 1400
+  - 视频规格：1080x1920，30fps，H.264 编码，AAC 音频
+  - 封面处理：`boxblur=20:5` 高斯模糊 + 居中叠加
+
+- **工作流程**：
+  1. 音频文件放入 `input/audio/` 目录
+  2. 封面图片放入 `input/cover/` 目录（支持自动匹配同名文件）
+  3. 运行 `python3 main.py [音频文件名]` 或批量处理
+  4. 输出视频保存在 `output/final/` 目录
+
+- **成功案例**：
+  - 《定义决定了你的命运》：14分43秒，输出 150MB
+  - 《定义》：13分20秒，输出 131MB
+
+- **项目地址**：`/Users/apple/播客工作流`
+- **日期**：2026-01-21
 
 ---
 
@@ -2070,125 +2108,72 @@ fetch('/files?project_path=...')
 
 ---
 
-## PAT-2026-035: Windsurf/VSCode 插件目录分离
+## PAT-2026-035: IndexedDB 性能优化最佳实践
 
-- **场景**：更新 VSCode 插件后，Windsurf 仍使用旧版本。
+- **场景**：Electron 应用使用 IndexedDB 存储大量数据时出现性能问题。
 - **问题特征**：
-  1. `code --install-extension` 只更新 `~/.vscode/extensions/`
-  2. Windsurf 使用独立目录 `~/.windsurf/extensions/`
-  3. 两者不共享插件
+  1. 使用 cursor 逐条读取，性能差
+  2. 加载所有数据来计算数量
+  3. 阻塞对话框导致 UI 无响应
 - **模式描述**：
-  1. **识别目录**：
-     - VSCode: `~/.vscode/extensions/`
-     - Windsurf: `~/.windsurf/extensions/`
-     - Cursor: `~/.cursor/extensions/`
-  2. **更新策略**：
-     - 方法 A：分别安装到各 IDE
-     - 方法 B：手动复制编译后的代码
-  3. **快速更新**（开发时）：
-     ```bash
-     cp -r vscode-extension/out ~/.windsurf/extensions/kexin.iterate-0.1.4/
-     ```
-- **最佳实践**：
-  - 发布时使用各 IDE 的安装命令
-  - 开发时直接复制 `out/` 目录更快
-  - 更新后必须重启 IDE 加载新代码
+  1. **批量读取**：使用 `getAll()` 替代 cursor（快 40-50%）
+  2. **计数优化**：使用 `count()` 而不是加载所有数据
+  3. **分页读取**：使用 `getAll(keyRange, batchSize)` 分页
+  4. **让出事件循环**：每批处理后 `await new Promise(r => setTimeout(r, 0))`
+  5. **Relaxed durability**：写入时使用 `{ durability: 'relaxed' }`
+- **代码示例**：
+  ```javascript
+  // 批量读取
+  const request = index.getAll(modeId);
+  
+  // 计数
+  const countReq = store.count();
+  
+  // 让出事件循环
+  await new Promise(r => setTimeout(r, 0));
+  ```
+- **参考**：https://nolanlawson.com/2021/08/22/speeding-up-indexeddb-reads-and-writes/
 - **关联 P-ID**：P-2026-045
-- **日期**：2026-01-19
+- **日期**：2026-01-27
 
 ---
 
-## PAT-2026-046: 文件读取重试机制（应对异步写入竞态）
+## PAT-2026-036: Git 同步合并模式（避免强制推送）
 
-- **场景**：程序 A 写入文件后，程序 B 立即读取，但读取到空内容。
+- **场景**：应用同步数据到 GitHub 时需要保留历史。
 - **问题特征**：
-  1. IDE 工具（如 Windsurf `write_to_file`）可能异步执行
-  2. 文件系统写入可能有延迟
-  3. 直接读取可能遇到空文件或不完整内容
+  1. 使用 `git push -f` 覆盖远程历史
+  2. 多设备同步时数据丢失
 - **模式描述**：
-  1. **重试机制**：读取时如果为空，等待后重试
-  2. **参数设计**：
-     - `max_retries`: 最大重试次数（推荐 3）
-     - `delay_ms`: 每次重试间隔（推荐 200ms）
-  3. **实现示例（Rust）**：
-     ```rust
-     fn read_with_retry(path: &Path, max_retries: u32, delay_ms: u64) -> String {
-         for attempt in 0..=max_retries {
-             if let Ok(content) = std::fs::read_to_string(path) {
-                 if !content.trim().is_empty() {
-                     return content;
-                 }
-             }
-             if attempt < max_retries {
-                 std::thread::sleep(Duration::from_millis(delay_ms));
-             }
-         }
-         "默认值".to_string()
-     }
-     ```
-- **最佳实践**：
-  - 写入方尽量使用同步方式（如 shell `cat heredoc`）
-  - 读取方增加重试机制作为防御
-  - 总等待时间不宜过长（< 1 秒）
+  1. **先拉取再推送**：`git fetch` + `git pull --rebase` + `git push`
+  2. **首次同步**：使用 `--allow-unrelated-histories`
+  3. **移除强制推送**：删除所有 `--force` 选项
+- **代码示例**：
+  ```javascript
+  await execGitCommand('git fetch origin', notesDir);
+  await execGitCommand(`git pull --rebase origin ${branch}`, notesDir);
+  await execGitCommand(`git push origin ${branch}`, notesDir);
+  ```
 - **关联 P-ID**：P-2026-046
-- **日期**：2026-01-19
+- **日期**：2026-01-27
 
 ---
 
-## PAT-2026-047: 洋葱式安全防御模式
+## PAT-2026-037: 使用稳定 ID 作为文件名避免重复
 
-- **场景**：让 AI Agent 拥有高权限（执行 Shell、读写文件、联网）时，需要控制潜在风险。
-- **核心理念**：不是阻止 AI 犯错，而是假设它一定会出问题，通过多层包裹限制"爆炸半径"。
+- **场景**：导出数据到文件系统时需要避免文件名冲突。
+- **问题特征**：
+  1. 使用日期+标题作为文件名，可能重复
+  2. 更新数据后日期变化导致生成新文件
 - **模式描述**：
-  1. **最外层 - 环境隔离**：
-     - 在 Codespaces/Docker/VM 中运行，不在本地裸奔
-     - 环境用完即弃，不存长期数据
-  2. **中间层 - 网络与凭证隔离**：
-     - 清除敏感环境变量（`SSH_AUTH_SOCK`、`AWS_*`、`GITHUB_TOKEN`）
-     - 限制网络访问范围
-  3. **核心层 - 最小权限原则**：
-     - 只给任务必需的 API Key
-     - 避免使用管理员权限
-- **实现方式**：
-  - **Codespaces**：`.devcontainer/devcontainer.json` 配置 `--cap-drop=ALL`
-  - **macOS 简易隔离**：`HOME=/tmp/isolated-env your-script.sh`
-  - **凭证清理脚本**：`unset SSH_AUTH_SOCK AWS_ACCESS_KEY_ID GITHUB_TOKEN`
-- **关联 P-ID**：无（最佳实践）
-- **日期**：2026-01-24
-
----
-
-## PAT-2026-048: Token 效率优化原则
-
-- **场景**：AI 对话中 200k Token 上下文看似很大，实际只相当于一部电影剧本（136KB）。
-- **核心理念**：像管理内存一样管理 Token，避免浪费在无关信息上。
-- **模式描述**：
-  1. **精简输入**：只读取与当前任务最相关的 2-3 个文件
-  2. **日志过滤**：只保留失败信息，过滤成功的测试日志
-  3. **确定性分配**：每个循环开始时优先注入关键文档（README/Spec）
-- **反模式**：
-  - ❌ `cat *` 读取所有文件
-  - ❌ 输出完整的成功测试日志
-  - ❌ 重复注入相同的上下文
-- **关联 P-ID**：无（最佳实践）
-- **日期**：2026-01-24
-
----
-
-## PAT-2026-049: 积极指令原则
-
-- **场景**：编写 AI 规则时，负向指令（"禁止 X"）反而会诱导 AI 关注该事物。
-- **核心理念**：告诉 AI 做什么，而不是不做什么。
-- **模式描述**：
-  | 负向（差） | 正向（好） |
-  |-----------|-----------|
-  | 禁止替代 | 执行规范：必须使用 run_command |
-  | AI 永远不能主动判断 | 对话控制权：由 KeepGoing 决定 |
-  | 严禁连续执行 | 分步审查：每步调用 zhi |
-  | 禁止元评论 | 输出风格：直接陈述结论 |
-- **应用场景**：
-  - `.cursorrules` / `.windsurfrules` 编写
-  - MCP 工具约束定义
-  - 系统提示词设计
-- **关联 P-ID**：无（最佳实践）
-- **日期**：2026-01-24
+  1. **使用数据 ID**：`${id}-${title}.md`
+  2. **ID 唯一性**：数据库自增 ID 或 UUID
+  3. **标题作为可读部分**：截断并清理特殊字符
+- **代码示例**：
+  ```javascript
+  const noteId = note.id || Date.now();
+  const safeTitle = title.replace(/[\\/:*?"<>|]/g, '_').substring(0, 40);
+  const fileName = `${noteId}-${safeTitle}.md`;
+  ```
+- **关联 P-ID**：P-2026-047
+- **日期**：2026-01-27
