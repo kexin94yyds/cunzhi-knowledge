@@ -18,6 +18,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [implement](implement/SKILL.md) | 实现、开发、implement | 功能实现流程 |
 | [review](review/SKILL.md) | review、代码审查、PR审查 | 代码审查流程 |
 | [audit-with-codex](audit-with-codex/SKILL.md) | cha、审查、audit、codex、审计 | Codex 自动审查 |
+| [codex-exec](codex-exec/SKILL.md) | codex exec、执行、run codex、工厂模式 | Codex CLI 直接执行 |
 | [run-tests](run-tests/SKILL.md) | 测试、test、运行测试 | 测试执行流程 |
 | [settle](settle/SKILL.md) | 沉淀、三件套、settle | 问题沉淀流程 |
 | [sync-knowledge](sync-knowledge/SKILL.md) | 同步、sync、知识库 | 知识库同步 |
