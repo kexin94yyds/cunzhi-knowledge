@@ -51,16 +51,21 @@ codex exec "任务描述" --sandbox workspace-write -a on-failure -C /path/to/pr
 **命令模板**：
 
 ```bash
-codex exec "
-## 项目上下文
-$(cat {项目路径}/.cunzhi-memory/context.md 2>/dev/null || echo '无')
+# 安全拼接：避免在双引号内注入未转义内容
+PROJECT_PATH="{项目路径}"
+WORKDIR="{工作目录}"
+USER_TASK="{用户任务描述}"
 
-## 设计决策
-$(cat {项目路径}/.cunzhi-knowledge/patterns.md 2>/dev/null | head -100 || echo '无')
-
-## 任务
-{用户任务描述}
-" --sandbox {sandbox模式} -a {approval模式} -C {工作目录}
+{
+  printf '%s\n' '## 项目上下文'
+  cat "$PROJECT_PATH/.cunzhi-memory/context.md" 2>/dev/null || printf '%s\n' '无'
+  printf '\n'
+  printf '%s\n' '## 设计决策'
+  cat "$PROJECT_PATH/.cunzhi-knowledge/patterns.md" 2>/dev/null | head -100 || printf '%s\n' '无'
+  printf '\n'
+  printf '%s\n' '## 任务'
+  printf '%s\n' "$USER_TASK"
+} | codex exec - --sandbox {sandbox模式} -a {approval模式} -C "$WORKDIR"
 ```
 
 ### 第三步：执行并监控
@@ -125,16 +130,17 @@ codex exec "参考 bridge_test.html 复刻到 iOS" --sandbox workspace-write -a 
 
 **AI 构建并执行**：
 ```bash
-codex exec "
-## 项目上下文
-$(cat /Users/apple/cunzhi/.cunzhi-memory/context.md 2>/dev/null)
+PROJECT_PATH="/Users/apple/cunzhi"
+WORKDIR="/Users/apple/cunzhi"
+USER_TASK=$'重构 bin/ 目录下的 Python 脚本，提高代码质量：\n1. 统一代码风格\n2. 添加类型注解\n3. 优化错误处理'
 
-## 任务
-重构 bin/ 目录下的 Python 脚本，提高代码质量：
-1. 统一代码风格
-2. 添加类型注解
-3. 优化错误处理
-" --sandbox workspace-write -a on-failure -C /Users/apple/cunzhi
+{
+  printf '%s\n' '## 项目上下文'
+  cat "$PROJECT_PATH/.cunzhi-memory/context.md" 2>/dev/null || printf '%s\n' '无'
+  printf '\n'
+  printf '%s\n' '## 任务'
+  printf '%s\n' "$USER_TASK"
+} | codex exec - --sandbox workspace-write -a on-failure -C "$WORKDIR"
 ```
 
 ### 示例 3：批量任务（工厂模式）
