@@ -7375,3 +7375,34 @@ c053fc3
 - **经验**：
   - iterate 手机端 PWA 使用独立的 `bridge_test.html`，不是 Tauri 应用内嵌的 Vue 组件
   - 需要在两个地方同时实现通知功能：`bridge_test.html` 和 `useNotification.ts`
+
+---
+
+## P-2026-049 iOS iterate 应用收到重复消息
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：iOS 原生应用通过 WebSocket 连接到 Bridge 服务器时，收到两条相同的 MCP 消息
+- **根因**：
+  1. Bridge 服务器在 `handle_bridge_publish` 中会转发消息到 8080 端口
+  2. 本地子进程（如 5310 端口）发送消息时，会同时通过 broadcast channel 和 HTTP POST 转发
+  3. 导致 8080 端口的 WebSocket 客户端（包括 iOS 应用）收到两条消息
+- **修复**：
+  - 修复代码已存在于 `src/rust/bridge/ws.rs:490-514`
+  - 使用 `forwarded_from_bridge` 标记避免重复转发
+  - 检查 `LOCAL_BRIDGE_PORT != 8080` 才进行 HTTP 转发
+  - **需要重新编译 iterate 应用才能生效**
+- **回归检查**：待创建（R-2026-049）
+- **状态**：fixed
+- **日期**：2026-01-29
+- **关键文件**：
+  - `ios-app/IterateNotify/ContentView.swift` - iOS UI
+  - `ios-app/IterateNotify/WebSocketManager.swift` - WebSocket 管理
+  - `src/rust/bridge/ws.rs` - Bridge 服务器逻辑
+- **下一步**：
+  1. 重新编译 iterate 应用（`./build-install.sh`）
+  2. 测试 iOS 应用是否只收到单条消息
+  3. 实现项目切换菜单（点击 ∞ 图标）
+  4. 同步快捷模板功能
+  5. 实现 IDE/文件/复制/引用模式切换
