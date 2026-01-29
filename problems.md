@@ -7446,3 +7446,33 @@ c053fc3
       }
   }
   ```
+
+---
+
+## P-2026-051 iOS Bridge UI 缺少图片上传/粘贴/拖拽与上下文追加交互
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：
+  1. iOS Bridge 界面缺少图片上传入口与粘贴图片能力。
+  2. 中间区域无法拖拽图片上传。
+  3. 快捷模板展示为两排网格，视觉与桌面端不一致。
+  4. 上下文追加仅有右侧开关，无法控制是否参与追加。
+- **根因**：
+  1. iOS 端未实现粘贴/拖拽图片处理与独立的上传入口。
+  2. 快捷模板样式未对齐桌面端横向排列。
+  3. 条件性 prompt 缺少 is_active 勾选控制与互斥逻辑。
+- **修复**：
+  1. 用“ID 上传图片”按钮替换原 IDE 按钮，点击打开相册。
+  2. 在输入区加入正方形拖拽框，支持拖拽与点击上传。
+  3. 自定义 UITextView 处理粘贴图片，自动加入预览并发送。
+  4. 快捷模板改为横向滚动布局。
+  5. 上下文追加新增左侧勾选框（is_active），右侧开关互斥并自动恢复可见。
+- **回归检查**：待创建（R-2026-051）
+- **状态**：fixed
+- **日期**：2026-01-29
+- **关键文件**：
+  - `ios-app/IterateNotify/ContentView.swift`
+  - `ios-app/IterateNotify/WebSocketManager.swift`
+  - `ios-app/IterateNotify/MCPMessage.swift`
