@@ -7277,24 +7277,6 @@ fixed（待验证）
 ## P-2026-043 Git worktree 被误识别为 submodule
 
 - **项目**：iterate
-- **仓库**：https://github.com/kexin94yyds/iterate
-- **发生版本**：当前版本
-- **现象**：`git submodule status` 报错 `fatal: no submodule mapping found in .gitmodules for path 'ios-bridge-dev'`
-- **根因**：`ios-bridge-dev` 是一个 git worktree（`.git` 文件指向 `.git/worktrees/ios-bridge-dev`），但被 Git index 误认为 submodule
-- **修复**：`git rm --cached ios-bridge-dev` 从 index 中移除
-- **回归检查**：R-2026-043
-- **状态**：fixed
-- **日期**：2026-01-19
-
----
-
-## P-2026-044 .cunzhi-knowledge submodule commit 与 superproject 不一致
-- **项目**：iterate
-- **仓库**：https://github.com/kexin94yyds/iterate
-- **发生版本**：当前版本
-- **现象**：`git submodule status` 显示 `.cunzhi-knowledge` 前有 `+` 号，表示 checkout 的 commit 与 superproject 记录不一致
-- **根因**：submodule 有 6 个未推送的 commits，superproject 未更新引用
-- **修复**：
   1. 推送 submodule：`cd .cunzhi-knowledge && git push origin main`
   2. 更新 superproject 引用：`git add .cunzhi-knowledge`
 - **回归检查**：R-2026-044
@@ -7369,3 +7351,27 @@ c053fc3
 - **回归检查**：R-2026-047
 - **状态**：verified
 - **日期**：2026-01-27
+
+---
+
+## P-2026-048 iterate 手机端缺少后台通知功能
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：当前版本
+- **现象**：手机端 PWA 应用在后台时无法收到 MCP 请求的系统通知
+- **根因**：
+  1. 手机端 PWA 使用的是独立的 `bridge_test.html`，不是 Tauri 应用内嵌的 Vue 组件
+  2. 未实现 Web Notification API 集成
+- **修复**：
+  1. 在 `bridge_test.html` 顶部栏添加通知铃铛按钮（主题按钮左边）
+  2. 实现 `toggleNotification()` 请求权限并切换状态
+  3. 收到 MCP 消息时调用 `sendNotificationIfEnabled()` 发送系统通知
+  4. 使用 localStorage 持久化通知开关状态
+  5. 同时在 Tauri 应用的 `useNotification.ts` 中实现相同功能
+- **回归检查**：R-2026-048
+- **状态**：verified
+- **日期**：2026-01-29
+- **经验**：
+  - iterate 手机端 PWA 使用独立的 `bridge_test.html`，不是 Tauri 应用内嵌的 Vue 组件
+  - 需要在两个地方同时实现通知功能：`bridge_test.html` 和 `useNotification.ts`
