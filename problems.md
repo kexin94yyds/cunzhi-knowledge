@@ -7406,3 +7406,43 @@ c053fc3
   3. 实现项目切换菜单（点击 ∞ 图标）
   4. 同步快捷模板功能
   5. 实现 IDE/文件/复制/引用模式切换
+
+---
+
+## P-2026-050 iOS iterate 应用后台通知失效
+
+- **项目**：iterate (cunzhi)
+- **仓库**：https://github.com/kexin94yyds/iterate
+- **发生版本**：commit 6215dd3 之后
+- **现象**：
+  1. iOS 应用在后台时无法收到系统通知
+  2. 前台通知正常工作
+  3. Xcode 日志显示通知发送成功，但手机不显示
+- **根因**：
+  1. SwiftUI 应用中 `UIApplicationDelegate` 的 `applicationDidEnterBackground` 方法不会被调用
+  2. 导致静音音频服务没有启动，应用进入后台后 WebSocket 连接断开
+  3. 消息无法到达应用，自然无法触发通知
+- **修复**：
+  - 改用 SwiftUI 的 `@Environment(\.scenePhase)` 监听应用状态变化
+  - 在 `.background` 状态启动静音音频
+  - 在 `.active` 状态停止静音音频
+- **回归检查**：R-2026-050
+- **状态**：fixed
+- **日期**：2026-01-29
+- **关键文件**：
+  - `ios-app/IterateNotify/IterateNotifyApp.swift` - 应用入口和生命周期
+  - `ios-app/IterateNotify/BackgroundAudioService.swift` - 静音音频服务
+- **关键代码**：
+  ```swift
+  @Environment(\.scenePhase) private var scenePhase
+  
+  .onChange(of: scenePhase) { oldPhase, newPhase in
+      switch newPhase {
+      case .background:
+          BackgroundAudioService.shared.startBackgroundAudio()
+      case .active:
+          BackgroundAudioService.shared.stopBackgroundAudio()
+      // ...
+      }
+  }
+  ```

@@ -2177,3 +2177,41 @@ fetch('/files?project_path=...')
   ```
 - **关联 P-ID**：P-2026-047
 - **日期**：2026-01-27
+
+---
+
+## PAT-2026-038: SwiftUI 应用后台生命周期管理
+
+- **场景**：SwiftUI 应用需要在后台执行任务（如保持 WebSocket 连接）。
+- **问题特征**：
+  1. `UIApplicationDelegate` 的 `applicationDidEnterBackground` 在 SwiftUI 中不被调用
+  2. 后台任务无法启动，连接断开
+- **模式描述**：
+  1. **使用 scenePhase**：`@Environment(\.scenePhase)` 监听应用状态
+  2. **onChange 响应**：在 `.background` 状态启动后台任务
+  3. **静音音频保活**：播放静音音频保持应用活跃
+- **代码示例**：
+  ```swift
+  @Environment(\.scenePhase) private var scenePhase
+  
+  var body: some Scene {
+      WindowGroup {
+          ContentView()
+      }
+      .onChange(of: scenePhase) { oldPhase, newPhase in
+          switch newPhase {
+          case .background:
+              BackgroundAudioService.shared.startBackgroundAudio()
+          case .active:
+              BackgroundAudioService.shared.stopBackgroundAudio()
+          default:
+              break
+          }
+      }
+  }
+  ```
+- **注意事项**：
+  - 需要在 Info.plist 添加 `UIBackgroundModes: audio`
+  - 静音音频需要设置 `AVAudioSession.Category.playback`
+- **关联 P-ID**：P-2026-050
+- **日期**：2026-01-29
