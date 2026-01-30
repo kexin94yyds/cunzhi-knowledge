@@ -37,3 +37,12 @@ Please generate a **Technical Architecture Whitepaper** for me.
 重启
 先关掉本项目相关的进程，再进行重启
 
+
+Domain + DNS
+Register a domain and update DNS records. Ask for registrar, domain name, target service, record types, and TTL. Output exact steps plus a verification checklist (dig/nslookup).
+
+Multi-machine automation
+If UI/browser automation causes popups, move the task to a secondary machine. Sync via git, keep the automation host running, and report results back to the primary workstation.
+
+CLI loop for automation
+Prefer a CLI wrapper so agents can run, verify output, and close the loop before any UI work.

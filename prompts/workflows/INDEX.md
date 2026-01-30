@@ -11,6 +11,9 @@ AI 根据用户请求中的关键词匹配以下 Workflows，匹配成功后读�
 | [batch-task](batch-task.md) | pai、派发、子代理、批量任务 | 子代理任务分配 |
 | [plan](plan.md) | 计划、规划、plan | 任务实施计划 |
 | [build](build.md) | 构建、编译、build | 项目构建流程 |
+| [iterate-loop](iterate-loop.md) | iterate loop、iterative、迭代、感觉 | Iterative build loop |
+| [model-routing](model-routing.md) | model routing、模型分流、选模型 | 任务规模与模型匹配 |
+| [cross-project](cross-project.md) | cross project、跨项目、复用 | 跨项目复用实现 |
 | [deploy](deploy.md) | 部署、发布、deploy | 部署发布流程 |
 | [commit-push-pr](commit-push-pr.md) | 提交、推送、PR、commit | Git 提交流程 |
 | [fix-lint](fix-lint.md) | lint、格式化、eslint | 代码格式修复 |

@@ -8,7 +8,7 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 |-------|--------|------|
 | [iterate](iterate/SKILL.md) | iterate、cunzhi、寸止、端口不可用、服务器未启动 | 脚本交互与故障恢复 |
 | [debug](debug/SKILL.md) | debug、调试、Bug、错误、排查 | 系统化调试方法论 |
-| [multi-agent-dispatch](multi-agent-dispatch/SKILL.md) | pai、派发、dispatch、分配、并发、多子代理 | 同窗口 codex exec 并发 |
+| [multi-agent-dispatch](multi-agent-dispatch/SKILL.md) | 派发、dispatch、分配、并发、多子代理 | 同窗口 codex exec 并发 |
 | [ralph-loop](ralph-loop/SKILL.md) | ralph、自主循环、autonomous、直到完成、循环执行 | Ralph Wiggum 自主循环模式 |
 | [plan](plan/SKILL.md) | 计划、规划、plan | 任务实施计划 |
 | [build](build/SKILL.md) | 构建、编译、build | 项目构建流程 |
@@ -18,7 +18,9 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [implement](implement/SKILL.md) | 实现、开发、implement | 功能实现流程 |
 | [review](review/SKILL.md) | review、代码审查、PR审查 | 代码审查流程 |
 | [audit-with-codex](audit-with-codex/SKILL.md) | cha、审查、audit、codex、审计 | Codex 自动审查 |
-| [codex-exec](codex-exec/SKILL.md) | codex exec、执行、run codex、工厂模式 | Codex CLI 直接执行 |
+| [codex-exec](codex-exec/SKILL.md) | pai、codex exec、执行、run codex、工厂模式 | Codex CLI 直接执行 |
+| [cli-first](cli-first/SKILL.md) | CLI、command line、terminal、CLI-first、先 CLI | CLI-first build workflow |
+| [docs-list](docs-list/SKILL.md) | docs:list、docs list、read docs、文档索引 | 强制读取文档索引 |
 | [run-tests](run-tests/SKILL.md) | 测试、test、运行测试 | 测试执行流程 |
 | [settle](settle/SKILL.md) | 沉淀、三件套、settle | 问题沉淀流程 |
 | [sync-knowledge](sync-knowledge/SKILL.md) | 同步、sync、知识库 | 知识库同步 |

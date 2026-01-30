@@ -239,3 +239,9 @@ JS调试
 关闭
 「帮我把本地测试网站关掉」
 
+
+Short prompt + image
+Use a cropped UI screenshot and a 2-8 word instruction (e.g., "fix padding", "align labels"). Keep prompts short; retype if needed.
+
+Docs drop
+Write docs to docs/*.md and let the model pick a filename. Then ask it to update or reference the docs index/script if available.
