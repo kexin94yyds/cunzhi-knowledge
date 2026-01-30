@@ -46,7 +46,6 @@ AI 根据用户请求中的关键词匹配以下 Skills，匹配成功后读取�
 | [init-project](init-project/SKILL.md) | 初始化项目、init、初始化上下文 | 智能生成项目上下文 |
 | [podcast-article](podcast-article/SKILL.md) | 播客、公众号、文章工作流、语音转文字、Opus、Typeless | 播客和公众号文章工作流 |
 | [notebooklm](notebooklm/SKILL.md) | notebooklm、NotebookLM、播客生成、create podcast、generate audio、笔记本 | Google NotebookLM 自动化 |
-| [aistudio](aistudio/SKILL.md) | aistudio、AI Studio、Gemini 生成、前端生成、generate content | Google AI Studio 自动化 |
 
 ## 使用规则
 
