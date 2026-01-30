@@ -7488,3 +7488,29 @@ c053fc3
   - `ios-app/IterateNotify/ContentView.swift`
   - `ios-app/IterateNotify/WebSocketManager.swift`
   - `ios-app/IterateNotify/MCPMessage.swift`
+
+---
+
+## P-2026-052 AI Studio Skill 无法使用 - Google 内部 API 认证失败
+
+- **项目**：cunzhi-knowledge
+- **仓库**：https://github.com/kexin94yyds/cunzhi-knowledge
+- **发生版本**：2026-01-30
+- **现象**：
+  1. `aistudio ask` 命令返回 401 Unauthorized 错误
+  2. Cookie-based 认证被 Google 拒绝
+  3. OAuth 2.0 认证成功但配额为 0
+- **根因**：
+  1. AI Studio 内部 API (alkalimakersuite-pa.clients6.google.com) 需要完整的 Google session
+  2. 与 NotebookLM 不同，AI Studio 没有 CSRF token (SNlM0e)，使用不同的认证机制
+  3. Google 加强了自动化请求检测，拒绝非浏览器请求
+  4. OAuth 2.0 方式需要 Google Cloud 项目启用计费或使用 AI Studio API Key
+- **修复**：
+  1. 移除 aistudio skill，因为内部 API 不稳定且需要频繁手动更新 token
+  2. 建议用户直接使用 AI Studio 的官方 API Key (https://aistudio.google.com/apikey)
+- **回归检查**：N/A（功能已移除）
+- **状态**：verified
+- **日期**：2026-01-30
+- **参考资料**：
+  - https://github.com/SreejanPersonal/Gemini-1.5-Pro-Google-AI-Studio-Reverse-Engineered-API（已停止维护）
+  - https://github.com/xtekky/gpt4free/issues/3092
