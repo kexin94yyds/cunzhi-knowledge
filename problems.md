@@ -7519,27 +7519,6 @@ c053fc3
 
 ## P-2026-053 静音状态在 Vue 组合式函数中非单例导致状态不同步
 
----
-
-## P-2026-054 Windsurf 对自定义 HTTP MCP 服务器有安全限制
-
-- 项目：iterate (cunzhi)
-- 仓库：/Users/apple/cunzhi
-- 发生版本：v0.5.2
-- 现象：在 Windsurf 的 `mcp_config.json` 中添加自定义 HTTP MCP 服务器（serverUrl 模式），服务器能正常响应 MCP 协议握手，但 Windsurf 会自动禁用该服务器，显示 "Permission denied: Unable to process request due to an MCP configuration issue"
-- 根因：Windsurf 对直接在配置文件中添加的 HTTP MCP 服务器有安全限制。Infinite WF 等扩展能工作是因为它们通过 VS Code 扩展 API 注册 MCP，而不是直接在配置文件中添加
-- 修复：暂无。可选方案：
-  1. 创建 VS Code 扩展来注册 MCP（类似 Infinite WF）
-  2. 继续使用现有的 `--bridge` 模式（通过 run_command 调用）
-  3. 等待 Windsurf 开放自定义 MCP 服务器的安全限制
-- 回归检查：待创建
-- 状态：open
-- 日期：2026-02-01
-- 已实现的代码：
-  - `src/rust/mcp/http_server.rs` - HTTP MCP 服务器模块（Streamable HTTP 协议）
-  - `--mcp-http` CLI 参数 - 启动 HTTP MCP 服务器
-  - `src/rust/mcp/handlers/popup.rs` - MCP 工具优先通过 HTTP 调用 `--serve` 服务器
-
 - **项目**：iterate (cunzhi)
 - **仓库**：https://github.com/kexin94yyds/iterate
 - **发生版本**：当前版本
