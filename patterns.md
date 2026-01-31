@@ -54,6 +54,7 @@
 | PAT-2026-022 | Git stash Checkpoint 恢复强覆盖（含 untracked） | stash show -u + 仅覆盖涉及文件 |
 | PAT-2026-024 | 派生 UI 状态需从权威数据重建（避免刷新丢失） | 派生状态仅展示 + 加载链路重建 |
 | PAT-2026-027 | 用户交互脚本的超时策略 | 无限等待 + 手动终止 + 资源占用极低 |
+| PAT-2026-049 | WebSocket 消息去重模式 | 前端 debounce + 后端幂等 + 单一推送路径 |
 
 ---
 
@@ -2215,3 +2216,55 @@ fetch('/files?project_path=...')
   - 静音音频需要设置 `AVAudioSession.Category.playback`
 - **关联 P-ID**：P-2026-050
 - **日期**：2026-01-29
+
+---
+
+## PAT-2026-049 WebSocket 消息去重模式
+
+- **场景**：桌面端通过 WebSocket 向移动端推送 MCP 状态时，出现重复消息导致移动端收到两条相同通知。
+- **问题特征**：
+  1. **前端双 watcher**：同一事件触发多个监听器，导致重复推送
+  2. **重复生产者**：多个进程/组件对同一事件各自上报
+  3. **桥接重复广播**：消息通过多个路径到达同一目标
+- **模式描述**：
+  1. **前端 debounce 合并**：对同一事件的多个 watcher 使用 debounce（50ms）合并为一次推送
+  2. **后端单一路径**：确保消息只通过一个路径发送（HTTP POST 或 WebSocket broadcast，不能两者都用）
+  3. **本地优先策略**：本地端点推送成功则跳过远程端点，避免双端点重复
+  4. **幂等性保护**：接收端对相同消息 ID 进行去重
+- **代码示例**：
+  ```javascript
+  // 前端 debounce 合并
+  let pushTimer = null;
+  watch([mcpRequest, showMcpPopup], () => {
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(() => {
+      fetch('/bridge/publish', { method: 'POST', body: JSON.stringify(state) });
+    }, 50);
+  });
+  ```
+  ```rust
+  // 后端单一路径
+  async fn send_to_web_bridge(state: &str) -> Result<()> {
+    // 只通过 HTTP POST，不再 broadcast
+    reqwest::Client::new()
+      .post("http://127.0.0.1:8080/bridge/publish")
+      .body(state.to_string())
+      .send()
+      .await?;
+    Ok(())
+  }
+  ```
+  ```go
+  // 本地优先策略
+  if err := pushToLocal(state); err == nil {
+    return // 本地成功，跳过远程
+  }
+  pushToRemote(state)
+  ```
+- **收益**：
+  - 消除重复通知，提升用户体验
+  - 减少网络流量和服务器负载
+  - 避免移动端电量浪费
+- **关联 P-ID**：P-2026-049
+- **关联 R-ID**：R-2026-049
+- **日期**：2026-01-31
