@@ -7397,24 +7397,24 @@ c053fc3
 - **发生版本**：当前版本
 - **现象**：iOS 原生应用通过 WebSocket 连接到 Bridge 服务器时，收到两条相同的 MCP 消息
 - **根因**：
-  1. Bridge 服务器在 `handle_bridge_publish` 中会转发消息到 8080 端口
-  2. 本地子进程（如 5310 端口）发送消息时，会同时通过 broadcast channel 和 HTTP POST 转发
-  3. 导致 8080 端口的 WebSocket 客户端（包括 iOS 应用）收到两条消息
+  1. **前端双 watcher**：`src/frontend/components/AppContent.vue` 同时监听 `mcpRequest` 与 `showMcpPopup`，新请求会同时触发两者 → 对 `/bridge/publish` 连发两次 `mcp_state`。
+  2. **重复生产者叠加**：Go bridge（`bin/cunzhi_go.go`）与桌面端窗口（Tauri）可能针对同一请求各自上报 `mcp_state`，如果不做幂等/去重，会形成重复通知。
+  3. **桥接重复广播**：历史上 `send_to_web_bridge` 同时 `BRIDGE_BROADCAST.send` + HTTP POST，会导致同一消息被广播两次（已修复为只走 HTTP）。
 - **修复**：
-  - 修复代码已存在于 `src/rust/bridge/ws.rs:490-514`
-  - 使用 `forwarded_from_bridge` 标记避免重复转发
-  - 检查 `LOCAL_BRIDGE_PORT != 8080` 才进行 HTTP 转发
-  - **需要重新编译 iterate 应用才能生效**
-- **回归检查**：待创建（R-2026-049）
-- **状态**：fixed
+  1. `AppContent.vue` 合并推送：对 `mcpRequest/showMcpPopup` 的推送做 debounce（50ms）合并为一次。
+  2. `src/rust/bridge/ws.rs`：`send_to_web_bridge` 只通过 HTTP POST 发送到 `/bridge/publish`，避免重复 broadcast。
+  3. `bin/cunzhi_go.go`：本地 `127.0.0.1:8080` 推送成功则不再推送远程（避免双端点重复）。
+  4. 重新编译并安装桌面端（`./update.sh`）确保修复生效。
+- **回归检查**：R-2026-049
+- **状态**：verified
 - **日期**：2026-01-29
 - **关键文件**：
   - `ios-app/IterateNotify/ContentView.swift` - iOS UI
   - `ios-app/IterateNotify/WebSocketManager.swift` - WebSocket 管理
   - `src/rust/bridge/ws.rs` - Bridge 服务器逻辑
+  - `src/frontend/components/AppContent.vue` - mcp_state 上报逻辑
 - **下一步**：
-  1. 重新编译 iterate 应用（`./build-install.sh`）
-  2. 测试 iOS 应用是否只收到单条消息
+  1. 测试 iOS 应用是否只收到单条消息
   3. 实现项目切换菜单（点击 ∞ 图标）
   4. 同步快捷模板功能
   5. 实现 IDE/文件/复制/引用模式切换
