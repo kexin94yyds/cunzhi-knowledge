@@ -2268,3 +2268,49 @@ fetch('/files?project_path=...')
 - **关联 P-ID**：P-2026-049
 - **关联 R-ID**：R-2026-049
 - **日期**：2026-01-31
+
+---
+
+## PAT-2026-053 Vue 组合式函数状态单例模式
+
+- **场景**：在 Vue 3 组合式函数（Composables）中管理全局状态时，需要确保状态在多个组件间共享。
+- **问题特征**：
+  1. 组合式函数每次调用都创建新的 `ref()` 实例
+  2. 不同组件持有不同的状态实例，导致状态不同步
+  3. 事件监听器中读取的状态与 UI 组件中的状态不一致
+- **模式描述**：
+  1. **模块级状态**：将需要共享的状态定义在函数外部（模块级别）
+  2. **函数内只返回引用**：组合式函数只返回对模块级状态的引用，不创建新实例
+  3. **localStorage 同步**：状态变更时同步到 localStorage，页面刷新后从 localStorage 恢复
+- **代码示例**：
+  ```typescript
+  // ❌ 错误：每次调用创建新实例
+  export function useMcpHandler() {
+    const isMuted = ref(localStorage.getItem('muted') === 'true')
+    // 每个调用者持有不同的 isMuted 实例
+    return { isMuted }
+  }
+
+  // ✅ 正确：模块级单例
+  const MUTE_KEY = 'iterate.muted'
+  const isMuted = ref(localStorage.getItem(MUTE_KEY) === 'true')
+
+  export function useMcpHandler() {
+    function toggleMute() {
+      isMuted.value = !isMuted.value
+      localStorage.setItem(MUTE_KEY, String(isMuted.value))
+    }
+    // 所有调用者共享同一个 isMuted
+    return { isMuted, toggleMute }
+  }
+  ```
+- **适用场景**：
+  - 全局配置状态（静音、主题、语言等）
+  - 跨组件共享的 UI 状态
+  - 需要在事件监听器中访问的状态
+- **注意事项**：
+  - 模块级状态在 HMR（热更新）时可能不会重置
+  - 如果需要组件级隔离的状态，仍应在函数内创建
+- **关联 P-ID**：P-2026-053
+- **关联 R-ID**：R-2026-053
+- **日期**：2026-01-31
