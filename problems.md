@@ -7406,7 +7406,7 @@ c053fc3
   3. `bin/cunzhi_go.go`：本地 `127.0.0.1:8080` 推送成功则不再推送远程（避免双端点重复）。
   4. 重新编译并安装桌面端（`./update.sh`）确保修复生效。
 - **回归检查**：R-2026-049
-- **状态**：verified
+- **状态**：audited (Codex已审计)
 - **日期**：2026-01-29
 - **关键文件**：
   - `ios-app/IterateNotify/ContentView.swift` - iOS UI
